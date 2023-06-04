@@ -3,16 +3,14 @@
   font-family: "Roboto", sans-serif;
 }
 
-/* html{
-    background-color: red;
-} */
+
 .period-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding: 12px 8px 12px 12px;
-  background: transparent;
+  background: #ffffff;
   border: 1px solid #c2c9d8;
   border-radius: 8px;
   cursor: pointer;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./CurrencyChange.css";
 
 interface PriceFilterProps {
@@ -55,9 +55,9 @@ const CurrencyChange: React.FC<PriceFilterProps> = ({ currencies }) => {
         </div>
       </div>
       <div className="from-to-ratio">
-        <input type="text" placeholder="From" />
+        <input type="text" placeholder="From" className="currency-input" />
         {" - "}
-        <input type="text" placeholder="To" />
+        <input type="text" placeholder="To" className="currency-input" />
       </div>
     </main>
   );

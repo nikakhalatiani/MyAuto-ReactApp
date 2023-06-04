@@ -49,7 +49,7 @@
   margin: 0px -1px -1px;
 }
 
-input[type="text"] {
+.currency-input {
   border: none;
   outline: none;
   padding: 8px;

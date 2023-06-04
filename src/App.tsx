@@ -4,6 +4,7 @@ import SearchDrop from "./Components/SearchDropdown";
 import CurrencyChange from "./Components/CurrencyChange";
 import PeriodDropdown from "./Components/PeriodDropdown";
 import FilterDropdown from "./Components/FilterDropdown";
+import Header from "./Components/Header";
 
 import { useState, useEffect } from "react";
 
@@ -53,8 +54,6 @@ function App() {
     { value: "option5", label: "Mileage ascending" },
   ];
 
-
-
   const currencies = ["GEL", "USD"];
 
   const handlePeriodChange = (selectedPeriod: string) => {
@@ -67,21 +66,41 @@ function App() {
     console.log("Selected period:", selectedFilter);
   };
 
-  const options = [{ value: "option1", label: "Option 1"},
-  { value: "option2", label: "Option 2"},
-  { value: 'option6', label: 'Daza'},
-    { value: 'option7', label: 'Eaza'},
-    { value: 'option8', label: 'Faza'},
-    { value: 'option9', label: 'yaza'},
-    { value: 'option10', label: 'zaza'},];
+  const options = [
+    { value: "option1", label: "Option 1" },
+    { value: "option2", label: "Option 2" },
+    { value: "option6", label: "Daza" },
+    { value: "option7", label: "Eaza" },
+    { value: "option8", label: "Faza" },
+    { value: "option9", label: "yaza" },
+    { value: "option10", label: "zaza" },
+    { value: "option11", label: "xaza" },
+    { value: "option12", label: "caza" },
+    { value: "option13", label: "vaza" },
+    { value: "option14", label: "baza" },
+    { value: "option15", label: "naza" },
+    { value: "option16", label: "maza" },
+    { value: "option17", label: "laza" },
+    { value: "option18", label: "kaza" },
+    { value: "option19", label: "jaza" },
+  ];
 
   return (
     <>
-      {" "}
-      <SearchDrop options={options} />
-      <PeriodDropdown options={periods} />
-      <FilterDropdown options={order_types} />
-      <CurrencyChange currencies={currencies} />
+      <Header />
+      <div className="bellow-header">
+        {" "}
+        <SearchDrop options={options} />
+        <PeriodDropdown options={periods} />
+        <FilterDropdown options={order_types} />
+        <CurrencyChange currencies={currencies} />
+        <CurrencyChange currencies={currencies} />
+        <CurrencyChange currencies={currencies} />
+        <CurrencyChange currencies={currencies} />
+        <CurrencyChange currencies={currencies} />
+        <CurrencyChange currencies={currencies} />
+        <CurrencyChange currencies={currencies} />
+      </div>
     </>
   );
 }

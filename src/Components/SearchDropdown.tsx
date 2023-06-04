@@ -79,8 +79,19 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
     if (isCloseButtonSelected) {
       setSelectedOptions([]);
       setIsCloseButtonSelected(false);
+      console.log("isCloseButtonSelected");
     } else {
       setIsOpen(!isOpen);
+    }
+  };
+
+  const handleContainerClick = () => {
+    if (!isOpen) {
+      toggleDropdown();
+    } else {
+      if (searchInputRef.current) {
+        searchInputRef.current.focus(); // Set focus on the search input field
+      }
     }
   };
 
@@ -89,7 +100,9 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
     setSearchTerm("");
   };
 
-  const handleClearButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClearButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.stopPropagation();
     setSelectedOptions([]);
   };
@@ -101,7 +114,6 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
   //     searchInputRef.current.placeholder = "Search";
   //   }
   // };
-  
 
   const filteredOptions = options.filter((option) =>
     option.label.toLowerCase().startsWith(searchTerm.toLowerCase())
@@ -110,12 +122,12 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
   return (
     <div ref={dropdownRef}>
       <div
+        onClick={handleContainerClick}
         className={`search-container ${
           selectedOptions.length > 0 ? "dark-font" : ""
         } ${isOpen ? "open" : ""}`}
       >
         <input
-          onClick={() => setIsOpen(true)}
           placeholder={
             selectedOptions.length > 0
               ? selectedOptions
@@ -188,7 +200,10 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
 
             {selectedOptions.length > 0 && (
               <div className="dropdown-buttons">
-                <button className="clear-button" onClick={handleClearButtonClick}>
+                <button
+                  className="clear-button"
+                  onClick={handleClearButtonClick}
+                >
                   Clear Filter
                 </button>
                 <button
