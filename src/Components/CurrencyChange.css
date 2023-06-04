@@ -1,0 +1,74 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+* {
+  font-family: "Roboto", sans-serif;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-weight: 500;
+  justify-content: space-around;
+  margin: 20px 0px 20px;
+  cursor: default;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  border: none;
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
+  fill: #8c929b;
+  background-color: transparent;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.button-box {
+  display: flex;
+  flex-direction: row;
+  background-color: #ffffff;
+  border-radius: 12px;
+  width: auto;
+  border: 1px solid #e2e5eb;
+}
+
+.button-box .selected {
+  background-color: #272a37;
+  fill: #ffffff;
+  margin: 0px -1px -1px;
+}
+
+input[type="text"] {
+  border: none;
+  outline: none;
+  padding: 8px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  border: 1px solid #e2e5eb;
+  color: #5e697d;
+  height: 1.2rem;
+  border-radius: 8px;
+}
+
+.ratio {
+  color: #5e697d;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.ratio > * {
+  margin: 8px;
+}

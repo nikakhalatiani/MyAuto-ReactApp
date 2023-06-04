@@ -176,7 +176,7 @@
 }
 
 .search-container.dark-font input::placeholder {
-  color: black;
+  color: #272a37;
 }
 
 .clear-button {

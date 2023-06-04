@@ -1,6 +1,8 @@
 import './App.css';
 import Loading from "./Loading/Loading";
 import SearchDrop from "./Components/SearchDropdown";
+import CurrencyChange from './Components/CurrencyChange';
+
 import { useState, useEffect } from "react";
 
 const mans_list = "https://static.my.ge/myauto/js/mans.json";
@@ -34,25 +36,27 @@ function App() {
     );
   }
 
-  const options = [
-    { value: 'option1', label: 'Jeep' },
-    { value: 'option2', label: 'Benzo' },
-    { value: 'option3', label: 'Optio'},
-    { value: 'option4', label: 'Baza'},
-    { value: 'option5', label: 'Caza'},
-    { value: 'option6', label: 'Daza'},
-    { value: 'option7', label: 'Eaza'},
-    { value: 'option8', label: 'Faza'},
-    { value: 'option9', label: 'yaza'},
-    { value: 'option10', label: 'zaza'},
+  // const options = [
+  //   { value: 'option1', label: 'Jeep' },
+  //   { value: 'option2', label: 'Benzo' },
+  //   { value: 'option3', label: 'Optio'},
+  //   { value: 'option4', label: 'Baza'},
+  //   { value: 'option5', label: 'Caza'},
+  //   { value: 'option6', label: 'Daza'},
+  //   { value: 'option7', label: 'Eaza'},
+  //   { value: 'option8', label: 'Faza'},
+  //   { value: 'option9', label: 'yaza'},
+  //   { value: 'option10', label: 'zaza'},
 
+  const currencies = ['USD', 'GEL'];
 
     
 
-  ];
+  // ];
 
   return (
-    <SearchDrop options={options}/>
+    // <SearchDrop options={options}/>
+    <CurrencyChange currencies={currencies}/>
   );
 }
 
