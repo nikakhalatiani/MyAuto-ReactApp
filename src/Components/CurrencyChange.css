@@ -18,7 +18,7 @@ main {
   flex-direction: column;
 }
 
-button {
+.lari-btn, .dollar-btn {
   border: none;
   display: flex;
   align-items: center;
@@ -61,7 +61,7 @@ input[type="text"] {
   border-radius: 8px;
 }
 
-.ratio {
+.from-to-ratio {
   color: #5e697d;
   display: flex;
   flex-direction: row;
@@ -69,6 +69,6 @@ input[type="text"] {
   justify-content: center;
 }
 
-.ratio > * {
+.from-to-ratio > * {
   margin: 8px;
 }

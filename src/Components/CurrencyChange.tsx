@@ -54,7 +54,7 @@ const CurrencyChange: React.FC<PriceFilterProps> = ({ currencies }) => {
           </button>
         </div>
       </div>
-      <div className="ratio">
+      <div className="from-to-ratio">
         <input type="text" placeholder="From" />
         {" - "}
         <input type="text" placeholder="To" />

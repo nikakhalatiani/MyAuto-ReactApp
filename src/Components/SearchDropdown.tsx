@@ -2,11 +2,10 @@ import "./SearchDropdown.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
-  faChevronUp,
   faXmark,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface Option {
   value: string;
@@ -24,6 +23,23 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
   const [isChecked, setIsChecked] = useState(false);
   const [isCloseButtonSelected, setIsCloseButtonSelected] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener("click", handleClickOutside);
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   const toggleDropdown = () => {
     if (isCloseButtonSelected) {
@@ -81,18 +97,19 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
     setSearchTerm("");
   };
 
+
+
   const filteredOptions = options.filter((option) =>
     option.label.toLowerCase().startsWith(searchTerm.toLowerCase())
   );
 
   return (
-    <div>
+    <div ref={dropdownRef}>
       <div
         className={`search-container ${
           selectedOptions.length > 0 ? "dark-font" : ""
         } ${isOpen ? "open" : ""}`}
       >
-        {" "}
         <input
           onClick={() => setIsOpen(true)}
           placeholder={
@@ -117,13 +134,14 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
           ) : isOpen ? (
             <FontAwesomeIcon
               icon={faChevronDown}
-              style={{ color: "#6f7383",  height: "10px", width: "10px" }}
+              style={{ color: "#6f7383", height: "10px", width: "10px" }}
             />
           ) : (
             <FontAwesomeIcon
-            icon={faChevronDown}
-            style={{ color: "#6f7383" ,  height: "10px", width: "10px"  }}
-          />          )}
+              icon={faChevronDown}
+              style={{ color: "#6f7383", height: "10px", width: "10px" }}
+            />
+          )}
         </button>
       </div>
       <div>

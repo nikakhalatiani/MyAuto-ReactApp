@@ -1,7 +1,8 @@
-import './App.css';
+import "./App.css";
 import Loading from "./Loading/Loading";
 import SearchDrop from "./Components/SearchDropdown";
-import CurrencyChange from './Components/CurrencyChange';
+import CurrencyChange from "./Components/CurrencyChange";
+import PeriodDropdown from "./Components/PeriodDropdown";
 
 import { useState, useEffect } from "react";
 
@@ -9,7 +10,6 @@ const mans_list = "https://static.my.ge/myauto/js/mans.json";
 
 function App() {
   const [loading, setLoading] = useState(true);
-
 
   async function fetchMans() {
     setLoading(true);
@@ -36,27 +36,46 @@ function App() {
     );
   }
 
-  // const options = [
-  //   { value: 'option1', label: 'Jeep' },
-  //   { value: 'option2', label: 'Benzo' },
-  //   { value: 'option3', label: 'Optio'},
-  //   { value: 'option4', label: 'Baza'},
-  //   { value: 'option5', label: 'Caza'},
-  //   { value: 'option6', label: 'Daza'},
-  //   { value: 'option7', label: 'Eaza'},
-  //   { value: 'option8', label: 'Faza'},
-  //   { value: 'option9', label: 'yaza'},
-  //   { value: 'option10', label: 'zaza'},
+  const periods = [
+    { value: "option1", label: "1 hour" },
+    { value: "option2", label: "3 hours" },
+    { value: "option3", label: "6 hours" },
+    { value: "option4", label: "12 hours" },
+    { value: "option5", label: "24 hours" },
+  ];
 
-  const currencies = ['USD', 'GEL'];
+  const order_types = [
+    { value: "option1", label: "order by date desc" },
+    { value: "option2", label: "order by date asc" },
+    { value: "option3", label: "Price descending" },
+    { value: "option4", label: "Mileage descending" },
+    { value: "option5", label: "Mileage ascending" },
+  ];
 
-    
 
-  // ];
+
+  const currencies = ["GEL", "USD"];
+
+  const handlePeriodChange = (selectedPeriod: string) => {
+    // Handle the selected period change here
+    console.log("Selected period:", selectedPeriod);
+  };
+
+  const options = [{ value: "option1", label: "Option 1"},
+  { value: "option2", label: "Option 2"},
+  { value: 'option6', label: 'Daza'},
+    { value: 'option7', label: 'Eaza'},
+    { value: 'option8', label: 'Faza'},
+    { value: 'option9', label: 'yaza'},
+    { value: 'option10', label: 'zaza'},];
 
   return (
-    // <SearchDrop options={options}/>
-    <CurrencyChange currencies={currencies}/>
+    <>
+      {" "}
+      <SearchDrop options={options} />
+      <PeriodDropdown options={periods} />
+      <CurrencyChange currencies={currencies} />
+    </>
   );
 }
 
