@@ -13,7 +13,7 @@
   cursor: default;
 }
 
-main {
+.currency-main {
   display: flex;
   flex-direction: column;
 }

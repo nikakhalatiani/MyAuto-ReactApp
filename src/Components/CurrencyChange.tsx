@@ -13,7 +13,7 @@ const CurrencyChange: React.FC<PriceFilterProps> = ({ currencies }) => {
   };
 
   return (
-    <main>
+    <main className="currency-main">
       <div className="header">
         Price
         <div className="button-box">

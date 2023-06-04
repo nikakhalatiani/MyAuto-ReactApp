@@ -41,15 +41,6 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
     };
   }, []);
 
-  const toggleDropdown = () => {
-    if (isCloseButtonSelected) {
-      setSelectedOptions([]);
-      setIsCloseButtonSelected(false);
-    } else {
-      setIsOpen(!isOpen);
-    }
-  };
-
   const handleCheckboxChange = (option: Option) => {
     const isSelected = selectedOptions.some(
       (selectedOption) => selectedOption.value === option.value
@@ -84,11 +75,12 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
     setSearchTerm(event.target.value);
   };
 
-  const handleClearAll = () => {
-    setSelectedOptions([]);
-    setIsCloseButtonSelected(false);
-    if (searchInputRef.current) {
-      searchInputRef.current.placeholder = "Search";
+  const toggleDropdown = () => {
+    if (isCloseButtonSelected) {
+      setSelectedOptions([]);
+      setIsCloseButtonSelected(false);
+    } else {
+      setIsOpen(!isOpen);
     }
   };
 
@@ -97,7 +89,19 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
     setSearchTerm("");
   };
 
+  const handleClearButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setSelectedOptions([]);
+  };
 
+  // const handleClearAll = () => {
+  //   setSelectedOptions([]);
+  //   setIsCloseButtonSelected(false);
+  //   if (searchInputRef.current) {
+  //     searchInputRef.current.placeholder = "Search";
+  //   }
+  // };
+  
 
   const filteredOptions = options.filter((option) =>
     option.label.toLowerCase().startsWith(searchTerm.toLowerCase())
@@ -184,7 +188,7 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
 
             {selectedOptions.length > 0 && (
               <div className="dropdown-buttons">
-                <button className="clear-button" onClick={handleClearAll}>
+                <button className="clear-button" onClick={handleClearButtonClick}>
                   Clear Filter
                 </button>
                 <button

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import "./PeriodDropdown.css";
+import "./FilterDropdown.css";
 
 interface Option {
   value: string;
@@ -17,7 +17,7 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const togglePeriodDropdown = () => {
+  const toggleFilterDropdown = () => {
     setIsOpen(!isOpen);
   };
 
@@ -40,14 +40,19 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
   }, []);
 
   const filteredOptions = options.filter((option) => option.value !== selectedOption?.value);
+  const defaultOption = options.length > 0 ? options[0] : null;
+
+  useEffect(() => {
+    setSelectedOption(defaultOption);
+  }, [defaultOption]);
 
   return (
     <div ref={dropdownRef}>
       <div
-        className={`period-container ${isOpen ? "open" : ""}`}
-        onClick={togglePeriodDropdown}
+        className={`filter-container ${isOpen ? "open" : ""}`}
+        onClick={toggleFilterDropdown}
       >
-        <span className="period-choice">{selectedOption ? selectedOption.label : "Period"}</span>
+        <span className="filter-choice">{selectedOption ? selectedOption.label : defaultOption?.label}</span>
         <button className={isOpen ? "rotate" : ""}>
           <FontAwesomeIcon
             icon={faChevronDown}
@@ -56,11 +61,11 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
         </button>
       </div>
       {isOpen && (
-        <div className="period-dropdown-options">
+        <div className="filter-dropdown-options">
           {filteredOptions.map((option) => (
             <div
               key={option.value}
-              className="period-option"
+              className="filter-option"
               onClick={() => handleOptionSelect(option)}
             >
               {option.label}

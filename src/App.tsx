@@ -3,6 +3,7 @@ import Loading from "./Loading/Loading";
 import SearchDrop from "./Components/SearchDropdown";
 import CurrencyChange from "./Components/CurrencyChange";
 import PeriodDropdown from "./Components/PeriodDropdown";
+import FilterDropdown from "./Components/FilterDropdown";
 
 import { useState, useEffect } from "react";
 
@@ -61,6 +62,11 @@ function App() {
     console.log("Selected period:", selectedPeriod);
   };
 
+  const handleFilterChange = (selectedFilter: string) => {
+    // Handle the selected period change here
+    console.log("Selected period:", selectedFilter);
+  };
+
   const options = [{ value: "option1", label: "Option 1"},
   { value: "option2", label: "Option 2"},
   { value: 'option6', label: 'Daza'},
@@ -74,6 +80,7 @@ function App() {
       {" "}
       <SearchDrop options={options} />
       <PeriodDropdown options={periods} />
+      <FilterDropdown options={order_types} />
       <CurrencyChange currencies={currencies} />
     </>
   );
