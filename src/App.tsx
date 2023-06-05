@@ -1,10 +1,11 @@
 import "./App.css";
 import Loading from "./Loading/Loading";
-import SearchDrop from "./Components/CategDropdown";
+import CatDropdown from "./Components/CategDropdown";
 import CurrencyChange from "./Components/CurrencyChange";
 import PeriodDropdown from "./Components/PeriodDropdown";
 import FilterDropdown from "./Components/FilterDropdown";
 import Header from "./Components/Header";
+import ManDropdown from "./Components/ManDropdown";
 
 import { useState, useEffect } from "react";
 
@@ -85,17 +86,58 @@ function App() {
     { value: "option19", label: "jaza" },
   ];
 
+  const man_options = [
+    { value: "option1", label: "Option 1" },
+    { value: "option2", label: "Option 2" },
+    { value: "option6", label: "Daza" },
+    { value: "option7", label: "Eaza" },
+    { value: "option8", label: "Faza" },
+    { value: "option9", label: "yaza" },
+    { value: "option10", label: "zaza" },
+    { value: "option11", label: "xaza" },
+    { value: "option12", label: "caza" },
+    { value: "option13", label: "vaza" },
+    { value: "option14", label: "baza" },
+    { value: "option15", label: "naza" },
+    { value: "option16", label: "maza" },
+    { value: "option17", label: "laza" },
+    { value: "option18", label: "kaza" },
+    { value: "option19", label: "jaza" },
+    { value: "option20", label: "haza" },
+    { value: "option21", label: "gaza" },
+    { value: "option22", label: "faza" },
+    { value: "option23", label: "daza" },
+    { value: "option24", label: "caza" },
+    { value: "option25", label: "baza" },
+    { value: "option26", label: "naza" },
+    { value: "option27", label: "maza" },
+    { value: "option28", label: "laza" },
+    { value: "option29", label: "kaza" },
+    { value: "option30", label: "jaza" },
+    { value: "option31", label: "haza" },
+
+
+  ];
+
   return (
     <>
       <Header />
-      <div className="bellow-header">
         {" "}
-        <SearchDrop options={cat_options} />
+        <CatDropdown options={cat_options} />
+        <ManDropdown options={man_options} />
         <PeriodDropdown options={periods} />
         <FilterDropdown options={order_types} />
         <CurrencyChange currencies={currencies} />
-    
-      </div>
+        <CurrencyChange currencies={currencies} />
+        <CurrencyChange currencies={currencies} />
+        <CurrencyChange currencies={currencies} />
+        <CurrencyChange currencies={currencies} />
+        <CurrencyChange currencies={currencies} />
+        <CurrencyChange currencies={currencies} />
+        <CurrencyChange currencies={currencies} />
+        <CurrencyChange currencies={currencies} />
+
+
     </>
   );
 }
