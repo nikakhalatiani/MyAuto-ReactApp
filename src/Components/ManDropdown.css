@@ -24,7 +24,7 @@
   background: #ffffff;
   border: 1px solid #c2c9d8;
   border-radius: 8px;
-  cursor: text;
+  cursor: pointer;
   height: 18px; /* Add a fixed height */
 }
 
@@ -32,8 +32,12 @@
   border-color: #272a37;
 }
 
+
+
 .man-container.open {
-  border-color: #272a37; /* Set the border color to black when open */
+  border-color: #272a37;
+  cursor: text;
+
 }
 
 .man-container input {
@@ -44,6 +48,11 @@
   cursor: auto;
   font-size: 13px;
   font-weight: 500;
+  cursor: pointer;
+}
+
+.man-container.open input {
+  cursor: text;
 }
 
 .man-container button {
@@ -146,9 +155,24 @@
   max-height: 306px;
   overflow-y: auto;
   padding-left: 16px;
-  padding-bottom: 8px;
+  padding-top: 8px;
+  padding-bottom: 16px;
   cursor: pointer;
   background-color: #ffffff;
+}
+
+.man-dropdown-container {
+  position: relative;
+  z-index: 13;
+}
+
+.man-dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: transparent;
+  /* Other styling properties */
 }
 
 .man-dropdown-options label {
@@ -188,4 +212,3 @@
   color: #6f7383;
   cursor: pointer;
 }
-

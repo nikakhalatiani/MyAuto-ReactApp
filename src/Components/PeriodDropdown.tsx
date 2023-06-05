@@ -15,7 +15,7 @@ interface SearchDropdownProps {
 const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<Option | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const periodDropdownRef = useRef<HTMLDivElement>(null);
 
   const togglePeriodDropdown = () => {
     setIsOpen(!isOpen);
@@ -27,7 +27,10 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+    if (
+      periodDropdownRef.current &&
+      !periodDropdownRef.current.contains(event.target as Node)
+    ) {
       setIsOpen(false);
     }
   };
@@ -39,15 +42,20 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
     };
   }, []);
 
-  const filteredOptions = options.filter((option) => option.value !== selectedOption?.value);
+  const filteredOptions = options.filter(
+    (option) => option.value !== selectedOption?.value
+  );
 
   return (
-    <div ref={dropdownRef}>
+    <div className="period-dropdown-container" ref={periodDropdownRef}>
+      {" "}
       <div
         className={`period-container ${isOpen ? "open" : ""}`}
         onClick={togglePeriodDropdown}
       >
-        <span className="period-choice">{selectedOption ? selectedOption.label : "Period"}</span>
+        <span className="period-choice">
+          {selectedOption ? selectedOption.label : "Period"}
+        </span>
         <button className={isOpen ? "rotate" : ""}>
           <FontAwesomeIcon
             icon={faChevronDown}
@@ -55,19 +63,22 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
           />
         </button>
       </div>
-      {isOpen && (
-        <div className="period-dropdown-options">
-          {filteredOptions.map((option) => (
-            <div
-              key={option.value}
-              className="period-option"
-              onClick={() => handleOptionSelect(option)}
-            >
-              {option.label}
-            </div>
-          ))}
-        </div>
-      )}
+      <div className={isOpen ? "period-dropdown-content" : ""}>
+        {" "}
+        {isOpen && (
+          <div className="period-dropdown-options">
+            {filteredOptions.map((option) => (
+              <div
+                key={option.value}
+                className="period-option"
+                onClick={() => handleOptionSelect(option)}
+              >
+                {option.label}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -79,9 +79,7 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
   //   console.log(event.target);
   // };
 
-  const handleManTermChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleManTermChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setManTerm(event.target.value);
   };
 
@@ -139,7 +137,8 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
   );
 
   return (
-    <div ref={manDropdownRef}>
+    <div className="man-dropdown-container" ref={manDropdownRef}>
+      {" "}
       <div
         onClick={handleContainerClick}
         className={`man-container ${
@@ -169,11 +168,6 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
         >
           {isCloseButtonSelected ? (
             <FontAwesomeIcon icon={faXmark} style={{ color: "#272a37" }} />
-          ) : isOpen ? (
-            <FontAwesomeIcon
-              icon={faChevronDown}
-              style={{ color: "#6f7383", height: "10px", width: "10px" }}
-            />
           ) : (
             <FontAwesomeIcon
               icon={faChevronDown}
@@ -182,7 +176,7 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
           )}
         </button>
       </div>
-      <div>
+      <div className={isOpen ? "man-dropdown-content" : ""}>
         {isOpen && (
           <div className="man-dropdown">
             <div className="man-dropdown-options">

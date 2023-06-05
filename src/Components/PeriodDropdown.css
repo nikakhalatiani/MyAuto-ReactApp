@@ -3,7 +3,6 @@
   font-family: "Roboto", sans-serif;
 }
 
-
 .period-container {
   display: flex;
   flex-direction: row;
@@ -61,6 +60,20 @@
   cursor: pointer;
   padding: 8px 0;
   box-shadow: 0px 4px 20px rgba(164, 174, 193, 0.4);
+}
+
+.period-dropdown-container {
+  position: relative;
+  z-index: 11;
+}
+
+.period-dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: transparent;
+  /* Other styling properties */
 }
 
 .dropdown-options label {

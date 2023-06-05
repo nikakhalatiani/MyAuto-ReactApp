@@ -139,7 +139,7 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
   );
 
   return (
-    <div ref={categDropdownRef}>
+    <div className="categ-dropdown-container" ref={categDropdownRef}>
       <div
         onClick={handleContainerClick}
         className={`categ-container ${
@@ -169,11 +169,6 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
         >
           {isCloseButtonSelected ? (
             <FontAwesomeIcon icon={faXmark} style={{ color: "#272a37" }} />
-          ) : isOpen ? (
-            <FontAwesomeIcon
-              icon={faChevronDown}
-              style={{ color: "#6f7383", height: "10px", width: "10px" }}
-            />
           ) : (
             <FontAwesomeIcon
               icon={faChevronDown}
@@ -182,7 +177,8 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
           )}
         </button>
       </div>
-      <div>
+      <div className={isOpen ? "categ-dropdown-content" : ""}>
+        {" "}
         {isOpen && (
           <div className="categ-dropdown">
             <div className="categ-dropdown-options">

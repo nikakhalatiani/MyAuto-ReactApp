@@ -6,6 +6,7 @@ import PeriodDropdown from "./Components/PeriodDropdown";
 import FilterDropdown from "./Components/FilterDropdown";
 import Header from "./Components/Header";
 import ManDropdown from "./Components/ManDropdown";
+import SaleRentDropdown from "./Components/SaleRentDropdown";
 
 import { useState, useEffect } from "react";
 
@@ -51,8 +52,9 @@ function App() {
     { value: "option1", label: "order by date desc" },
     { value: "option2", label: "order by date asc" },
     { value: "option3", label: "Price descending" },
-    { value: "option4", label: "Mileage descending" },
-    { value: "option5", label: "Mileage ascending" },
+    { value: "option4", label: "Price ascending" },
+    { value: "option5", label: "Mileage descending" },
+    { value: "option6", label: "Mileage ascending" },
   ];
 
   const currencies = ["GEL", "USD"];
@@ -115,29 +117,26 @@ function App() {
     { value: "option29", label: "kaza" },
     { value: "option30", label: "jaza" },
     { value: "option31", label: "haza" },
-
-
   ];
 
   return (
     <>
       <Header />
-        {" "}
-        <CatDropdown options={cat_options} />
-        <ManDropdown options={man_options} />
-        <PeriodDropdown options={periods} />
-        <FilterDropdown options={order_types} />
-        <CurrencyChange currencies={currencies} />
-        <CurrencyChange currencies={currencies} />
-        <CurrencyChange currencies={currencies} />
-        <CurrencyChange currencies={currencies} />
-        <CurrencyChange currencies={currencies} />
-        <CurrencyChange currencies={currencies} />
-        <CurrencyChange currencies={currencies} />
-        <CurrencyChange currencies={currencies} />
-        <CurrencyChange currencies={currencies} />
+      <SaleRentDropdown options={["For sale", "For rent"]} />
+      <ManDropdown options={man_options} />
 
-
+      <CatDropdown options={cat_options} />
+      <PeriodDropdown options={periods} />
+      <FilterDropdown options={order_types} />
+      <CurrencyChange currencies={currencies} />
+      <CurrencyChange currencies={currencies} />
+      <CurrencyChange currencies={currencies} />
+      <CurrencyChange currencies={currencies} />
+      <CurrencyChange currencies={currencies} />
+      <CurrencyChange currencies={currencies} />
+      <CurrencyChange currencies={currencies} />
+      <CurrencyChange currencies={currencies} />
+      <CurrencyChange currencies={currencies} />
     </>
   );
 }

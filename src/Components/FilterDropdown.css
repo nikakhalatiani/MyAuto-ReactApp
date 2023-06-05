@@ -63,6 +63,19 @@
   box-shadow: 0px 4px 20px rgba(164, 174, 193, 0.4);
 }
 
+.filter-dropdown-container {
+  position: relative;
+  z-index: 10;
+}
+
+.filter-dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: transparent;
+}
+
 .dropdown-options label {
   display: flex;
   align-items: center;
