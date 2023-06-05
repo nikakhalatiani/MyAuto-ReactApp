@@ -1,6 +1,6 @@
 import "./App.css";
 import Loading from "./Loading/Loading";
-import SearchDrop from "./Components/SearchDropdown";
+import SearchDrop from "./Components/CategDropdown";
 import CurrencyChange from "./Components/CurrencyChange";
 import PeriodDropdown from "./Components/PeriodDropdown";
 import FilterDropdown from "./Components/FilterDropdown";
@@ -66,7 +66,7 @@ function App() {
     console.log("Selected period:", selectedFilter);
   };
 
-  const options = [
+  const cat_options = [
     { value: "option1", label: "Option 1" },
     { value: "option2", label: "Option 2" },
     { value: "option6", label: "Daza" },
@@ -90,16 +90,11 @@ function App() {
       <Header />
       <div className="bellow-header">
         {" "}
-        <SearchDrop options={options} />
+        <SearchDrop options={cat_options} />
         <PeriodDropdown options={periods} />
         <FilterDropdown options={order_types} />
         <CurrencyChange currencies={currencies} />
-        <CurrencyChange currencies={currencies} />
-        <CurrencyChange currencies={currencies} />
-        <CurrencyChange currencies={currencies} />
-        <CurrencyChange currencies={currencies} />
-        <CurrencyChange currencies={currencies} />
-        <CurrencyChange currencies={currencies} />
+    
       </div>
     </>
   );

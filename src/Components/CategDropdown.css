@@ -2,14 +2,14 @@
 * {
   font-family: "Roboto", sans-serif;
 }
-.dropdown {
+.categ-dropdown {
   display: flex;
   flex-direction: column;
   max-height: 306px;
   overflow-y: auto;
 }
 
-.dropdown label {
+.categ-dropdown label {
   display: flex;
   align-items: center;
   margin-bottom: 5px;
@@ -17,7 +17,7 @@
 
 
 
-.search-container {
+.categ-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -32,16 +32,16 @@
   
 }
 
-.search-container:hover {
+.categ-container:hover {
   border-color: #272a37;
 }
 
-.search-container.open {
+.categ-container.open {
   border-color: #272a37; /* Set the border color to black when open */
 
 }
 
-.search-container input {
+.categ-container input {
   flex: 1;
   outline: none;
   border: none;
@@ -55,7 +55,7 @@
 
 
 
-.search-container button {
+.categ-container button {
   border: none;
   background-color: transparent;
   transition: transform 0.2s ease-in; /* Add transition property */
@@ -66,15 +66,15 @@
 
 }
 
-.search-container button.rotate {
+.categ-container button.rotate {
   transform: rotate(180deg); /* Apply rotation to the chevron */
 }
 
-.search-container button.rotate-x {
+.categ-container button.rotate-x {
   transform: rotate(-180deg); /* Apply rotation to the X mark */
 }
 
-.search-container button.rotate-x:hover {
+.categ-container button.rotate-x:hover {
   background-color: #c2c9d848;
   border-radius: 50%;
   aspect-ratio: 1/1;
@@ -83,7 +83,7 @@
   
 }
 
-.dropdown-options input[type="checkbox"] {
+.categ-dropdown-options input[type="checkbox"] {
   display: none;
 }
 /* 
@@ -117,7 +117,7 @@
     transition: opacity 0.3s ease-in-out; */
 }
 
-.dropdown-options label {
+.categ-dropdown-options label {
   cursor: pointer;
   color: #6f7383;
   font-style: normal;
@@ -141,7 +141,7 @@
   max-height: 306px;
 }
 
-.dropdown {
+.categ-dropdown {
   border: 1px solid #c2c9d8;
   background-color: #ffffff;
 
@@ -153,7 +153,7 @@
 
 }
 
-.dropdown-options {
+.categ-dropdown-options {
   display: flex;
   flex-direction: column;
   max-height: 306px;
@@ -165,7 +165,11 @@
 
 }
 
-.dropdown-buttons {
+.categ-dropdown-options label {
+  padding-bottom: 8px;
+}
+
+.categ-dropdown-buttons {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -176,7 +180,7 @@
   height: fit-content;
 }
 
-.close-button {
+.categ-close-button {
   background: #fd4100;
   border-radius: 6px;
   color: #ffffff;
@@ -188,11 +192,11 @@
   padding: 0px 8px;
 }
 
-.search-container.dark-font input::placeholder {
+.categ-container.dark-font input::placeholder {
   color: #272a37;
 }
 
-.clear-button {
+.categ-clear-button {
   background-color: transparent;
   border: none;
   color: #6f7383;

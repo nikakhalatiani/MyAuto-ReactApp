@@ -1,4 +1,4 @@
-import "./SearchDropdown.css";
+import "./CategDropdown.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
@@ -12,26 +12,30 @@ interface Option {
   label: string;
 }
 
-interface SearchDropdownProps {
+interface CategDropdownProps {
   options: Option[];
 }
 
-const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
+  const [categTerm, setCategTerm] = useState("");
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isCloseButtonSelected, setIsCloseButtonSelected] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const categInputRef = useRef<HTMLInputElement>(null);
+  const categDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        categDropdownRef.current &&
+        !categDropdownRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
+        if (categInputRef?.current?.placeholder === "Category") {
+          setCategTerm("");
+          // console.log("test");
+        }
       }
     };
 
@@ -62,42 +66,56 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
       }
     }
 
-    if (searchInputRef.current) {
-      searchInputRef.current.placeholder = selectedOptions
+    if (categInputRef.current) {
+      categInputRef.current.placeholder = selectedOptions
         .map((selectedOption) => selectedOption.label)
         .join(", ");
     }
   };
 
-  const handleSearchTermChange = (
+  // const handleInputClick = (event: React.MouseEvent<HTMLInputElement>) => {
+  //   event.stopPropagation();
+  //   handleContainerClick();
+  //   console.log(event.target);
+  // };
+
+  const handleCategTermChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setSearchTerm(event.target.value);
+    setCategTerm(event.target.value);
   };
 
-  const toggleDropdown = () => {
+  const toggleCategDropdown = () => {
     if (isCloseButtonSelected) {
       setSelectedOptions([]);
-      setIsCloseButtonSelected(false);
-      console.log("isCloseButtonSelected");
+      setIsCloseButtonSelected(!isCloseButtonSelected);
+      console.log("X-mark");
     } else {
+      if (categInputRef?.current?.placeholder === "Category") {
+        setCategTerm("");
+        // console.log("test");
+      }
       setIsOpen(!isOpen);
     }
   };
 
   const handleContainerClick = () => {
-    if (!isOpen) {
-      toggleDropdown();
-    } else {
-      if (searchInputRef.current) {
-        searchInputRef.current.focus(); // Set focus on the search input field
-      }
+    // console.log("handleContainerClick");
+    // console.log(isCloseButtonSelected);
+    // setIsCloseButtonSelected(false);
+    // if (!isCloseButtonSelected) {
+    // console.log("!isCloseButtonSelected");
+    if (!isOpen && !isCloseButtonSelected) {
+      console.log("isOpen");
+      setIsOpen(true);
+      categInputRef?.current?.focus(); // Set focus on the categ input field
+      // }
     }
   };
 
   const handleCloseWithSelection = () => {
     setIsOpen(false);
-    setSearchTerm("");
+    setCategTerm("");
   };
 
   const handleClearButtonClick = (
@@ -105,25 +123,26 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
   ) => {
     event.stopPropagation();
     setSelectedOptions([]);
+    setIsCloseButtonSelected(false);
   };
 
   // const handleClearAll = () => {
   //   setSelectedOptions([]);
   //   setIsCloseButtonSelected(false);
-  //   if (searchInputRef.current) {
-  //     searchInputRef.current.placeholder = "Search";
+  //   if (categInputRef.current) {
+  //     categInputRef.current.placeholder = "Categ";
   //   }
   // };
 
   const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().startsWith(searchTerm.toLowerCase())
+    option.label.toLowerCase().startsWith(categTerm.toLowerCase())
   );
 
   return (
-    <div ref={dropdownRef}>
+    <div ref={categDropdownRef}>
       <div
         onClick={handleContainerClick}
-        className={`search-container ${
+        className={`categ-container ${
           selectedOptions.length > 0 ? "dark-font" : ""
         } ${isOpen ? "open" : ""}`}
       >
@@ -133,14 +152,17 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
               ? selectedOptions
                   .map((selectedOption) => selectedOption.label)
                   .join(", ")
-              : "Search"
+              : "Category"
           }
-          value={searchTerm}
-          onChange={handleSearchTermChange}
-          ref={searchInputRef}
+          value={categTerm}
+          onChange={handleCategTermChange}
+          ref={categInputRef}
+          onClick={() => {
+            setIsOpen(true);
+          }}
         />
         <button
-          onClick={toggleDropdown}
+          onClick={toggleCategDropdown}
           className={
             isCloseButtonSelected ? "rotate-x" : isOpen ? "rotate" : ""
           }
@@ -162,8 +184,8 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
       </div>
       <div>
         {isOpen && (
-          <div className="dropdown">
-            <div className="dropdown-options">
+          <div className="categ-dropdown">
+            <div className="categ-dropdown-options">
               {filteredOptions.length === 0 ? (
                 <span>No records</span>
               ) : (
@@ -199,15 +221,15 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
             </div>
 
             {selectedOptions.length > 0 && (
-              <div className="dropdown-buttons">
+              <div className="categ-dropdown-buttons">
                 <button
-                  className="clear-button"
+                  className="categ-clear-button"
                   onClick={handleClearButtonClick}
                 >
                   Clear Filter
                 </button>
                 <button
-                  className="close-button"
+                  className="categ-close-button"
                   onClick={handleCloseWithSelection}
                 >
                   Choose
@@ -221,4 +243,4 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
   );
 };
 
-export default SearchDropdown;
+export default CategDropdown;
