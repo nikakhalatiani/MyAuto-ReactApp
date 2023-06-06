@@ -149,13 +149,13 @@ const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({ options }) => {
                   className="sale-rent-clear-button"
                   onClick={handleClearButtonClick}
                 >
-                  Clear Selection
+                  Clear Filter
                 </button>
                 <button
                   className="sale-rent-close-button"
                   onClick={() => setIsOpen(false)}
                 >
-                  Confirm
+                  Choose
                 </button>
               </div>
             )}

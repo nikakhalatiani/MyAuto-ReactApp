@@ -1,12 +1,14 @@
 import "./App.css";
 import Loading from "./Loading/Loading";
-import CatDropdown from "./Components/CategDropdown";
-import CurrencyChange from "./Components/CurrencyChange";
 import PeriodDropdown from "./Components/PeriodDropdown";
 import FilterDropdown from "./Components/FilterDropdown";
 import Header from "./Components/Header";
-import ManDropdown from "./Components/ManDropdown";
-import SaleRentDropdown from "./Components/SaleRentDropdown";
+// import CatDropdown from "./Components/CategDropdown";
+// import ManDropdown from "./Components/ManDropdown";
+// import SaleRentDropdown from "./Components/SaleRentDropdown";
+// import CurrencyChange from "./Components/CurrencyChange";
+
+import Sidebar from "./Components/SideBar";
 
 import { useState, useEffect } from "react";
 
@@ -122,10 +124,11 @@ function App() {
   return (
     <>
       <Header />
-      <SaleRentDropdown options={["For sale", "For rent"]} />
+      {/* <SaleRentDropdown options={["For sale", "For rent"]} />
       <ManDropdown options={man_options} />
-
-      <CatDropdown options={cat_options} />
+      <CatDropdown options={cat_options} /> */}
+      <Sidebar manOptions={man_options} catOptions={cat_options} currencies={currencies}/>
+{/* 
       <PeriodDropdown options={periods} />
       <FilterDropdown options={order_types} />
       <CurrencyChange currencies={currencies} />
@@ -135,8 +138,7 @@ function App() {
       <CurrencyChange currencies={currencies} />
       <CurrencyChange currencies={currencies} />
       <CurrencyChange currencies={currencies} />
-      <CurrencyChange currencies={currencies} />
-      <CurrencyChange currencies={currencies} />
+      <CurrencyChange currencies={currencies} /> */}
     </>
   );
 }
