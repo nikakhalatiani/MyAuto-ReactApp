@@ -8,14 +8,26 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGreaterThan } from "@fortawesome/free-solid-svg-icons";
 
 interface SidebarProps {
-  manOptions: Option[];
-  catOptions: Option[];
+  manOptions: ManOption[];
+  catOptions: CategOption[];
   currencies: string[];
 }
 
-interface Option {
-  value: string;
-  label: string;
+interface CategOption {
+  category_id: number;
+  category_type: number;
+  has_icon: number;
+  title: string;
+  seo_title: string;
+  vehicle_types: number[];
+}
+
+interface ManOption {
+  man_id: string;
+  man_name: string;
+  is_car: string;
+  is_spec: string;
+  is_moto: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -26,24 +38,53 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [carClicked, setCarClicked] = useState(false);
   const [specClicked, setSpecClicked] = useState(false);
   const [motoClicked, setMotoClicked] = useState(false);
+  const [selectedOptionsString, setSelectedOptionsString] = useState("");
+  const [filteredManOptions, setFilteredManOptions] = useState<ManOption[]>(
+    manOptions.filter((option) => option.is_car === "1")
+  );
+  const [filteredCatOptions, setFilteredCatOptions] = useState<CategOption[]>(
+    catOptions.filter((option) => option.category_type === 0)
+  );
+
+  const handleSelectedOptions = (selectedOptions: string) => {
+    setSelectedOptionsString(selectedOptions);
+  };
 
   const handleCarClick = () => {
     setCarClicked(true);
     setSpecClicked(false);
     setMotoClicked(false);
+    setFilteredManOptions(manOptions.filter((option) => option.is_car === "1"));
+    setFilteredCatOptions(
+      catOptions.filter((option) => option.category_type === 0)
+    );
   };
 
   const handleSpecClick = () => {
     setCarClicked(false);
     setSpecClicked(true);
     setMotoClicked(false);
+    setFilteredManOptions(
+      manOptions.filter((option) => option.is_spec === "1")
+    );
+    setFilteredCatOptions(
+      catOptions.filter((option) => option.category_type === 1)
+    );
   };
+  //   console.log(catOptions);
 
   const handleMotoClick = () => {
     setCarClicked(false);
     setSpecClicked(false);
     setMotoClicked(true);
+    setFilteredManOptions(
+      manOptions.filter((option) => option.is_moto === "1")
+    );
+    setFilteredCatOptions(
+      catOptions.filter((option) => option.category_type === 2)
+    );
   };
+
   return (
     <>
       <div className="home-text">
@@ -54,12 +95,23 @@ const Sidebar: React.FC<SidebarProps> = ({
           style={{ color: "#6F7383", height: "7px", width: "7px" }}
         />
         <p>Search </p>
+        {selectedOptionsString !== "" && (
+          <>
+            <FontAwesomeIcon
+              icon={faGreaterThan}
+              style={{ color: "#6F7383", height: "7px", width: "7px" }}
+            />
+            <p className="sale-rent-text">{selectedOptionsString}</p>{" "}
+          </>
+        )}
       </div>
 
       <div className="sidebar">
         <div className="svg-row">
           <button
-            className={`car-svg-icon${carClicked ? "-clicked" : ""}`}
+            className={`car-svg-icon${
+              !specClicked && !motoClicked ? "-default" : ""
+            }${carClicked ? "-clicked" : "-unchecked"}`}
             onClick={handleCarClick}
           >
             {" "}
@@ -75,7 +127,9 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           <button
-            className={`spec-svg-icon${specClicked ? "-clicked" : ""}`}
+            className={`spec-svg-icon${
+              specClicked ? "-clicked" : "-unchecked"
+            }`}
             onClick={handleSpecClick}
           >
             {" "}
@@ -91,7 +145,9 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           <button
-            className={`moto-svg-icon${motoClicked ? "-clicked" : ""}`}
+            className={`moto-svg-icon${
+              motoClicked ? "-clicked" : "-unchecked"
+            }`}
             onClick={handleMotoClick}
           >
             {" "}
@@ -110,21 +166,24 @@ const Sidebar: React.FC<SidebarProps> = ({
           <p>Deal type</p>
           <div className="dropdown">
             {" "}
-            <SaleRentDropdown options={["For sale", "For rent"]} />
+            <SaleRentDropdown
+              options={["For sale", "For rent"]}
+              onSelectedOption={handleSelectedOptions}
+            />
           </div>
         </div>
         <div className="side-component">
           <p>Manufacturer</p>
           <div className="dropdown">
             {" "}
-            <ManDropdown options={manOptions} />
+            <ManDropdown options={filteredManOptions} />
           </div>
         </div>
         <div className="cat-component side-component">
           <p>Category</p>
           <div className="dropdown">
             {" "}
-            <CatDropdown options={catOptions} />
+            <CatDropdown options={filteredCatOptions} />
           </div>
         </div>
         <span className="pop-line"></span>

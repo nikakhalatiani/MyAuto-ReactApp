@@ -26,6 +26,10 @@
   cursor: pointer;
 }
 
+.sale-rent-text {
+  color: #fd4100;
+}
+
 .home-text > * {
   margin-right: 6px;
 }
@@ -95,13 +99,13 @@
 
 .pop-line {
   height: 1px;
-  background-color: #E9E9F0; 
+  background-color: #e9e9f0;
   width: 100%;
 }
 
-.spec-svg-icon,
-.car-svg-icon,
-.moto-svg-icon {
+.spec-svg-icon-unchecked,
+.car-svg-icon-unchecked,
+.moto-svg-icon-unchecked {
   background-color: #f9f9fb;
   height: 47px;
   width: 100%;
@@ -110,57 +114,87 @@
   cursor: pointer;
 }
 
-.car-svg-icon {
-  border-top-left-radius: 12px;
-}
-.moto-svg-icon {
-  border-top-right-radius: 12px;
-}
-
-.spec-svg-icon {
-  border-inline: 1px solid #e2e5eb;
-}
-
-.spec-svg-icon:hover,
-.car-svg-icon:hover,
-.moto-svg-icon:hover {
-  background-color: #ffffff;
-}
-
-.spec-svg-icon:focus,
-.car-svg-icon:focus,
-.moto-svg-icon:focus {
-  background-color: #ffffff;
-}
-
-.spec-svg-icon svg,
-.car-svg-icon svg,
-.moto-svg-icon svg {
-  fill: #8c929b;
-}
-
-.spec-svg-icon-clicked svg,
-.car-svg-icon-clicked svg,
-.moto-svg-icon-clicked svg {
-  fill: #fd4100;
-}
-.spec-svg-icon-clicked,
-.car-svg-icon-clicked,
-.moto-svg-icon-clicked {
-    background-color: #f9f9fb;
-
+.car-svg-icon-default-unchecked {
   height: 47px;
   width: 100%;
   border: none;
   border-bottom: 1px solid #e2e5eb;
   cursor: pointer;
+  border-top-left-radius: 12px;
+  border-bottom: 1px solid #fd4100;
+  background-color: #ffffff;
+}
+
+.car-svg-icon-default-clicked{
+    background-color: #f9f9fb;
+    height: 47px;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #e2e5eb;
+    cursor: pointer;
+    border-top-left-radius: 12px;
+    border-bottom: 1px solid #fd4100;
+}
+
+.car-svg-icon-default-unchecked svg {
+    fill: #fd4100;
+  }
+.moto-svg-icon-unchecked {
+  border-top-right-radius: 12px;
+}
+
+.spec-svg-icon-unchecked {
+  border-inline: 1px solid #e2e5eb;
+}
+
+.spec-svg-icon-unchecked:hover,
+.car-svg-icon-unchecked:hover,
+.moto-svg-icon-unchecked:hover {
+  background-color: #ffffff;
+}
+
+.spec-svg-icon-clicked:hover,
+.car-svg-icon-clicked:hover,
+.moto-svg-icon-clicked:hover {
+  background-color: #ffffff;
+}
+
+.spec-svg-icon-unchecked:focus,
+.car-svg-icon-unchecked:focus,
+.moto-svg-icon-unchecked:focus {
+  background-color: #ffffff;
+}
+
+.car-svg-icon-unchecked{
+    border-top-left-radius: 12px;
+}
+
+.spec-svg-icon-unchecked svg,
+.car-svg-icon-unchecked svg,
+.moto-svg-icon-unchecked svg {
+  fill: #8c929b;
+}
+
+.spec-svg-icon-clicked svg,
+.car-svg-icon-default-clicked svg,
+.moto-svg-icon-clicked svg {
+  fill: #fd4100;
+}
+.spec-svg-icon-clicked,
+.car-svg-icon-defalult-clicked,
+.moto-svg-icon-clicked {
+  background-color: #f9f9fb;
+  height: 47px;
+  width: 100%;
+  border: none;
+  cursor: pointer;
   border-bottom: 1px solid #fd4100;
 }
 
 .spec-svg-icon-clicked:focus,
-.car-svg-icon-clicked:focus,
-.moto-svg-icon-clicked:focus{
-    background-color: #ffffff;
+.car-svg-icon-default-clicked:focus,
+.moto-svg-icon-clicked:focus {
+  background-color: #ffffff;
 }
 
 .car-svg-icon-clicked {

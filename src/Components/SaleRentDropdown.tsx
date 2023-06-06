@@ -10,10 +10,14 @@ import "./SaleRentDropdown.css";
 
 interface SaleRentDropdownProps {
   options: string[];
+  onSelectedOption: (selectedOption: string) => void;
 }
 
-const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({ options }) => {
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({
+  options,
+  onSelectedOption,
+}) => {
+  const [selectedOption, setSelectedOption] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isCloseButtonSelected, setIsCloseButtonSelected] = useState(false);
@@ -35,30 +39,17 @@ const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({ options }) => {
     };
   }, []);
 
-  const handleCheckboxChange = (option: string) => {
-    const isSelected = selectedOptions.includes(option);
-
-    if (isSelected) {
-      setSelectedOptions(
-        selectedOptions.filter((selectedOption) => selectedOption !== option)
-      );
-      if (selectedOptions.length === 1 && isCloseButtonSelected) {
-        setIsCloseButtonSelected(false);
-      }
-    } else {
-      if (selectedOptions.length > 0) {
-        setSelectedOptions([option]);
-      } else {
-        setSelectedOptions([...selectedOptions, option]);
-      }
-      setIsCloseButtonSelected(true);
-    }
+  const handleOptionChange = (option: string) => {
+    setSelectedOption(option);
+    setIsCloseButtonSelected(true);
+    onSelectedOption(option);
   };
 
   const toggleDropdown = () => {
     if (isCloseButtonSelected) {
-      setSelectedOptions([]);
+      setSelectedOption("");
       setIsCloseButtonSelected(false);
+      onSelectedOption("");
     } else {
       setIsOpen(!isOpen);
     }
@@ -74,24 +65,22 @@ const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({ options }) => {
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
-    setSelectedOptions([]);
+    setSelectedOption("");
     setIsCloseButtonSelected(false);
+    onSelectedOption("");
   };
 
   return (
     <div className="sale-rent-dropdown-container" ref={saleRentdropdownRef}>
       <div
         onClick={handleContainerClick}
-        className={`sale-rent-container ${
-          selectedOptions.length > 0 ? "dark-font" : ""
-        } ${isOpen ? "open" : ""}`}
+        className={`sale-rent-container ${selectedOption ? "dark-font" : ""} ${
+          isOpen ? "open" : ""
+        }`}
       >
         <input
-          placeholder={
-            selectedOptions.length > 0
-              ? selectedOptions.join(", ")
-              : "Deal type"
-          }
+          id="1"
+          placeholder={selectedOption ? selectedOption : "Deal type"}
           readOnly
           onClick={() => {
             setIsOpen(true);
@@ -114,7 +103,6 @@ const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({ options }) => {
         </button>
       </div>
       <div className={isOpen ? "sale-rent-dropdown-content" : ""}>
-        {" "}
         {isOpen && (
           <div className="sale-rent-dropdown">
             <div className="sale-rent-dropdown-options">
@@ -122,13 +110,13 @@ const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({ options }) => {
                 <label key={option}>
                   <input
                     type="checkbox"
-                    checked={selectedOptions.includes(option)}
+                    checked={selectedOption === option}
                     onChange={() => {
-                      handleCheckboxChange(option);
+                      handleOptionChange(option);
                       setIsChecked(!isChecked);
                     }}
                   />
-                  {selectedOptions.includes(option) ? (
+                  {selectedOption === option ? (
                     <span className="custom-checkbox-checked">
                       <FontAwesomeIcon
                         className="checkbox-icon"
@@ -143,7 +131,7 @@ const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({ options }) => {
                 </label>
               ))}
             </div>
-            {selectedOptions.length > 0 && (
+            {selectedOption && (
               <div className="sale-rent-dropdown-buttons">
                 <button
                   className="sale-rent-clear-button"

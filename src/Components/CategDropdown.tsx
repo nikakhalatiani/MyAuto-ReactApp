@@ -7,18 +7,22 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, useRef, useEffect } from "react";
 
-interface Option {
-  value: string;
-  label: string;
+interface CategOption {
+  category_id: number;
+  category_type: number;
+  has_icon: number;
+  title: string;
+  seo_title: string;
+  vehicle_types: number[];
 }
 
 interface CategDropdownProps {
-  options: Option[];
+  options: CategOption[];
 }
 
 const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
   const [categTerm, setCategTerm] = useState("");
-  const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<CategOption[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isCloseButtonSelected, setIsCloseButtonSelected] = useState(false);
@@ -45,15 +49,15 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
     };
   }, []);
 
-  const handleCheckboxChange = (option: Option) => {
+  const handleCheckboxChange = (option: CategOption) => {
     const isSelected = selectedOptions.some(
-      (selectedOption) => selectedOption.value === option.value
+      (selectedOption) => selectedOption.category_id === option.category_id
     );
 
     if (isSelected) {
       setSelectedOptions(
         selectedOptions.filter(
-          (selectedOption) => selectedOption.value !== option.value
+          (selectedOption) => selectedOption.category_id !== option.category_id
         )
       );
       if (selectedOptions.length === 1 && isCloseButtonSelected) {
@@ -68,7 +72,7 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
 
     if (categInputRef.current) {
       categInputRef.current.placeholder = selectedOptions
-        .map((selectedOption) => selectedOption.label)
+        .map((selectedOption) => selectedOption.title)
         .join(", ");
     }
   };
@@ -135,7 +139,7 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
   // };
 
   const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().startsWith(categTerm.toLowerCase())
+    option.title.toLowerCase().startsWith(categTerm.toLowerCase())
   );
 
   return (
@@ -147,10 +151,11 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
         } ${isOpen ? "open" : ""}`}
       >
         <input
+          id="3"
           placeholder={
             selectedOptions.length > 0
               ? selectedOptions
-                  .map((selectedOption) => selectedOption.label)
+                  .map((selectedOption) => selectedOption.title)
                   .join(", ")
               : "Category"
           }
@@ -186,12 +191,12 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
                 <span>No records</span>
               ) : (
                 filteredOptions.map((option) => (
-                  <label key={option.value}>
+                  <label key={option.category_id}>
                     <input
                       type="checkbox"
                       checked={selectedOptions.some(
                         (selectedOption) =>
-                          selectedOption.value === option.value
+                          selectedOption.category_id === option.category_id
                       )}
                       onChange={() => {
                         handleCheckboxChange(option);
@@ -199,7 +204,7 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
                       }}
                     />
                     {selectedOptions.some(
-                      (selectedOption) => selectedOption.value === option.value
+                      (selectedOption) => selectedOption.category_id === option.category_id
                     ) ? (
                       <span className="custom-checkbox-checked">
                         <FontAwesomeIcon
@@ -210,7 +215,7 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
                     ) : (
                       <span className="custom-checkbox-unchecked"></span>
                     )}
-                    {option.label}
+                    {option.title}
                   </label>
                 ))
               )}

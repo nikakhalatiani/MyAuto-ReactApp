@@ -7,18 +7,21 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useState, useRef, useEffect } from "react";
 
-interface Option {
-  value: string;
-  label: string;
+interface ManOption {
+  man_id: string;
+  man_name: string;
+  is_car: string;
+  is_spec: string;
+  is_moto: string;
 }
 
 interface ManDropdownProps {
-  options: Option[];
+  options: ManOption[];
 }
 
 const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
   const [manTerm, setManTerm] = useState("");
-  const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<ManOption[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isCloseButtonSelected, setIsCloseButtonSelected] = useState(false);
@@ -45,15 +48,15 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
     };
   }, []);
 
-  const handleCheckboxChange = (option: Option) => {
+  const handleCheckboxChange = (option: ManOption) => {
     const isSelected = selectedOptions.some(
-      (selectedOption) => selectedOption.value === option.value
+      (selectedOption) => selectedOption.man_id === option.man_id
     );
 
     if (isSelected) {
       setSelectedOptions(
         selectedOptions.filter(
-          (selectedOption) => selectedOption.value !== option.value
+          (selectedOption) => selectedOption.man_id !== option.man_id
         )
       );
       if (selectedOptions.length === 1 && isCloseButtonSelected) {
@@ -68,7 +71,7 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
 
     if (manInputRef.current) {
       manInputRef.current.placeholder = selectedOptions
-        .map((selectedOption) => selectedOption.label)
+        .map((selectedOption) => selectedOption.man_name)
         .join(", ");
     }
   };
@@ -82,6 +85,16 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
   const handleManTermChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setManTerm(event.target.value);
   };
+
+  function toTitleCase(input: string): string {
+    return input
+      .toLowerCase()
+      .split(" ")
+      .map(function (word) {
+        return word?.replace(word[0], word[0]?.toUpperCase());
+      })
+      .join(" ");
+  }
 
   const toggleManDropdown = () => {
     if (isCloseButtonSelected) {
@@ -132,9 +145,15 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
   //   }
   // };
 
-  const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().startsWith(manTerm.toLowerCase())
-  );
+  // const filteredOptions = options.filter((option) =>
+  //   option.man_name.toLowerCase().startsWith(manTerm.toLowerCase()).sort((a, b) => a.man_name.localeCompare(b.man_name));
+  // );
+
+  const filteredOptions = options
+    .filter((option) =>
+      option.man_name.toLowerCase().startsWith(manTerm.toLowerCase())
+    )
+    .sort((a, b) => a.man_name.localeCompare(b.man_name));
 
   return (
     <div className="man-dropdown-container" ref={manDropdownRef}>
@@ -146,10 +165,11 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
         } ${isOpen ? "open" : ""}`}
       >
         <input
+          id="2"
           placeholder={
             selectedOptions.length > 0
               ? selectedOptions
-                  .map((selectedOption) => selectedOption.label)
+                  .map((selectedOption) => toTitleCase(selectedOption.man_name))
                   .join(", ")
               : "Manufacturer"
           }
@@ -184,12 +204,13 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
                 <span>No records</span>
               ) : (
                 filteredOptions.map((option) => (
-                  <label key={option.value}>
+                  <label key={option.man_id}>
                     <input
                       type="checkbox"
+                      id={option.man_id}
                       checked={selectedOptions.some(
                         (selectedOption) =>
-                          selectedOption.value === option.value
+                          selectedOption.man_id === option.man_id
                       )}
                       onChange={() => {
                         handleCheckboxChange(option);
@@ -197,7 +218,8 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
                       }}
                     />
                     {selectedOptions.some(
-                      (selectedOption) => selectedOption.value === option.value
+                      (selectedOption) =>
+                        selectedOption.man_id === option.man_id
                     ) ? (
                       <span className="custom-checkbox-checked">
                         <FontAwesomeIcon
@@ -208,7 +230,7 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
                     ) : (
                       <span className="custom-checkbox-unchecked"></span>
                     )}
-                    {option.label}
+                    {toTitleCase(option.man_name)}
                   </label>
                 ))
               )}

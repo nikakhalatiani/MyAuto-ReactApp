@@ -7,22 +7,60 @@ import Header from "./Components/Header";
 // import ManDropdown from "./Components/ManDropdown";
 // import SaleRentDropdown from "./Components/SaleRentDropdown";
 // import CurrencyChange from "./Components/CurrencyChange";
-
 import Sidebar from "./Components/SideBar";
 
 import { useState, useEffect } from "react";
 
-const mans_list = "https://static.my.ge/myauto/js/mans.json";
+const mans_api = "https://static.my.ge/myauto/js/mans.json";
+const cats_api = "https://api2.myauto.ge/en/cats/get";
 
 function App() {
   const [loading, setLoading] = useState(true);
+  const [mans_options, setMans] = useState([]);
+  const [cats_options, setCats] = useState([]);
 
-  async function fetchMans() {
+  // async function fetchMans() {
+  //   setLoading(true);
+  //   try {
+  //     // await new Promise((resolve) => setTimeout(resolve, 3000)); // simulate slow network by waiting 3 seconds
+  //     const response = await fetch(mans_api);
+  //     const mans = await response.json();
+  //     setMans(mans);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     setLoading(true);
+  //     console.log("Failed to fetch Manufacturers");
+  //   }
+  // }
+  // async function fetchCats() {
+  //   setLoading(true);
+  //   try {
+  //     // await new Promise((resolve) => setTimeout(resolve, 3000)); // simulate slow network by waiting 3 seconds
+  //     const response = await fetch(cats_api);
+  //     const cats = await response.json();
+  //     setCats(cats);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     setLoading(true);
+  //     console.log("Failed to fetch Categories");
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   fetchMans();
+  //   fetchCats();
+  // }, []);
+
+  async function fetchData() {
     setLoading(true);
     try {
       // await new Promise((resolve) => setTimeout(resolve, 3000)); // simulate slow network by waiting 3 seconds
-      const response = await fetch(mans_list);
-      const mans = await response.json();
+      const mans_response = await fetch(mans_api);
+      const mans = await mans_response.json();
+      const cats_response = await fetch(cats_api);
+      const cats = await cats_response.json();
+      setMans(mans);
+      setCats(cats["data"]);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -31,7 +69,8 @@ function App() {
   }
 
   useEffect(() => {
-    fetchMans();
+    fetchData();
+    
   }, []);
 
   if (loading) {
@@ -42,12 +81,17 @@ function App() {
     );
   }
 
+
   const periods = [
     { value: "option1", label: "1 hour" },
-    { value: "option2", label: "3 hours" },
-    { value: "option3", label: "6 hours" },
-    { value: "option4", label: "12 hours" },
-    { value: "option5", label: "24 hours" },
+    { value: "option2", label: "2 hours" },
+    { value: "option3", label: "3 hours" },
+    { value: "option4", label: "1 day" },
+    { value: "option5", label: "2 days" },
+    { value: "option6", label: "3 days" },
+    { value: "option7", label: "1 week" },
+    { value: "option8", label: "2 weeks" },
+    { value: "option9", label: "3 weeks" },
   ];
 
   const order_types = [
@@ -71,7 +115,7 @@ function App() {
     console.log("Selected period:", selectedFilter);
   };
 
-  const cat_options = [
+  const cats_options_test = [
     { value: "option1", label: "Option 1" },
     { value: "option2", label: "Option 2" },
     { value: "option6", label: "Daza" },
@@ -88,47 +132,18 @@ function App() {
     { value: "option17", label: "laza" },
     { value: "option18", label: "kaza" },
     { value: "option19", label: "jaza" },
-  ];
-
-  const man_options = [
-    { value: "option1", label: "Option 1" },
-    { value: "option2", label: "Option 2" },
-    { value: "option6", label: "Daza" },
-    { value: "option7", label: "Eaza" },
-    { value: "option8", label: "Faza" },
-    { value: "option9", label: "yaza" },
-    { value: "option10", label: "zaza" },
-    { value: "option11", label: "xaza" },
-    { value: "option12", label: "caza" },
-    { value: "option13", label: "vaza" },
-    { value: "option14", label: "baza" },
-    { value: "option15", label: "naza" },
-    { value: "option16", label: "maza" },
-    { value: "option17", label: "laza" },
-    { value: "option18", label: "kaza" },
-    { value: "option19", label: "jaza" },
-    { value: "option20", label: "haza" },
-    { value: "option21", label: "gaza" },
-    { value: "option22", label: "faza" },
-    { value: "option23", label: "daza" },
-    { value: "option24", label: "caza" },
-    { value: "option25", label: "baza" },
-    { value: "option26", label: "naza" },
-    { value: "option27", label: "maza" },
-    { value: "option28", label: "laza" },
-    { value: "option29", label: "kaza" },
-    { value: "option30", label: "jaza" },
-    { value: "option31", label: "haza" },
   ];
 
   return (
     <>
       <Header />
-      {/* <SaleRentDropdown options={["For sale", "For rent"]} />
-      <ManDropdown options={man_options} />
-      <CatDropdown options={cat_options} /> */}
-      <Sidebar manOptions={man_options} catOptions={cat_options} currencies={currencies}/>
-{/* 
+
+      <Sidebar
+        manOptions={mans_options}
+        catOptions={cats_options}
+        currencies={currencies}
+      />
+      {/* 
       <PeriodDropdown options={periods} />
       <FilterDropdown options={order_types} />
       <CurrencyChange currencies={currencies} />
