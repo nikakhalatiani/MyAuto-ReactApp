@@ -8,6 +8,7 @@ import Header from "./Components/Header";
 // import SaleRentDropdown from "./Components/SaleRentDropdown";
 // import CurrencyChange from "./Components/CurrencyChange";
 import Sidebar from "./Components/SideBar";
+import Carousel from "./Components/Carousel";
 
 import { useState, useEffect } from "react";
 
@@ -137,12 +138,18 @@ function App() {
   return (
     <>
       <Header />
-
+{/* 
       <Sidebar
         manOptions={mans_options}
         catOptions={cats_options}
         currencies={currencies}
-      />
+      /> */}
+      <Carousel imageBaseUrl={`https://static.my.ge/myauto/photos/5\/5\/3\/5\/7/thumbs/92753554_{PHOTO_INDEX}.jpg`} car_id={92753554} product_photo= "\5\/5\/3\/5\/7" photo_ver={1} />
+      {/* https://static.my.ge/myauto/photos/{product.photo}/thumbs/{product.product_id}_1.jpg?v={product.phot
+o_ver}
+ */}
+      {/* <Carousel /> */}
+
       {/* 
       <PeriodDropdown options={periods} />
       <FilterDropdown options={order_types} />
