@@ -1,5 +1,6 @@
 import SaleRentDropdown from "./SaleRentDropdown";
 import ManDropdown from "./ManDropdown";
+import ModelDropdown from "./ModelDropdown";
 import CatDropdown from "./CategDropdown";
 import CurrencyChange from "./CurrencyChange";
 import "./SideBar.css";
@@ -7,10 +8,20 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGreaterThan } from "@fortawesome/free-solid-svg-icons";
 
+interface GroupedModelOption {
+  man_name: string;
+  options: ModelOption[];
+}
+
 interface SidebarProps {
+  pairManModel: GroupedModelOption[];
   manOptions: ManOption[];
   catOptions: CategOption[];
   currencies: string[];
+  manSelectedOptions: ManOption[];
+  setManSelectedOptions: (selectedOptions: ManOption[]) => void;
+  modelSelectedOptions: ModelOption[];
+  setModSelectedOptions: (selectedOptions: ModelOption[]) => void;
 }
 
 interface CategOption {
@@ -30,15 +41,48 @@ interface ManOption {
   is_moto: string;
 }
 
+interface ModelOption {
+  model_id: number;
+  man_id: number;
+  model_name: string;
+  model_group: string;
+  sort_order: number;
+  cat_man_id: number;
+  cat_model_id: number;
+  cat_modif_id: number;
+  is_car: boolean;
+  is_moto: boolean;
+  is_spec: boolean;
+  show_in_salons: number;
+  shown_in_slider: number;
+}
+
 const Sidebar: React.FC<SidebarProps> = ({
+  pairManModel,
   manOptions,
   catOptions,
   currencies,
+  manSelectedOptions,
+  setManSelectedOptions,
+  modelSelectedOptions,
+  setModSelectedOptions,
 }) => {
-  const [carClicked, setCarClicked] = useState(false);
+  const [isModCloseButtonSelected, setModIsCloseButtonSelected] =
+    useState(false);
+  const [isManCloseButtonSelected, setManIsCloseButtonSelected] =
+    useState(false);
+
+  const [isCategCloseButtonSelected, setIsCategCloseButtonSelected] =
+    useState(false);
+
+  const [carClicked, setCarClicked] = useState(true);
   const [specClicked, setSpecClicked] = useState(false);
   const [motoClicked, setMotoClicked] = useState(false);
-  const [selectedOptionsString, setSelectedOptionsString] = useState("");
+  const [catSelectedOptions, setCatSelectedOptions] = useState<CategOption[]>(
+    []
+  );
+
+  const [saleSelectedOption, setSaleSelectedOption] = useState("");
   const [filteredManOptions, setFilteredManOptions] = useState<ManOption[]>(
     manOptions.filter((option) => option.is_car === "1")
   );
@@ -46,14 +90,16 @@ const Sidebar: React.FC<SidebarProps> = ({
     catOptions.filter((option) => option.category_type === 0)
   );
 
-  const handleSelectedOptions = (selectedOptions: string) => {
-    setSelectedOptionsString(selectedOptions);
-  };
-
   const handleCarClick = () => {
     setCarClicked(true);
     setSpecClicked(false);
     setMotoClicked(false);
+    setManSelectedOptions([]);
+    setCatSelectedOptions([]);
+    setModSelectedOptions([]);
+    setManIsCloseButtonSelected(false);
+    setModIsCloseButtonSelected(false);
+    setIsCategCloseButtonSelected(false);
     setFilteredManOptions(manOptions.filter((option) => option.is_car === "1"));
     setFilteredCatOptions(
       catOptions.filter((option) => option.category_type === 0)
@@ -61,15 +107,26 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const handleSpecClick = () => {
+    console.log(filteredCatOptions)
     setCarClicked(false);
     setSpecClicked(true);
     setMotoClicked(false);
+    setCatSelectedOptions([]);
+    setManSelectedOptions([]);
+    setModSelectedOptions([]);
+    setManIsCloseButtonSelected(false);
+    setModIsCloseButtonSelected(false);
+    setIsCategCloseButtonSelected(false);
+
     setFilteredManOptions(
       manOptions.filter((option) => option.is_spec === "1")
     );
+
     setFilteredCatOptions(
       catOptions.filter((option) => option.category_type === 1)
     );
+
+
   };
   //   console.log(catOptions);
 
@@ -77,6 +134,12 @@ const Sidebar: React.FC<SidebarProps> = ({
     setCarClicked(false);
     setSpecClicked(false);
     setMotoClicked(true);
+    setCatSelectedOptions([]);
+    setManSelectedOptions([]);
+    setModSelectedOptions([]);
+    setManIsCloseButtonSelected(false);
+    setModIsCloseButtonSelected(false);
+    setIsCategCloseButtonSelected(false);
     setFilteredManOptions(
       manOptions.filter((option) => option.is_moto === "1")
     );
@@ -84,6 +147,12 @@ const Sidebar: React.FC<SidebarProps> = ({
       catOptions.filter((option) => option.category_type === 2)
     );
   };
+
+  const handleSearchParClick = () => {
+    setSaleSelectedOption("");
+  };
+
+
 
   return (
     <>
@@ -94,14 +163,14 @@ const Sidebar: React.FC<SidebarProps> = ({
           icon={faGreaterThan}
           style={{ color: "#6F7383", height: "7px", width: "7px" }}
         />
-        <p>Search </p>
-        {selectedOptionsString !== "" && (
+        <p onClick={handleSearchParClick}>Search </p>
+        {saleSelectedOption !== "" && (
           <>
             <FontAwesomeIcon
               icon={faGreaterThan}
               style={{ color: "#6F7383", height: "7px", width: "7px" }}
             />
-            <p className="sale-rent-text">{selectedOptionsString}</p>{" "}
+            <p className="sale-rent-text">{saleSelectedOption}</p>{" "}
           </>
         )}
       </div>
@@ -168,7 +237,8 @@ const Sidebar: React.FC<SidebarProps> = ({
             {" "}
             <SaleRentDropdown
               options={["For sale", "For rent"]}
-              onSelectedOption={handleSelectedOptions}
+              saleSelectedOption={saleSelectedOption}
+              setSaleSelectedOption={setSaleSelectedOption}
             />
           </div>
         </div>
@@ -176,14 +246,46 @@ const Sidebar: React.FC<SidebarProps> = ({
           <p>Manufacturer</p>
           <div className="dropdown">
             {" "}
-            <ManDropdown options={filteredManOptions} />
+            <ManDropdown
+              options={filteredManOptions}
+              manSelectedOptions={manSelectedOptions}
+              setManSelectedOptions={setManSelectedOptions}
+              modelSelectedOptions={modelSelectedOptions}
+              setModSelectedOptions={setModSelectedOptions}
+              isManCloseButtonSelected={isManCloseButtonSelected}
+              setManIsCloseButtonSelected={setManIsCloseButtonSelected}
+              setModIsCloseButtonSelected={setModIsCloseButtonSelected}
+            />{" "}
+          </div>
+        </div>
+
+        <div className="side-component">
+          <p>Model</p>
+          <div className="dropdown">
+            {" "}
+            <ModelDropdown
+              allOptions={pairManModel}
+              manSelectedOptions={manSelectedOptions}
+              setManSelectedOptions={setManSelectedOptions}
+              modelSelectedOptions={modelSelectedOptions}
+              setModSelectedOptions={setModSelectedOptions}
+              setManIsCloseButtonSelected={setManIsCloseButtonSelected}
+              setModIsCloseButtonSelected={setModIsCloseButtonSelected}
+              isModCloseButtonSelected={isModCloseButtonSelected}
+            />{" "}
           </div>
         </div>
         <div className="cat-component side-component">
           <p>Category</p>
           <div className="dropdown">
             {" "}
-            <CatDropdown options={filteredCatOptions} />
+            <CatDropdown
+              options={filteredCatOptions}
+              catSelectedOptions={catSelectedOptions}
+              setCatSelectedOptions={setCatSelectedOptions}
+              isCategCloseButtonSelected={isCategCloseButtonSelected}
+              setIsCategCloseButtonSelected={setIsCategCloseButtonSelected}
+            />
           </div>
         </div>
         <span className="pop-line"></span>

@@ -10,14 +10,15 @@ import "./SaleRentDropdown.css";
 
 interface SaleRentDropdownProps {
   options: string[];
-  onSelectedOption: (selectedOption: string) => void;
+  saleSelectedOption: string;
+  setSaleSelectedOption: (saleSelectedOption: string) => void;
 }
 
 const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({
   options,
-  onSelectedOption,
+  saleSelectedOption,
+  setSaleSelectedOption,
 }) => {
-  const [selectedOption, setSelectedOption] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isCloseButtonSelected, setIsCloseButtonSelected] = useState(false);
@@ -40,16 +41,14 @@ const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({
   }, []);
 
   const handleOptionChange = (option: string) => {
-    setSelectedOption(option);
+    setSaleSelectedOption(option);
     setIsCloseButtonSelected(true);
-    onSelectedOption(option);
   };
 
   const toggleDropdown = () => {
     if (isCloseButtonSelected) {
-      setSelectedOption("");
+      setSaleSelectedOption("");
       setIsCloseButtonSelected(false);
-      onSelectedOption("");
     } else {
       setIsOpen(!isOpen);
     }
@@ -65,34 +64,38 @@ const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
-    setSelectedOption("");
+    setSaleSelectedOption("");
     setIsCloseButtonSelected(false);
-    onSelectedOption("");
   };
 
   return (
     <div className="sale-rent-dropdown-container" ref={saleRentdropdownRef}>
       <div
         onClick={handleContainerClick}
-        className={`sale-rent-container ${selectedOption ? "dark-font" : ""} ${
+        className={`sale-rent-container ${saleSelectedOption ? "dark-font" : ""} ${
           isOpen ? "open" : ""
         }`}
       >
         <input
           id="1"
-          placeholder={selectedOption ? selectedOption : "Deal type"}
+          placeholder={saleSelectedOption ? saleSelectedOption : "Deal type"}
           readOnly
           onClick={() => {
             setIsOpen(true);
           }}
+          
         />
         <button
           onClick={toggleDropdown}
           className={
-            isCloseButtonSelected ? "rotate-x" : isOpen ? "rotate" : ""
+            isCloseButtonSelected && saleSelectedOption !== ""
+              ? "rotate-x"
+              : isOpen
+              ? "rotate"
+              : ""
           }
         >
-          {isCloseButtonSelected ? (
+          {isCloseButtonSelected && saleSelectedOption !== "" ? (
             <FontAwesomeIcon icon={faXmark} style={{ color: "#272a37" }} />
           ) : (
             <FontAwesomeIcon
@@ -110,13 +113,13 @@ const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({
                 <label key={option}>
                   <input
                     type="checkbox"
-                    checked={selectedOption === option}
+                    checked={saleSelectedOption === option}
                     onChange={() => {
                       handleOptionChange(option);
                       setIsChecked(!isChecked);
                     }}
                   />
-                  {selectedOption === option ? (
+                  {saleSelectedOption === option ? (
                     <span className="custom-checkbox-checked">
                       <FontAwesomeIcon
                         className="checkbox-icon"
@@ -131,7 +134,7 @@ const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({
                 </label>
               ))}
             </div>
-            {selectedOption && (
+            {saleSelectedOption && (
               <div className="sale-rent-dropdown-buttons">
                 <button
                   className="sale-rent-clear-button"

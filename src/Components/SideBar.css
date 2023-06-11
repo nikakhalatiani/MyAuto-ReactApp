@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   width: 248px;
-  height: 520px;
+  height: 600px;
   background: #ffffff;
   /* border/gray 200 */
 
@@ -125,20 +125,20 @@
   background-color: #ffffff;
 }
 
-.car-svg-icon-default-clicked{
-    background-color: #f9f9fb;
-    height: 47px;
-    width: 100%;
-    border: none;
-    border-bottom: 1px solid #e2e5eb;
-    cursor: pointer;
-    border-top-left-radius: 12px;
-    border-bottom: 1px solid #fd4100;
+.car-svg-icon-default-clicked {
+  background-color: #f9f9fb;
+  height: 47px;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #e2e5eb;
+  cursor: pointer;
+  border-top-left-radius: 12px;
+  border-bottom: 1px solid #fd4100;
 }
 
 .car-svg-icon-default-unchecked svg {
-    fill: #fd4100;
-  }
+  fill: #fd4100;
+}
 .moto-svg-icon-unchecked {
   border-top-right-radius: 12px;
 }
@@ -165,8 +165,8 @@
   background-color: #ffffff;
 }
 
-.car-svg-icon-unchecked{
-    border-top-left-radius: 12px;
+.car-svg-icon-unchecked {
+  border-top-left-radius: 12px;
 }
 
 .spec-svg-icon-unchecked svg,
@@ -207,3 +207,5 @@
 .spec-svg-icon-clicked {
   border-inline: 1px solid #e2e5eb;
 }
+
+

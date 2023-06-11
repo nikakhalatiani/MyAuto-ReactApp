@@ -1,0 +1,297 @@
+
+    // <div className="model-dropdown-container">
+    //   <div className="model-dropdown-content">
+    //     {groupedModelOptions.length === 0 ? (
+    //       <p>No records</p>
+    //     ) : (
+    //       groupedModelOptions.map((group) => (
+    //         <div key={group.man_name}>
+    //           <h3>{group.man_name}</h3>
+    //           <ul className="model-dropdown-options">
+    //             {group.options.map((option) => (
+    //               <li key={option.model_id}>{option.model_name}</li>
+    //             ))}
+    //           </ul>
+    //         </div>
+    //       ))
+    //     )}
+    //   </div>
+    // </div>
+
+
+     const handleCheckboxChangeGroup = (group: GroupedModelOptions) => {
+    const areAllOptionsSelected = group.options.every((option) =>
+      modelSelectedOptions.some(
+        (selectedOption) => selectedOption.model_id === option.model_id
+      )
+    );
+
+    let updatedSelectedOptions: ModelOption[];
+
+    if (areAllOptionsSelected) {
+      updatedSelectedOptions = modelSelectedOptions.filter(
+        (selectedOption) =>
+          !group.options.some(
+            (option) => option.model_id === selectedOption.model_id
+          )
+      );
+    } else {
+      const optionsToAdd = group.options.filter(
+        (option) =>
+          !modelSelectedOptions.some(
+            (selectedOption) => selectedOption.model_id === option.model_id
+          )
+      );
+      updatedSelectedOptions = [...modelSelectedOptions, ...optionsToAdd];
+    }
+
+    setSelectedOptions(updatedSelectedOptions);
+
+    if (modelInputRef.current) {
+      modelInputRef.current.placeholder = updatedSelectedOptions
+        .map((selectedOption) => selectedOption.model_name)
+        .join(", ");
+    }
+  };
+
+
+    // async function fetchMans() {
+  //   setLoading(true);
+  //   try {
+  //     // await new Promise((resolve) => setTimeout(resolve, 3000)); // simulate slow network by waiting 3 seconds
+  //     const response = await fetch(mans_api);
+  //     const mans = await response.json();
+  //     setMans(mans);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     setLoading(true);
+  //     console.log("Failed to fetch Manufacturers");
+  //   }
+  // }
+  // async function fetchCats() {
+  //   setLoading(true);
+  //   try {
+  //     // await new Promise((resolve) => setTimeout(resolve, 3000)); // simulate slow network by waiting 3 seconds
+  //     const response = await fetch(cats_api);
+  //     const cats = await response.json();
+  //     setCats(cats);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     setLoading(true);
+  //     console.log("Failed to fetch Categories");
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   fetchMans();
+  //   fetchCats();
+  // }, []);
+
+   {/* {group.options.map((option) => (
+                      <label key={option.model_id}>
+                        <input
+                          type="checkbox"
+                          checked={modelSelectedOptions.some(
+                            (selectedOption) =>
+                              selectedOption.model_id === option.model_id
+                          )}
+                          onChange={() => {
+                            handleCheckboxChange(option);
+                            setIsChecked(!isChecked);
+                          }}
+                        />
+                        {modelSelectedOptions.some(
+                          (selectedOption) =>
+                            selectedOption.model_id === option.model_id
+                        ) ? (
+                          <span className="custom-checkbox-checked">
+                            <FontAwesomeIcon
+                              icon={faCheck}
+                              style={{ height: "10px", width: "10px" }}
+                            />
+                          </span>
+                        ) : (
+                          <span className="custom-checkbox-unchecked"></span>
+                        )}
+                        {option.model_name}
+                      </label>
+                    ))} */}
+
+
+filteredOptions.map((group) => (
+                  <div key={group.man_name} className="model-group">
+                    <label>
+                      <input
+                        type="checkbox"
+                        onChange={() => handleCheckboxChangeGroup(group)}
+                      />
+                      <span className="custom-checkbox-checked">
+                        <FontAwesomeIcon
+                          icon={faCheck}
+                          style={{ height: "10px", width: "10px" }}
+                        />
+                      </span>
+                      <div className="group-name">
+                        <span className="group-text">
+                          {toTitleCase(group.man_name)}
+                        </span>
+                        <span className="grey-hor-line"></span>
+                      </div>
+                    </label>
+                    
+                    
+                  </div>
+                ))
+
+
+                async function fetchData() {
+    setLoading(true);
+    try {
+      const mans_response = await fetch(mans_api);
+      const mans: ManOption[] = await mans_response.json();
+      const cats_response = await fetch(cats_api);
+      const cats = await cats_response.json();
+
+      const optionsPromises = mans.map(async (man: ManOption) => {
+        const url = `https://api2.myauto.ge/ka/getManModels?man_id=${man.man_id}`;
+        return fetch(url)
+          .then((response) => response.json())
+          .then((data) => ({ man_name: man.man_name, options: data.data }));
+      });
+
+      const options: GroupedModelOption[] = await Promise.all(optionsPromises);
+      const filteredMans = options.filter(
+        (option) => option.options.length > 0
+      );
+
+      const filteredMansSet = new Set(
+        filteredMans.map((option) => option.man_name)
+      );
+      const filteredMansArray = mans.filter((man: ManOption) =>
+        filteredMansSet.has(man.man_name)
+      );
+
+      setPairManModel(filteredMans);
+      setMans(filteredMansArray);
+      setCats(cats["data"]);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log("error");
+    }
+  }
+
+  interface Product {
+  car_id: number;
+  status_id: number;
+  user_id: number;
+  dealer_user_id: number;
+  paid_add: number;
+  photo: string;
+  pic_number: number;
+  prod_year: number;
+  prod_month: number;
+  man_id: number;
+  car_model: string;
+  price: number;
+  price_usd: number;
+  first_deposit: number;
+  price_value: number;
+  fuel_type_id: number;
+  gear_type_id: number;
+  drive_type_id: number;
+  door_type_id: number;
+  color_id: number;
+  saloon_color_id: number;
+  cylinders: number;
+  car_run: number;
+  car_run_km: number;
+  car_run_dim: number;
+  engine_volume: number;
+  airbags: number;
+  abs: boolean;
+  esd: boolean;
+  el_windows: boolean;
+  conditioner: boolean;
+  leather: boolean;
+  disks: boolean;
+  nav_system: boolean;
+  central_lock: boolean;
+  hatch: boolean;
+  right_wheel: boolean;
+  alarm: boolean;
+  board_comp: boolean;
+  hydraulics: boolean;
+  chair_warming: boolean;
+  climat_control: boolean;
+  obstacle_indicator: boolean;
+  customs_passed: boolean;
+  client_name: string;
+  client_phone: number;
+  model_id: number;
+  location_id: number;
+  parent_loc_id: number;
+  tech_inspection: boolean;
+  checked_for_duplicates: boolean;
+  order_number: number;
+  stickers: any;
+  changable: boolean;
+  auction: boolean;
+  has_turbo: boolean;
+  for_rent: boolean;
+  rent_daily: boolean;
+  rent_purchase: boolean;
+  rent_insured: boolean;
+  rent_driver: boolean;
+  currency_id: number;
+  vehicle_type: number;
+  category_id: number;
+  vin: string;
+  user_type: any;
+  prom_color: number;
+  special_persons: boolean;
+  back_camera: boolean;
+  car_desc: string;
+  order_date: string;
+  video_url: string;
+  hp: number;
+  hours_used: number;
+  photo_ver: number;
+  checked: boolean;
+  lang_type_id: number;
+  el_starter: number;
+  start_stop: boolean;
+  trunk: boolean;
+  windshield: boolean;
+  inspected_in_greenway: boolean;
+  license_number: string;
+  words_checked: number;
+  is_payd: boolean;
+  condition_type_id: number;
+  primary_damage_type: number;
+  secondary_damage_type: number;
+  auction_has_key: number;
+  is_auction: number;
+  saloon_material_id: number;
+  map_lat: number;
+  map_long: number;
+  zoom: number;
+  predicted_price: string;
+  hdd: number;
+  map_title: string;
+  has_catalyst: number;
+  tmp: string;
+  views: number;
+  dealerId: any;
+  has_logo: any;
+  logo_ver: any;
+  active_ads: any;
+  dealer_title: any;
+  has_predicted_price: boolean;
+  pred_first_breakpoint: number;
+  pred_second_breakpoint: number;
+  pred_min_price: number;
+  pred_max_price: number;
+  comfort_features: number[];
+}
+              
