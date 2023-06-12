@@ -3,17 +3,17 @@
   font-family: "Roboto", sans-serif;
 }
 
-
 .filter-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding: 12px 8px 12px 12px;
-  background: #ffffff;
+  background: transparent;
   border: 1px solid #c2c9d8;
   border-radius: 8px;
   cursor: pointer;
+  width: auto;
 }
 
 .filter-container:hover {
@@ -71,9 +71,9 @@
 .filter-dropdown-content {
   position: absolute;
   top: 100%;
-  left: 0;
-  right: 0;
+
   background-color: transparent;
+  width: 182px;
 }
 
 .dropdown-options label {

@@ -3,25 +3,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import "./FilterDropdown.css";
 
-interface Option {
+interface OrderingOption {
   value: string;
   label: string;
 }
 
-interface SearchDropdownProps {
-  options: Option[];
+interface FilterDropdownProps {
+  ordering_type: OrderingOption[];
 }
 
-const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
+const FilterDropdown: React.FC<FilterDropdownProps> = ({ ordering_type }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
+  const [selectedOption, setSelectedOption] = useState<OrderingOption | null>(
+    null
+  );
   const filterDropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleFilterDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleOptionSelect = (option: Option) => {
+  const handleOptionSelect = (option: OrderingOption) => {
     setSelectedOption(option);
     setIsOpen(false);
   };
@@ -42,14 +44,10 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
     };
   }, []);
 
-  const filteredOptions = options.filter(
+  const filteredOptions = ordering_type.filter(
     (option) => option.value !== selectedOption?.value
   );
-  const defaultOption = options.length > 0 ? options[0] : null;
 
-  useEffect(() => {
-    setSelectedOption(defaultOption);
-  }, [defaultOption]);
 
   return (
     <div className="filter-dropdown-container" ref={filterDropdownRef}>
@@ -58,8 +56,8 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
         className={`filter-container ${isOpen ? "open" : ""}`}
         onClick={toggleFilterDropdown}
       >
-        <span className="filter-choice">
-          {selectedOption ? selectedOption.label : defaultOption?.label}
+        <span className="period-choice">
+          {selectedOption ? selectedOption.label : "Order"}
         </span>
         <button className={isOpen ? "rotate" : ""}>
           <FontAwesomeIcon
@@ -87,4 +85,4 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
   );
 };
 
-export default SearchDropdown;
+export default FilterDropdown;

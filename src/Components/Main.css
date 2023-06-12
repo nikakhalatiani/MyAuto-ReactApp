@@ -1,0 +1,25 @@
+.above-products {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 92px;
+}
+
+.right-drops {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.right-drops > *:not(:last-child) {
+  margin-inline: 8px;
+}
+
+.count-listing {
+  margin: 0px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #1b1d25;
+}

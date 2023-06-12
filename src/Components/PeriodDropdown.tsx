@@ -3,25 +3,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import "./PeriodDropdown.css";
 
-interface Option {
+interface PeriodOption {
   value: string;
   label: string;
 }
 
-interface SearchDropdownProps {
-  options: Option[];
+interface PeriodDropdownProps {
+  periods: PeriodOption[];
 }
 
-const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
+const PeriodDropdown: React.FC<PeriodDropdownProps> = ({ periods }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
+  const [selectedOption, setSelectedOption] = useState<PeriodOption | null>(null);
   const periodDropdownRef = useRef<HTMLDivElement>(null);
 
   const togglePeriodDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleOptionSelect = (option: Option) => {
+  const handleOptionSelect = (option: PeriodOption) => {
     setSelectedOption(option);
     setIsOpen(false);
   };
@@ -42,7 +42,7 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
     };
   }, []);
 
-  const filteredOptions = options.filter(
+  const filteredOptions = periods.filter(
     (option) => option.value !== selectedOption?.value
   );
 
@@ -83,4 +83,4 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
   );
 };
 
-export default SearchDropdown;
+export default PeriodDropdown;

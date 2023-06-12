@@ -4,11 +4,9 @@ import PeriodDropdown from "./Components/PeriodDropdown";
 import FilterDropdown from "./Components/FilterDropdown";
 import Header from "./Components/Header";
 import Sidebar from "./Components/SideBar";
-import Carousel from "./Components/Carousel";
-import ProductCard from "./Components/ProductCard";
+import Main from "./Components/Main";
 
 import { useState, useEffect } from "react";
-import CategDropdown from "./Components/CategDropdown";
 
 const mans_api = "https://static.my.ge/myauto/js/mans.json";
 const cats_api = "https://api2.myauto.ge/en/cats/get";
@@ -26,6 +24,13 @@ function App() {
   const [pairManModel, setPairManModel] = useState<GroupedModelOption[]>([]);
   const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState(0);
 
+  const fetchProducts = async (page: number) => {
+    const prod_api = `https://api2.myauto.ge/en/products/?Page=${page}`;
+    const prod_response = await fetch(prod_api);
+    const prodsData = await prod_response.json();
+    const prodsItems = prodsData.data.items;
+    return prodsItems;
+  };
 
   async function fetchData() {
     setLoading(true);
@@ -35,8 +40,15 @@ function App() {
       const mans: ManOption[] = await mans_response.json();
       const cat_response = await fetch(cats_api);
       const cats = await cat_response.json();
-      const prod_response = await fetch(prod_api);
-      const prods = await prod_response.json();
+      // const prod_response = await fetch(prod_api);
+      // const prods = await prod_response.json();
+
+      const allProds = [];
+      for (let page = 1; page <= 5; page++) {
+        const prodsItems = await fetchProducts(page);
+        allProds.push(...prodsItems);
+      }
+      setProds(allProds);
 
       ////! This part of code was commented and replaced with the code below it since filtering takes too long
       // // Fetch model options for each man_option and filter out empty data arrays
@@ -68,7 +80,7 @@ function App() {
 
       setMans(filteredMansArray);
       setCats(cats["data"]);
-      setProds(prods["data"]["items"]);
+      // setProds(prods["data"]["items"]);
       setLoading(false);
     } catch (error) {
       setLoading(true);
@@ -239,26 +251,36 @@ function App() {
     options: ModelOption[];
   }
 
-  // const periods = [
-  //   { value: "option1", label: "1 hour" },
-  //   { value: "option2", label: "2 hours" },
-  //   { value: "option3", label: "3 hours" },
-  //   { value: "option4", label: "1 day" },
-  //   { value: "option5", label: "2 days" },
-  //   { value: "option6", label: "3 days" },
-  //   { value: "option7", label: "1 week" },
-  //   { value: "option8", label: "2 weeks" },
-  //   { value: "option9", label: "3 weeks" },
-  // ];
+  interface PeriodOption {
+    value: string;
+    label: string;
+  }
 
-  // const order_types = [
-  //   { value: "option1", label: "order by date desc" },
-  //   { value: "option2", label: "order by date asc" },
-  //   { value: "option3", label: "Price descending" },
-  //   { value: "option4", label: "Price ascending" },
-  //   { value: "option5", label: "Mileage descending" },
-  //   { value: "option6", label: "Mileage ascending" },
-  // ];
+  interface OrderingOption {
+    value: string;
+    label: string;
+  }
+
+  const periods: PeriodOption[] = [
+    { value: "option1", label: "1 hour" },
+    { value: "option2", label: "2 hours" },
+    { value: "option3", label: "3 hours" },
+    { value: "option4", label: "1 day" },
+    { value: "option5", label: "2 days" },
+    { value: "option6", label: "3 days" },
+    { value: "option7", label: "1 week" },
+    { value: "option8", label: "2 weeks" },
+    { value: "option9", label: "3 weeks" },
+  ];
+
+  const ordering_type: OrderingOption[] = [
+    { value: "option1", label: "order by date desc" },
+    { value: "option2", label: "order by date asc" },
+    { value: "option3", label: "Price descending" },
+    { value: "option4", label: "Price ascending" },
+    { value: "option5", label: "Mileage descending" },
+    { value: "option6", label: "Mileage ascending" },
+  ];
 
   // const handlePeriodChange = (selectedPeriod: string) => {
   //   // Handle the selected period change here
@@ -273,25 +295,34 @@ function App() {
   return (
     <>
       <Header />
-      <Sidebar
-        pairManModel={pairManModel}
-        manOptions={mans_options}
-        catOptions={cats_options}
-        currencies={["GEL", "USD"]}
-        manSelectedOptions={manSelectedOptions}
-        setManSelectedOptions={setManSelectedOptions}
-        modelSelectedOptions={modelSelectedOptions}
-        setModSelectedOptions={setModSelectedOptions}
-        setSelectedCurrencyIndex={setSelectedCurrencyIndex}
-        selectedCurrencyIndex={selectedCurrencyIndex}
-      />
-      <ProductCard products={prod_options} 
-      mans={mans_options}
-      setSelectedCurrencyIndex={setSelectedCurrencyIndex}
-      selectedCurrencyIndex={selectedCurrencyIndex}
-      setLoading={setLoading}
-      />
-    
+      <div className="main-container">
+        {" "}
+        <div className="left-container">
+          <Sidebar
+            pairManModel={pairManModel}
+            manOptions={mans_options}
+            catOptions={cats_options}
+            currencies={["GEL", "USD"]}
+            manSelectedOptions={manSelectedOptions}
+            setManSelectedOptions={setManSelectedOptions}
+            modelSelectedOptions={modelSelectedOptions}
+            setModSelectedOptions={setModSelectedOptions}
+            setSelectedCurrencyIndex={setSelectedCurrencyIndex}
+            selectedCurrencyIndex={selectedCurrencyIndex}
+          />
+        </div>
+        <div className="right-container">
+          {" "}
+          <Main
+            prod_options={prod_options}
+            mans_options={mans_options}
+            setSelectedCurrencyIndex={setSelectedCurrencyIndex}
+            selectedCurrencyIndex={selectedCurrencyIndex}
+            periods={periods}
+            ordering_type={ordering_type}
+          />
+        </div>
+      </div>
     </>
   );
 }

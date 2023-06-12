@@ -20,4 +20,14 @@ body {
   background: #F2F3F6;
 }
 
+.main-container{
+  display: flex;
+  flex-direction: row;
+  
+}
+
+.right-container{
+  margin-left: 20px;
+}
+
 
