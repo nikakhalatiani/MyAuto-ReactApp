@@ -4,11 +4,10 @@ import { useState } from "react";
 interface CarouselProps {
   imageBaseUrl: string;
   photo_ver: number;
-  product_photo: string;
-  car_id: number;
+
 }
 
-const Carousel: React.FC<CarouselProps> = ({ imageBaseUrl, car_id, product_photo, photo_ver}) => {
+const Carousel: React.FC<CarouselProps> = ({ imageBaseUrl,photo_ver}) => {
   const [activeIndex, setActiveIndex] = useState<number>(1);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -37,7 +36,7 @@ const Carousel: React.FC<CarouselProps> = ({ imageBaseUrl, car_id, product_photo
   return (
     <div className="container">
       <div className="image-container">
-        <img className="image" src={getImageUrl(activeIndex)} alt="Image" />
+        <img className="image" src={getImageUrl(activeIndex)} alt={`No ${activeIndex} Image For This Card`} />
       </div>
       <div
         className={`overlay-row ${isHovered ? "hovered" : ""}`}

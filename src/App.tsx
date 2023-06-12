@@ -3,29 +3,29 @@ import Loading from "./Loading/Loading";
 import PeriodDropdown from "./Components/PeriodDropdown";
 import FilterDropdown from "./Components/FilterDropdown";
 import Header from "./Components/Header";
-// import CatDropdown from "./Components/CategDropdown";
-import ManDropdown from "./Components/ManDropdown";
-import ModelDropdown from "./Components/ModelDropdown";
-// import SaleRentDropdown from "./Components/SaleRentDropdown";
-// import CurrencyChange from "./Components/CurrencyChange";
 import Sidebar from "./Components/SideBar";
 import Carousel from "./Components/Carousel";
+import ProductCard from "./Components/ProductCard";
 
 import { useState, useEffect } from "react";
 import CategDropdown from "./Components/CategDropdown";
 
 const mans_api = "https://static.my.ge/myauto/js/mans.json";
 const cats_api = "https://api2.myauto.ge/en/cats/get";
+const prod_api = "https://api2.myauto.ge/en/products/";
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [mans_options, setMans] = useState<ManOption[]>([]);
-  const [cats_options, setCats] = useState([]);
+  const [cats_options, setCats] = useState<CategOption[]>([]);
+  const [prod_options, setProds] = useState<ProductOption[]>([]);
   const [manSelectedOptions, setManSelectedOptions] = useState<ManOption[]>([]);
   const [modelSelectedOptions, setModSelectedOptions] = useState<ModelOption[]>(
     []
   );
   const [pairManModel, setPairManModel] = useState<GroupedModelOption[]>([]);
+  const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState(0);
+
 
   async function fetchData() {
     setLoading(true);
@@ -33,8 +33,10 @@ function App() {
       // await new Promise((resolve) => setTimeout(resolve, 3000)); // simulate slow network by waiting 3 seconds
       const mans_response = await fetch(mans_api);
       const mans: ManOption[] = await mans_response.json();
-      const response = await fetch(cats_api);
-      const cats = await response.json();
+      const cat_response = await fetch(cats_api);
+      const cats = await cat_response.json();
+      const prod_response = await fetch(prod_api);
+      const prods = await prod_response.json();
 
       ////! This part of code was commented and replaced with the code below it since filtering takes too long
       // // Fetch model options for each man_option and filter out empty data arrays
@@ -64,16 +66,15 @@ function App() {
         (man) => !["144", "184", "134", "454"].includes(man.man_id)
       );
 
-
       setMans(filteredMansArray);
       setCats(cats["data"]);
+      setProds(prods["data"]["items"]);
       setLoading(false);
     } catch (error) {
       setLoading(true);
       console.log("Failed to fetch Manufacturers");
     }
   }
-
 
   useEffect(() => {
     fetchData();
@@ -85,6 +86,128 @@ function App() {
         <Loading />
       </main>
     );
+  }
+
+  interface ProductOption {
+    car_id: number;
+    status_id: number;
+    user_id: number;
+    dealer_user_id: number;
+    paid_add: number;
+    photo: string;
+    pic_number: number;
+    prod_year: number;
+    prod_month: number;
+    man_id: number;
+    car_model: string;
+    price: number;
+    price_usd: number;
+    first_deposit: number;
+    price_value: number;
+    fuel_type_id: number;
+    gear_type_id: number;
+    drive_type_id: number;
+    door_type_id: number;
+    color_id: number;
+    saloon_color_id: number;
+    cylinders: number;
+    car_run: number;
+    car_run_km: number;
+    car_run_dim: number;
+    engine_volume: number;
+    airbags: number;
+    abs: boolean;
+    esd: boolean;
+    el_windows: boolean;
+    conditioner: boolean;
+    leather: boolean;
+    disks: boolean;
+    nav_system: boolean;
+    central_lock: boolean;
+    hatch: boolean;
+    right_wheel: boolean;
+    alarm: boolean;
+    board_comp: boolean;
+    hydraulics: boolean;
+    chair_warming: boolean;
+    climat_control: boolean;
+    obstacle_indicator: boolean;
+    customs_passed: boolean;
+    client_name: string;
+    client_phone: number;
+    model_id: number;
+    location_id: number;
+    parent_loc_id: number;
+    tech_inspection: boolean;
+    checked_for_duplicates: boolean;
+    order_number: number;
+    stickers: any;
+    changable: boolean;
+    auction: boolean;
+    has_turbo: boolean;
+    for_rent: boolean;
+    rent_daily: boolean;
+    rent_purchase: boolean;
+    rent_insured: boolean;
+    rent_driver: boolean;
+    currency_id: number;
+    vehicle_type: number;
+    category_id: number;
+    vin: string;
+    user_type: any;
+    prom_color: number;
+    special_persons: boolean;
+    back_camera: boolean;
+    car_desc: string;
+    order_date: string;
+    video_url: string;
+    hp: number;
+    hours_used: number;
+    photo_ver: number;
+    checked: boolean;
+    lang_type_id: number;
+    el_starter: number;
+    start_stop: boolean;
+    trunk: boolean;
+    windshield: boolean;
+    inspected_in_greenway: boolean;
+    license_number: string;
+    words_checked: number;
+    is_payd: boolean;
+    condition_type_id: number;
+    primary_damage_type: number;
+    secondary_damage_type: number;
+    auction_has_key: number;
+    is_auction: number;
+    saloon_material_id: number;
+    map_lat: number;
+    map_long: number;
+    zoom: number;
+    predicted_price: string;
+    hdd: number;
+    map_title: string;
+    has_catalyst: number;
+    tmp: string;
+    views: number;
+    dealerId: any;
+    has_logo: any;
+    logo_ver: any;
+    active_ads: any;
+    dealer_title: any;
+    has_predicted_price: boolean;
+    pred_first_breakpoint: number;
+    pred_second_breakpoint: number;
+    pred_min_price: number;
+    pred_max_price: number;
+    comfort_features: number[];
+  }
+  interface CategOption {
+    category_id: number;
+    category_type: number;
+    has_icon: number;
+    title: string;
+    seo_title: string;
+    vehicle_types: number[];
   }
 
   interface ManOption {
@@ -159,13 +282,16 @@ function App() {
         setManSelectedOptions={setManSelectedOptions}
         modelSelectedOptions={modelSelectedOptions}
         setModSelectedOptions={setModSelectedOptions}
+        setSelectedCurrencyIndex={setSelectedCurrencyIndex}
+        selectedCurrencyIndex={selectedCurrencyIndex}
       />
-      {/* <Carousel
-        imageBaseUrl={`https://static.my.ge/myauto/photos/5\/5\/3\/5\/7/thumbs/92753554_{PHOTO_INDEX}.jpg`}
-        car_id={92753554}
-        product_photo="\5\/5\/3\/5\/7"
-        photo_ver={1}
-      /> */}
+      <ProductCard products={prod_options} 
+      mans={mans_options}
+      setSelectedCurrencyIndex={setSelectedCurrencyIndex}
+      selectedCurrencyIndex={selectedCurrencyIndex}
+      setLoading={setLoading}
+      />
+    
     </>
   );
 }

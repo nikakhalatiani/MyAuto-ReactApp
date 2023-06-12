@@ -22,6 +22,8 @@ interface SidebarProps {
   setManSelectedOptions: (selectedOptions: ManOption[]) => void;
   modelSelectedOptions: ModelOption[];
   setModSelectedOptions: (selectedOptions: ModelOption[]) => void;
+  selectedCurrencyIndex: number;
+  setSelectedCurrencyIndex: (selectedCurrencyIndex: number) => void;
 }
 
 interface CategOption {
@@ -66,6 +68,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   setManSelectedOptions,
   modelSelectedOptions,
   setModSelectedOptions,
+  selectedCurrencyIndex,
+  setSelectedCurrencyIndex,
 }) => {
   const [isModCloseButtonSelected, setModIsCloseButtonSelected] =
     useState(false);
@@ -107,7 +111,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const handleSpecClick = () => {
-    console.log(filteredCatOptions)
+    console.log(filteredCatOptions);
     setCarClicked(false);
     setSpecClicked(true);
     setMotoClicked(false);
@@ -125,8 +129,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     setFilteredCatOptions(
       catOptions.filter((option) => option.category_type === 1)
     );
-
-
   };
   //   console.log(catOptions);
 
@@ -151,8 +153,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   const handleSearchParClick = () => {
     setSaleSelectedOption("");
   };
-
-
 
   return (
     <>
@@ -290,7 +290,11 @@ const Sidebar: React.FC<SidebarProps> = ({
         </div>
         <span className="pop-line"></span>
         <div className="currency-side-component">
-          <CurrencyChange currencies={currencies} />
+          <CurrencyChange
+            currencies={currencies}
+            selectedCurrencyIndex={selectedCurrencyIndex}
+            setSelectedCurrencyIndex={setSelectedCurrencyIndex}
+          />
         </div>
         <div className="search-button-div">
           <button>Search 15</button>

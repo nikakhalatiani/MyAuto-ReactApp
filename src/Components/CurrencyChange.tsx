@@ -3,13 +3,15 @@ import "./CurrencyChange.css";
 
 interface PriceFilterProps {
   currencies: string[];
+  selectedCurrencyIndex: number;
+  setSelectedCurrencyIndex: (selectedCurrencyIndex: number) => void;
 }
 
-const CurrencyChange: React.FC<PriceFilterProps> = ({ currencies }) => {
-  const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState(0);
+const CurrencyChange: React.FC<PriceFilterProps> = ({ currencies, selectedCurrencyIndex, setSelectedCurrencyIndex }) => {
 
   const handleCurrencyToggle = () => {
-    setSelectedCurrencyIndex((prevIndex) => (prevIndex === 0 ? 1 : 0));
+    // setSelectedCurrencyIndex((prevIndex) => (prevIndex === 0 ? 1 : 0));
+    setSelectedCurrencyIndex(selectedCurrencyIndex === 0 ? 1 : 0);
   };
 
   return (
