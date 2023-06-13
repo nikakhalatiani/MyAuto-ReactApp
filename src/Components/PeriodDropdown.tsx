@@ -10,11 +10,17 @@ interface PeriodOption {
 
 interface PeriodDropdownProps {
   periods: PeriodOption[];
+  perSelectedOption: PeriodOption;
+  setPerSelectedOption: (perSelectedOption: PeriodOption) => void;
 }
 
-const PeriodDropdown: React.FC<PeriodDropdownProps> = ({ periods }) => {
+const PeriodDropdown: React.FC<PeriodDropdownProps> = ({
+  periods,
+  perSelectedOption,
+  setPerSelectedOption,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<PeriodOption | null>(null);
+
   const periodDropdownRef = useRef<HTMLDivElement>(null);
 
   const togglePeriodDropdown = () => {
@@ -22,8 +28,9 @@ const PeriodDropdown: React.FC<PeriodDropdownProps> = ({ periods }) => {
   };
 
   const handleOptionSelect = (option: PeriodOption) => {
-    setSelectedOption(option);
+    setPerSelectedOption(option);
     setIsOpen(false);
+    console.log(option);
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -43,7 +50,7 @@ const PeriodDropdown: React.FC<PeriodDropdownProps> = ({ periods }) => {
   }, []);
 
   const filteredOptions = periods.filter(
-    (option) => option.value !== selectedOption?.value
+    (option) => option.value !== perSelectedOption?.value
   );
 
   return (
@@ -54,7 +61,7 @@ const PeriodDropdown: React.FC<PeriodDropdownProps> = ({ periods }) => {
         onClick={togglePeriodDropdown}
       >
         <span className="period-choice">
-          {selectedOption ? selectedOption.label : "Period"}
+          {perSelectedOption ? perSelectedOption.label : "Period"}
         </span>
         <button className={isOpen ? "rotate" : ""}>
           <FontAwesomeIcon

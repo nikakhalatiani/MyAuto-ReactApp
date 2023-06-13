@@ -142,23 +142,121 @@ interface ModelOption {
   shown_in_slider: number;
 }
 
+interface GroupedModelOption {
+  man_name: string;
+  options: ModelOption[];
+}
+
+interface OrderingOption {
+  value: number;
+  label: string;
+}
+
+interface PeriodOption {
+  value: string;
+  label: string;
+}
+
 interface ProductCardProps {
+  pairManModel: GroupedModelOption[];
   products: ProductOption[];
+  filteredProducts: ProductOption[];
+  setFilteredProducts: (filteredProducts: ProductOption[]) => void;
   mans: ManOption[];
   selectedCurrencyIndex: number;
   setSelectedCurrencyIndex: (selectedCurrencyIndex: number) => void;
+  sortSelectedOption: OrderingOption;
+  perSelectedOption: PeriodOption;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
+  pairManModel,
   products,
+  filteredProducts,
+  setFilteredProducts,
   mans,
   selectedCurrencyIndex,
   setSelectedCurrencyIndex,
+  sortSelectedOption,
+  perSelectedOption,
 }) => {
   const [modelList, setModelList] = useState<Array<[number, string]>>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 10;
-  const totalPages = Math.ceil(products.length / productsPerPage);
+  const productsPerPage = 9;
+  const [totalPages, setTotalPages] = useState<number>(
+    Math.ceil(products.length / productsPerPage)
+  );
+
+  const updateFilteredProducts = () => {
+    const sortedProducts = filterProducts(products, sortSelectedOption);
+    const filteredProducts = filterProductsByPeriod(
+      sortedProducts,
+      perSelectedOption
+    );
+    setFilteredProducts(filteredProducts);
+
+    currentPage > Math.ceil(filteredProducts.length / productsPerPage) &&
+      setCurrentPage(Math.ceil(filteredProducts.length / productsPerPage));
+  };
+
+  useEffect(() => {
+    updateFilteredProducts();
+  }, [perSelectedOption, sortSelectedOption]);
+
+  //   function getModelName(man_name: string, model_id: number): string {
+  //     const foundMan = pairManModel.find(
+  //       (manOption) => manOption.man_name.toLowerCase() === man_name.toLowerCase()
+  //     );
+
+  //     if (foundMan) {
+  //       const foundModel = foundMan.options.find(
+  //         (modelOption) => modelOption.model_id === model_id
+  //       );
+  //       return foundModel ? foundModel.model_name : "";
+  //     }
+
+  //     return "";
+  //   }
+
+  const modelCache: Record<number, ModelOption[]> = {};
+
+  async function getModelName(
+    man_id: number,
+    model_id: number
+  ): Promise<string> {
+    if (modelCache[man_id]) {
+      const foundModel = modelCache[man_id].find(
+        (model) => model.model_id === model_id
+      );
+      if (foundModel) {
+        console.log("Cache hit", foundModel.model_name);
+        return foundModel.model_name;
+      }
+    }
+
+    const url = `https://api2.myauto.ge/en/getManModels?man_id=${man_id}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      const foundModel = data.data.find(
+        (model: ModelOption) => model.model_id === model_id
+      );
+      if (foundModel) {
+        if (!modelCache[man_id]) {
+          modelCache[man_id] = [foundModel];
+        } else {
+          modelCache[man_id].push(foundModel);
+        }
+        return foundModel.model_name;
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+
+    return "";
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -174,6 +272,93 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
     fetchData();
   }, [products]);
+
+  function filterProducts(
+    products: ProductOption[],
+    sortSelectedOption: OrderingOption
+  ): ProductOption[] {
+    const { value } = sortSelectedOption;
+
+    switch (value) {
+      case 2: // Decreasing date
+        return products.sort(
+          (a, b) =>
+            new Date(b.order_date).getTime() - new Date(a.order_date).getTime()
+        );
+      case 1: // Increasing date
+        return products.sort(
+          (a, b) =>
+            new Date(a.order_date).getTime() - new Date(b.order_date).getTime()
+        );
+      case 3: // Decreasing price
+        return products.sort((a, b) => b.price_value - a.price_value);
+      case 4: // Increasing price
+        return products.sort((a, b) => a.price_value - b.price_value);
+      case 5: // Decreasing mileage
+        return products.sort((a, b) => b.car_run_km - a.car_run_km);
+      case 6: // Increasing mileage
+        return products.sort((a, b) => a.car_run_km - b.car_run_km);
+      default:
+        return products;
+    }
+  }
+
+  useEffect(() => {
+    setTotalPages(Math.ceil(filteredProducts.length / productsPerPage));
+    currentPage > totalPages && setCurrentPage(1);
+  }, [filteredProducts]);
+
+  function filterProductsByPeriod(
+    sortedProducts: ProductOption[],
+    perSelectedOption: PeriodOption
+  ): ProductOption[] {
+    const { value } = perSelectedOption;
+
+    const now = new Date().getTime();
+
+    switch (value) {
+      case "1h": // Filter products within 1 hour
+        return sortedProducts.filter(
+          (product) => now - new Date(product.order_date).getTime() < 3600000
+        );
+      case "2h": // Filter products within 2 hours
+        return sortedProducts.filter(
+          (product) => now - new Date(product.order_date).getTime() < 7200000
+        );
+      case "3h": // Filter products within 3 hours
+        return sortedProducts.filter(
+          (product) => now - new Date(product.order_date).getTime() < 10800000
+        );
+      case "1d": // Filter products within 1 day
+        return sortedProducts.filter(
+          (product) => now - new Date(product.order_date).getTime() < 86400000
+        );
+      case "2d": // Filter products within 2 days
+        return sortedProducts.filter(
+          (product) => now - new Date(product.order_date).getTime() < 172800000
+        );
+      case "3d": // Filter products within 3 days
+        return sortedProducts.filter(
+          (product) => now - new Date(product.order_date).getTime() < 259200000
+        );
+      case "1w": // Filter products within 1 week
+        return sortedProducts.filter(
+          (product) => now - new Date(product.order_date).getTime() < 604800000
+        );
+      case "2w": // Filter products within 2 weeks
+        return sortedProducts.filter(
+          (product) => now - new Date(product.order_date).getTime() < 1209600000
+        );
+      case "3w": // Filter products within 3 weeks
+        return sortedProducts.filter(
+          (product) => now - new Date(product.order_date).getTime() < 1814400000
+        );
+      case "all":
+        return sortedProducts;
+      default:
+        return sortedProducts;
+    }
+  }
 
   const handleCurrencyToggle = () => {
     setSelectedCurrencyIndex(selectedCurrencyIndex === 0 ? 1 : 0);
@@ -226,46 +411,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
       .join(" ");
   }
 
-  const modelCache: Record<number, ModelOption[]> = {};
-
-  async function getModelName(
-    man_id: number,
-    model_id: number
-  ): Promise<string> {
-    if (modelCache[man_id]) {
-      const foundModel = modelCache[man_id].find(
-        (model) => model.model_id === model_id
-      );
-      if (foundModel) {
-        console.log("Cache hit", foundModel.model_name);
-        return foundModel.model_name;
-      }
-    }
-
-    const url = `https://api2.myauto.ge/ka/getManModels?man_id=${man_id}`;
-
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-
-      const foundModel = data.data.find(
-        (model: ModelOption) => model.model_id === model_id
-      );
-      if (foundModel) {
-        if (!modelCache[man_id]) {
-          modelCache[man_id] = [foundModel];
-        } else {
-          modelCache[man_id].push(foundModel);
-        }
-        return foundModel.model_name;
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-
-    return "";
-  }
-
   function mapDoorType(doorTypeId: number): string {
     return doorTypeId % 2 === 0 ? "Left" : "Right";
   }
@@ -311,7 +456,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(
+  const currentProducts = filteredProducts.slice(
     indexOfFirstProduct,
     indexOfLastProduct
   );
@@ -339,6 +484,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   </div>
                 )}
                 <p>{toTitleCase(getManName(product.man_id.toString()))}</p>
+                {/* <p>
+                  {getModelName(
+                    getManName(product.man_id.toString()),
+                    product.model_id
+                  )}F
+                </p> */}
+
                 {(() => {
                   const [modelId, modelName] =
                     [...modelList].find(
@@ -346,6 +498,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     ) || [];
                   return <p key={modelId}>{modelName}</p>;
                 })()}
+
                 <p>{product.car_model}</p>
                 <p className="years-number">{product.prod_year} y</p>
               </div>
@@ -513,8 +666,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 </p>
               </center>
               <aside className="right">
-                {product.price_value === 0 ? (
-                  <p className="product-price">Price negotiable</p>
+                {product.price_value === 0 || product.price_value === null ? (
+                  <p className="product-price-neg">Price negotiable</p>
                 ) : (
                   <p className="product-price">
                     {selectedCurrencyIndex === 0
@@ -523,7 +676,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   </p>
                 )}
 
-                {product.price_value !== 0 && (
+                {product.price_value !== 0 && product.price_value !== null && (
                   <div className="button-box">
                     <button
                       className={`lari-btn ${

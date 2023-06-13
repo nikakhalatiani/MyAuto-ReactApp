@@ -4,19 +4,23 @@ import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import "./FilterDropdown.css";
 
 interface OrderingOption {
-  value: string;
+  value: number;
   label: string;
 }
 
 interface FilterDropdownProps {
   ordering_type: OrderingOption[];
+  sortSelectedOption: OrderingOption;
+  setSortSelectedOption: (sortSelectedOption: OrderingOption) => void;
 }
 
-const FilterDropdown: React.FC<FilterDropdownProps> = ({ ordering_type }) => {
+const FilterDropdown: React.FC<FilterDropdownProps> = ({
+  ordering_type,
+  sortSelectedOption,
+  setSortSelectedOption,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<OrderingOption | null>(
-    null
-  );
+
   const filterDropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleFilterDropdown = () => {
@@ -24,7 +28,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({ ordering_type }) => {
   };
 
   const handleOptionSelect = (option: OrderingOption) => {
-    setSelectedOption(option);
+    setSortSelectedOption(option);
     setIsOpen(false);
   };
 
@@ -45,9 +49,8 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({ ordering_type }) => {
   }, []);
 
   const filteredOptions = ordering_type.filter(
-    (option) => option.value !== selectedOption?.value
+    (option) => option.value !== sortSelectedOption?.value
   );
-
 
   return (
     <div className="filter-dropdown-container" ref={filterDropdownRef}>
@@ -57,7 +60,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({ ordering_type }) => {
         onClick={toggleFilterDropdown}
       >
         <span className="period-choice">
-          {selectedOption ? selectedOption.label : "Order"}
+          {sortSelectedOption ? sortSelectedOption.label : "Order"}
         </span>
         <button className={isOpen ? "rotate" : ""}>
           <FontAwesomeIcon

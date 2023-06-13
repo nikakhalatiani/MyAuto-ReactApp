@@ -21,6 +21,8 @@ function App() {
   const [modelSelectedOptions, setModSelectedOptions] = useState<ModelOption[]>(
     []
   );
+    const [filteredProducts, setFilteredProducts] =
+    useState<ProductOption[]>(prod_options);
   const [pairManModel, setPairManModel] = useState<GroupedModelOption[]>([]);
   const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState(0);
 
@@ -44,7 +46,7 @@ function App() {
       // const prods = await prod_response.json();
 
       const allProds = [];
-      for (let page = 1; page <= 5; page++) {
+      for (let page = 1; page <= 3; page++) {
         const prodsItems = await fetchProducts(page);
         allProds.push(...prodsItems);
       }
@@ -257,29 +259,29 @@ function App() {
   }
 
   interface OrderingOption {
-    value: string;
+    value: number;
     label: string;
   }
 
   const periods: PeriodOption[] = [
-    { value: "option1", label: "1 hour" },
-    { value: "option2", label: "2 hours" },
-    { value: "option3", label: "3 hours" },
-    { value: "option4", label: "1 day" },
-    { value: "option5", label: "2 days" },
-    { value: "option6", label: "3 days" },
-    { value: "option7", label: "1 week" },
-    { value: "option8", label: "2 weeks" },
-    { value: "option9", label: "3 weeks" },
+    { value: "1h", label: "1 hour" },
+    { value: "2h", label: "2 hours" },
+    { value: "3h", label: "3 hours" },
+    { value: "1d", label: "1 day" },
+    { value: "2d", label: "2 days" },
+    { value: "3d", label: "3 days" },
+    { value: "1w", label: "1 week" },
+    { value: "2w", label: "2 weeks" },
+    { value: "3w", label: "3 weeks" },
   ];
 
   const ordering_type: OrderingOption[] = [
-    { value: "option1", label: "order by date desc" },
-    { value: "option2", label: "order by date asc" },
-    { value: "option3", label: "Price descending" },
-    { value: "option4", label: "Price ascending" },
-    { value: "option5", label: "Mileage descending" },
-    { value: "option6", label: "Mileage ascending" },
+    { value: 1, label: "order by date desc" },
+    { value: 2, label: "order by date asc" },
+    { value: 3, label: "Price descending" },
+    { value: 4, label: "Price ascending" },
+    { value: 5, label: "Mileage descending" },
+    { value: 6, label: "Mileage ascending" },
   ];
 
   // const handlePeriodChange = (selectedPeriod: string) => {
@@ -309,17 +311,22 @@ function App() {
             setModSelectedOptions={setModSelectedOptions}
             setSelectedCurrencyIndex={setSelectedCurrencyIndex}
             selectedCurrencyIndex={selectedCurrencyIndex}
+            filteredProducts={filteredProducts}
+            setFilteredProducts={setFilteredProducts}
           />
         </div>
         <div className="right-container">
           {" "}
           <Main
+            pairManModel={pairManModel}
             prod_options={prod_options}
             mans_options={mans_options}
             setSelectedCurrencyIndex={setSelectedCurrencyIndex}
             selectedCurrencyIndex={selectedCurrencyIndex}
             periods={periods}
             ordering_type={ordering_type}
+            filteredProducts={filteredProducts}
+            setFilteredProducts={setFilteredProducts}
           />
         </div>
       </div>

@@ -132,49 +132,106 @@ interface PeriodOption {
 }
 
 interface OrderingOption {
+  value: number;
+  label: string;
+}
+
+interface PeriodOption {
   value: string;
   label: string;
 }
 
+interface ModelOption {
+  model_id: number;
+  man_id: number;
+  model_name: string;
+  model_group: string;
+  sort_order: number;
+  cat_man_id: number;
+  cat_model_id: number;
+  cat_modif_id: number;
+  is_car: boolean;
+  is_moto: boolean;
+  is_spec: boolean;
+  show_in_salons: number;
+  shown_in_slider: number;
+}
+
+interface GroupedModelOption {
+  man_name: string;
+  options: ModelOption[];
+}
+
 type MainProps = {
+  pairManModel: GroupedModelOption[];
   prod_options: ProductOption[];
   mans_options: ManOption[];
   selectedCurrencyIndex: number;
   setSelectedCurrencyIndex: (selectedCurrencyIndex: number) => void;
   periods: PeriodOption[];
   ordering_type: OrderingOption[];
+  filteredProducts: ProductOption[];
+  setFilteredProducts: (filteredProducts: ProductOption[]) => void;
+  
 };
 
 const Main: React.FC<MainProps> = ({
+  pairManModel,
   prod_options,
   mans_options,
   setSelectedCurrencyIndex,
   selectedCurrencyIndex,
   periods,
   ordering_type,
+  filteredProducts,
+  setFilteredProducts,
+
 }) => {
+  const [sortSelectedOption, setSortSelectedOption] = useState<OrderingOption>({
+    value: 2,
+    label: "Order",
+  });
+
+  const [perSelectedOption, setPerSelectedOption] = useState<PeriodOption>({
+    value: "all",
+    label: "Period",
+  });
+
   return (
-    <div>
+    <div className="right-products-container">
       <div className="above-products">
         <div>
           <p className="count-listing">
-            {prod_options.length < 1
+            {filteredProducts.length < 1
               ? "No Listings"
-              : prod_options.length === 1
+              : filteredProducts.length === 1
               ? "1 Listing"
-              : `${prod_options.length} Listings`}
+              : `${filteredProducts.length} Listings`}
           </p>{" "}
         </div>
         <div className="right-drops">
-          <PeriodDropdown periods={periods} />
-          <FilterDropdown ordering_type={ordering_type} />
+          <PeriodDropdown
+            periods={periods}
+            perSelectedOption={perSelectedOption}
+            setPerSelectedOption={setPerSelectedOption}
+          />
+          <FilterDropdown
+            ordering_type={ordering_type}
+            sortSelectedOption={sortSelectedOption}
+            setSortSelectedOption={setSortSelectedOption}
+          />
         </div>
       </div>
       <ProductCard
+        pairManModel={pairManModel}
+        filteredProducts={filteredProducts}
+        setFilteredProducts={setFilteredProducts}
         products={prod_options}
         mans={mans_options}
         setSelectedCurrencyIndex={setSelectedCurrencyIndex}
         selectedCurrencyIndex={selectedCurrencyIndex}
+        sortSelectedOption={sortSelectedOption}
+        perSelectedOption={perSelectedOption}
       />
     </div>
   );
