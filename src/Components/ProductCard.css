@@ -192,6 +192,10 @@ footer .right-icons > * {
   fill: #1eb676;
 }
 
+.eye:hover {
+  fill: rgb(123, 199, 224);
+}
+
 .card-info footer p,
 .card-info header p,
 .left p,
@@ -282,5 +286,6 @@ footer .right-icons > * {
 }
 
 .all-products {
-  margin-top: 18px;
+  margin-top: 12px;
 }
+

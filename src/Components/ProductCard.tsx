@@ -148,7 +148,7 @@ interface GroupedModelOption {
 }
 
 interface OrderingOption {
-  value: number;
+  value: string;
   label: string;
 }
 
@@ -160,48 +160,47 @@ interface PeriodOption {
 interface ProductCardProps {
   pairManModel: GroupedModelOption[];
   products: ProductOption[];
-  filteredProducts: ProductOption[];
-  setFilteredProducts: (filteredProducts: ProductOption[]) => void;
   mans: ManOption[];
   selectedCurrencyIndex: number;
   setSelectedCurrencyIndex: (selectedCurrencyIndex: number) => void;
   sortSelectedOption: OrderingOption;
   perSelectedOption: PeriodOption;
+  prodsLoading: boolean;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
   pairManModel,
   products,
-  filteredProducts,
-  setFilteredProducts,
   mans,
   selectedCurrencyIndex,
   setSelectedCurrencyIndex,
   sortSelectedOption,
   perSelectedOption,
+  prodsLoading,
 }) => {
   const [modelList, setModelList] = useState<Array<[number, string]>>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 9;
+  const productsPerPage = 5;
   const [totalPages, setTotalPages] = useState<number>(
     Math.ceil(products.length / productsPerPage)
   );
 
-  const updateFilteredProducts = () => {
-    const sortedProducts = filterProducts(products, sortSelectedOption);
-    const filteredProducts = filterProductsByPeriod(
-      sortedProducts,
-      perSelectedOption
-    );
-    setFilteredProducts(filteredProducts);
+  // const updateFilteredProducts = () => {
 
-    currentPage > Math.ceil(filteredProducts.length / productsPerPage) &&
-      setCurrentPage(Math.ceil(filteredProducts.length / productsPerPage));
-  };
+  //   const sortedProducts = filterProducts(products, sortSelectedOption);
+  //   const filteredProducts = filterProductsByPeriod(
+  //     sortedProducts,
+  //     perSelectedOption
+  //   );
+  //   setFilteredProducts(filteredProducts);
 
-  useEffect(() => {
-    updateFilteredProducts();
-  }, [perSelectedOption, sortSelectedOption]);
+  //   currentPage > Math.ceil(filteredProducts.length / productsPerPage) &&
+  //     setCurrentPage(Math.ceil(filteredProducts.length / productsPerPage));
+  // };
+
+  // useEffect(() => {
+  //   updateFilteredProducts();
+  // }, [perSelectedOption, sortSelectedOption]);
 
   //   function getModelName(man_name: string, model_id: number): string {
   //     const foundMan = pairManModel.find(
@@ -273,92 +272,90 @@ const ProductCard: React.FC<ProductCardProps> = ({
     fetchData();
   }, [products]);
 
-  function filterProducts(
-    products: ProductOption[],
-    sortSelectedOption: OrderingOption
-  ): ProductOption[] {
-    const { value } = sortSelectedOption;
+  // function filterProducts(
+  //   products: ProductOption[],
+  //   sortSelectedOption: OrderingOption
+  // ): ProductOption[] {
+  //   const { value } = sortSelectedOption;
 
-    switch (value) {
-      case 2: // Decreasing date
-        return products.sort(
-          (a, b) =>
-            new Date(b.order_date).getTime() - new Date(a.order_date).getTime()
-        );
-      case 1: // Increasing date
-        return products.sort(
-          (a, b) =>
-            new Date(a.order_date).getTime() - new Date(b.order_date).getTime()
-        );
-      case 3: // Decreasing price
-        return products.sort((a, b) => b.price_value - a.price_value);
-      case 4: // Increasing price
-        return products.sort((a, b) => a.price_value - b.price_value);
-      case 5: // Decreasing mileage
-        return products.sort((a, b) => b.car_run_km - a.car_run_km);
-      case 6: // Increasing mileage
-        return products.sort((a, b) => a.car_run_km - b.car_run_km);
-      default:
-        return products;
-    }
-  }
+  //   switch (value) {
+  //     case 2: // Decreasing date
+  //       return products.sort(
+  //         (a, b) =>
+  //           new Date(b.order_date).getTime() - new Date(a.order_date).getTime()
+  //       );
+  //     case 1: // Increasing date
+  //       return products.sort(
+  //         (a, b) =>
+  //           new Date(a.order_date).getTime() - new Date(b.order_date).getTime()
+  //       );
+  //     case 3: // Decreasing price
+  //       return products.sort((a, b) => b.price_value - a.price_value);
+  //     case 4: // Increasing price
+  //       return products.sort((a, b) => a.price_value - b.price_value);
+  //     case 5: // Decreasing mileage
+  //       return products.sort((a, b) => b.car_run_km - a.car_run_km);
+  //     case 6: // Increasing mileage
+  //       return products.sort((a, b) => a.car_run_km - b.car_run_km);
+  //     default:
+  //       return products;
+  //   }
+  // }
 
   useEffect(() => {
-    setTotalPages(Math.ceil(filteredProducts.length / productsPerPage));
+    setTotalPages(Math.ceil(products.length / productsPerPage));
     currentPage > totalPages && setCurrentPage(1);
-  }, [filteredProducts]);
+  }, [products]);
 
-  function filterProductsByPeriod(
-    sortedProducts: ProductOption[],
-    perSelectedOption: PeriodOption
-  ): ProductOption[] {
-    const { value } = perSelectedOption;
+  // function filterProductsByPeriod(
+  //   sortedProducts: ProductOption[],
+  //   perSelectedOption: PeriodOption
+  // ): ProductOption[] {
+  //   const { value } = perSelectedOption;
 
-    const now = new Date().getTime();
+  //   const now = new Date().getTime();
 
-    switch (value) {
-      case "1h": // Filter products within 1 hour
-        return sortedProducts.filter(
-          (product) => now - new Date(product.order_date).getTime() < 3600000
-        );
-      case "2h": // Filter products within 2 hours
-        return sortedProducts.filter(
-          (product) => now - new Date(product.order_date).getTime() < 7200000
-        );
-      case "3h": // Filter products within 3 hours
-        return sortedProducts.filter(
-          (product) => now - new Date(product.order_date).getTime() < 10800000
-        );
-      case "1d": // Filter products within 1 day
-        return sortedProducts.filter(
-          (product) => now - new Date(product.order_date).getTime() < 86400000
-        );
-      case "2d": // Filter products within 2 days
-        return sortedProducts.filter(
-          (product) => now - new Date(product.order_date).getTime() < 172800000
-        );
-      case "3d": // Filter products within 3 days
-        return sortedProducts.filter(
-          (product) => now - new Date(product.order_date).getTime() < 259200000
-        );
-      case "1w": // Filter products within 1 week
-        return sortedProducts.filter(
-          (product) => now - new Date(product.order_date).getTime() < 604800000
-        );
-      case "2w": // Filter products within 2 weeks
-        return sortedProducts.filter(
-          (product) => now - new Date(product.order_date).getTime() < 1209600000
-        );
-      case "3w": // Filter products within 3 weeks
-        return sortedProducts.filter(
-          (product) => now - new Date(product.order_date).getTime() < 1814400000
-        );
-      case "all":
-        return sortedProducts;
-      default:
-        return sortedProducts;
-    }
-  }
+  //   switch (value) {
+  //     case "1h": // Filter products within 1 hour
+  //       return sortedProducts.filter(
+  //         (product) => now - new Date(product.order_date).getTime() < 3600000
+  //       );
+  //     case "2h": // Filter products within 2 hours
+  //       return sortedProducts.filter(
+  //         (product) => now - new Date(product.order_date).getTime() < 7200000
+  //       );
+  //     case "3h": // Filter products within 3 hours
+  //       return sortedProducts.filter(
+  //         (product) => now - new Date(product.order_date).getTime() < 10800000
+  //       );
+  //     case "1d": // Filter products within 1 day
+  //       return sortedProducts.filter(
+  //         (product) => now - new Date(product.order_date).getTime() < 86400000
+  //       );
+  //     case "2d": // Filter products within 2 days
+  //       return sortedProducts.filter(
+  //         (product) => now - new Date(product.order_date).getTime() < 172800000
+  //       );
+  //     case "3d": // Filter products within 3 days
+  //       return sortedProducts.filter(
+  //         (product) => now - new Date(product.order_date).getTime() < 259200000
+  //       );
+  //     case "1w": // Filter products within 1 week
+  //       return sortedProducts.filter(
+  //         (product) => now - new Date(product.order_date).getTime() < 604800000
+  //       );
+  //     case "2w": // Filter products within 2 weeks
+  //       return sortedProducts.filter(
+  //         (product) => now - new Date(product.order_date).getTime() < 1209600000
+  //       );
+  //     case "3w": // Filter products within 3 weeks
+  //       return sortedProducts.filter(
+  //         (product) => now - new Date(product.order_date).getTime() < 1814400000
+  //       );
+  //     default:
+  //       return sortedProducts;
+  //   }
+  // }
 
   const handleCurrencyToggle = () => {
     setSelectedCurrencyIndex(selectedCurrencyIndex === 0 ? 1 : 0);
@@ -391,6 +388,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
         return "Manual";
       case 4:
         return "Variator";
+      case 0:
+        return "";
       default:
         return "Unknown";
     }
@@ -456,13 +455,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = filteredProducts.slice(
+  const currentProducts = products.slice(
     indexOfFirstProduct,
     indexOfLastProduct
   );
 
   //   return modelList.length > 0 ? (
-  return (
+  return !prodsLoading ? (
     <div className="all-products">
       {currentProducts.map((product) => (
         <div key={product.car_id} className="product-card">
@@ -786,6 +785,182 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </button>
         ))}
       </div>
+    </div>
+  ) : (
+    <div className="all-products">
+      {currentProducts.map((product) => (
+        <div key={product.car_id} className="product-card">
+          <div className="card-photo">
+            {" "}
+            {/* Display empty field */}
+            <Carousel imageBaseUrl={""} photo_ver={1} />
+          </div>
+
+          <div className="card-info">
+            <header>
+              <div className="long-info">
+                <p
+                  style={{
+                    background: "lightgray",
+                    width: "80%",
+                    height: "15px",
+                    borderEndStartRadius: "6px",
+                    borderTopLeftRadius: "6px",
+                  }}
+                ></p>
+                <p
+                  style={{
+                    background: "lightgray",
+                    width: "60%",
+                    height: "15px",
+                  }}
+                ></p>
+                <p
+                  style={{
+                    background: "lightgray",
+                    width: "70%",
+                    height: "15px",
+                  }}
+                ></p>
+                <p
+                  style={{
+                    background: "lightgray",
+                    width: "50%",
+                    height: "15px",
+                    borderEndEndRadius: "6px",
+                    borderTopRightRadius: "6px",
+                  }}
+                ></p>
+              </div>
+
+              <div className="short-info">
+                {/* Display empty field */}
+                <div className="customs-uncheck"></div>
+              </div>
+            </header>
+            <div className="product-info">
+              <aside className="left">
+                {/* Display empty field */}
+                <p
+                  style={{
+                    background: "lightgray",
+                    width: "70%",
+                    height: "15px",
+                    borderRadius: "6px",
+                  }}
+                >
+                  {" "}
+                </p>
+                {/* Display empty field */}
+                <p
+                  style={{
+                    background: "lightgray",
+                    width: "60%",
+                    height: "15px",
+                    borderRadius: "6px",
+                  }}
+                >
+                  {" "}
+                </p>
+              </aside>
+              <center>
+                {/* Display empty field */}
+                <p
+                  style={{
+                    background: "lightgray",
+                    width: "50%",
+                    height: "15px",
+                    borderRadius: "6px",
+                  }}
+                >
+                  <span className="grey-place"></span>
+                </p>
+
+                {/* Display empty field */}
+                <p
+                  style={{
+                    background: "lightgray",
+                    width: "70%",
+                    height: "15px",
+                    borderRadius: "6px",
+                  }}
+                ></p>
+              </center>
+              <aside className="right">
+                {/* Display empty field */}
+                <p className="product-price-neg"></p>
+              </aside>
+            </div>
+            <footer>
+              <div className="views-time">
+                <p
+                  style={{
+                    background: "lightgray",
+                    width: "30%",
+                    height: "15px",
+                    borderRadius: "6px",
+                  }}
+                ></p>
+                <p className="dot"> •</p>
+                <p
+                  style={{
+                    background: "lightgray",
+                    width: "50%",
+                    height: "15px",
+                    borderRadius: "6px",
+                  }}
+                ></p>
+              </div>
+              <div className="right-icons">
+                <svg
+                  className="comment"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M4.917 7a.75.75 0 0 1 .75-.75h4.666a.75.75 0 0 1 0 1.5H5.667a.75.75 0 0 1-.75-.75Z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M1.72 2.006C2.463 1.264 3.496.87 4.667.87h6.666c1.17 0 2.204.394 2.947 1.136.743.743 1.137 1.777 1.137 2.947v4c0 1.17-.394 2.205-1.137 2.947-.58.58-1.336.947-2.197 1.08v.727c0 1.136-1.263 1.8-2.198 1.178m-.001 0-2.777-1.848h-2.44c-1.17 0-2.204-.394-2.947-1.137C.977 11.158.583 10.124.583 8.953v-4c0-1.17.394-2.204 1.137-2.947m1.06 1.061c-.423.424-.697 1.057-.697 1.886v4c0 .83.273 1.463.697 1.887.424.424 1.057.697 1.887.697h2.666a.75.75 0 0 1 .416.125l2.834 1.886v-1.261a.75.75 0 0 1 .75-.75c.83 0 1.463-.274 1.887-.697.423-.424.697-1.057.697-1.887v-4c0-.83-.274-1.462-.697-1.886-.424-.424-1.057-.697-1.887-.697H4.667c-.83 0-1.463.273-1.887.697Z"
+                  />
+                </svg>
+                <svg
+                  className="eye"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M15.197 1.864a.75.75 0 1 0-1.06-1.061l-2.18 2.179C10.764 2.182 9.41 1.737 8 1.737c-2.671 0-5.078 1.575-6.706 4.133C.9 6.49.727 7.27.727 8.003c0 .734.172 1.514.567 2.133V5.87v4.267c.464.728.994 1.379 1.573 1.935L.803 14.136a.75.75 0 0 0 1.06 1.061l4.98-4.98.009-.008 3.357-3.357.008-.008 4.98-4.98ZM9.623 5.316l1.249-1.248C9.969 3.52 8.992 3.237 8 3.237c-2.035 0-4.015 1.197-5.44 3.439h-.001c-.205.321-.332.801-.332 1.327 0 .526.127 1.006.332 1.327.41.644.874 1.209 1.37 1.681l1.387-1.388a3.134 3.134 0 0 1 4.307-4.307ZM6.363 8A1.634 1.634 0 0 1 8.5 6.44L6.44 8.5a1.632 1.632 0 0 1-.078-.5Zm6.534-3.298a.75.75 0 0 1 1.054.115c.26.323.517.672.755 1.047.395.62.568 1.399.568 2.133s-.173 1.513-.568 2.133c-1.628 2.558-4.034 4.133-6.706 4.133a6.892 6.892 0 0 1-2.678-.552.75.75 0 1 1 .583-1.382A5.394 5.394 0 0 0 8 12.763c2.035 0 4.015-1.198 5.44-3.439h.001c.205-.321.332-.802.332-1.327 0-.526-.127-1.006-.332-1.327a10.065 10.065 0 0 0-.659-.912.75.75 0 0 1 .115-1.055Zm-1.82 3.9a.75.75 0 1 0-1.475-.271 1.627 1.627 0 0 1-1.278 1.278.75.75 0 1 0 .272 1.475 3.126 3.126 0 0 0 2.481-2.481Z"
+                  />
+                </svg>
+                <svg
+                  className="heart"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M8.686 2.168a4.292 4.292 0 0 0-.495.421l-.128.132L8 2.79l-.063-.07-.128-.13a4.292 4.292 0 0 0-.495-.422A3.373 3.373 0 0 0 5.3 1.5C2.585 1.5 1 3.877 1 6.304c0 2.375 1.191 4.437 3.137 6.096C5.505 13.567 7.295 14.5 8 14.5c.705 0 2.495-.933 3.863-2.1C13.81 10.74 15 8.68 15 6.304 15 3.877 13.415 1.5 10.7 1.5a3.37 3.37 0 0 0-2.014.668Zm-2.01 1.55C6.238 3.292 5.79 3.1 5.3 3.1c-1.549 0-2.7 1.348-2.7 3.204 0 1.784.881 3.434 2.575 4.879a11.28 11.28 0 0 0 1.899 1.295c.306.164.568.283.768.356.07.026.122.042.158.052.036-.01.088-.026.158-.052.2-.073.463-.192.769-.356a11.21 11.21 0 0 0 1.898-1.295C12.519 9.738 13.4 8.088 13.4 6.304c0-1.856-1.151-3.204-2.7-3.204-.49 0-.939.191-1.375.619l-.097.099L8 5.17 6.772 3.818l-.097-.1Z"
+                  />
+                </svg>
+              </div>
+            </footer>
+          </div>
+        </div>
+      ))}
     </div>
   );
 

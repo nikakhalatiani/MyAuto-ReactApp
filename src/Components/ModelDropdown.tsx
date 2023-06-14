@@ -335,7 +335,7 @@ const ModelDropdown: React.FC<ModelDropdownProps> = ({
         } ${isOpen ? "open" : ""}`}
       >
         <input
-          id="2"
+          id="9"
           placeholder={
             modelSelectedOptions.length > 0
               ? modelSelectedOptions

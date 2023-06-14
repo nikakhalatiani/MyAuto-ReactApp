@@ -38,10 +38,10 @@
   outline: none;
   border: none;
   border-radius: 4px;
-  cursor: auto;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
+  background-color: transparent;
 }
 
 .model-container.open input {

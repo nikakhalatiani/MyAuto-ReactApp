@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProductCard from "./ProductCard";
 import PeriodDropdown from "./PeriodDropdown";
 import FilterDropdown from "./FilterDropdown";
+import FiltersContainer from "./FiltersContainer";
 import "./Main.css";
 
 interface ProductOption {
@@ -131,8 +132,17 @@ interface PeriodOption {
   label: string;
 }
 
+interface CategOption {
+  category_id: number;
+  category_type: number;
+  has_icon: number;
+  title: string;
+  seo_title: string;
+  vehicle_types: number[];
+}
+
 interface OrderingOption {
-  value: number;
+  value: string;
   label: string;
 }
 
@@ -162,58 +172,111 @@ interface GroupedModelOption {
   options: ModelOption[];
 }
 
-type MainProps = {
+interface FilterOption {
+  type: string;
+  id: string;
+  label: string;
+  man_id?: string;
+}
+
+type Search = {
+  Mans: string;
+  Cats: string;
+  PriceTo: string;
+  PriceFrom: string;
+  ForRent: string;
+};
+
+interface MainProps {
   pairManModel: GroupedModelOption[];
   prod_options: ProductOption[];
+  setProds: (prods: ProductOption[]) => void;
   mans_options: ManOption[];
   selectedCurrencyIndex: number;
   setSelectedCurrencyIndex: (selectedCurrencyIndex: number) => void;
   periods: PeriodOption[];
   ordering_type: OrderingOption[];
-  filteredProducts: ProductOption[];
-  setFilteredProducts: (filteredProducts: ProductOption[]) => void;
-  
-};
+  filters: FilterOption[];
+  setFilters: (filters: FilterOption[]) => void;
+  prod_api: string;
+  setProdApi: (prod_api: string) => void;
+  prodsLoading: boolean;
+  setProdsLoading: (prodsLoading: boolean) => void;
+  setSaleSelectedOption: (saleSelectedOption: string) => void;
+  perSelectedOption: PeriodOption;
+  setPerSelectedOption: (perSelectedOption: PeriodOption) => void;
+  sortSelectedOption: OrderingOption;
+  setSortSelectedOption: (sortSelectedOption: OrderingOption) => void;
+  setSearchButton: (searchButtonArray: Search) => void;
+  searchButton: Search;
+  setManSelectedOptions: (selectedOptions: ManOption[]) => void;
+  manSelectedOptions: ManOption[];
+  modelSelectedOptions: ModelOption[];
+  catSelectedOptions: CategOption[];
+  setCatSelectedOptions: (selectedOptions: CategOption[]) => void;
+  setModSelectedOptions: (selectedOptions: ModelOption[]) => void;
+  setModIsCloseButtonSelected: (isManCloseButtonSelected: boolean) => void;
+  setManIsCloseButtonSelected: (isModCloseButtonSelected: boolean) => void;
+  setIsCategCloseButtonSelected: (isCategCloseButtonSelected: boolean) => void;
+}
 
 const Main: React.FC<MainProps> = ({
   pairManModel,
   prod_options,
+  setProds,
   mans_options,
   setSelectedCurrencyIndex,
   selectedCurrencyIndex,
   periods,
   ordering_type,
-  filteredProducts,
-  setFilteredProducts,
-
+  filters,
+  setFilters,
+  prod_api,
+  setProdApi,
+  prodsLoading,
+  setProdsLoading,
+  setSaleSelectedOption,
+  perSelectedOption,
+  setPerSelectedOption,
+  sortSelectedOption,
+  setSortSelectedOption,
+  setSearchButton,
+  searchButton,
+  setManSelectedOptions,
+  manSelectedOptions,
+  modelSelectedOptions,
+  setModSelectedOptions,
+  catSelectedOptions,
+  setCatSelectedOptions,
+  setModIsCloseButtonSelected,
+  setManIsCloseButtonSelected,
+  setIsCategCloseButtonSelected,
 }) => {
-  const [sortSelectedOption, setSortSelectedOption] = useState<OrderingOption>({
-    value: 2,
-    label: "Order",
-  });
-
-  const [perSelectedOption, setPerSelectedOption] = useState<PeriodOption>({
-    value: "all",
-    label: "Period",
-  });
-
   return (
     <div className="right-products-container">
       <div className="above-products">
         <div>
-          <p className="count-listing">
-            {filteredProducts.length < 1
-              ? "No Listings"
-              : filteredProducts.length === 1
-              ? "1 Listing"
-              : `${filteredProducts.length} Listings`}
-          </p>{" "}
+          {prodsLoading ? (
+            <div className="loading-container">
+              <div className="custom-loader"></div> Loading
+            </div>
+          ) : (
+            <p className="count-listing">
+              {prod_options.length < 1
+                ? "No Listings"
+                : prod_options.length === 1
+                ? "1 Listing"
+                : `${prod_options.length} Listings`}
+            </p>
+          )}
         </div>
         <div className="right-drops">
           <PeriodDropdown
             periods={periods}
             perSelectedOption={perSelectedOption}
             setPerSelectedOption={setPerSelectedOption}
+            setFilters={setFilters}
+            filters={filters}
           />
           <FilterDropdown
             ordering_type={ordering_type}
@@ -222,16 +285,32 @@ const Main: React.FC<MainProps> = ({
           />
         </div>
       </div>
+      {filters.length !== 0 && (
+        <FiltersContainer
+          filters={filters}
+          setFilters={setFilters}
+          setSortSelectedOption={setSortSelectedOption}
+          setPerSelectedOption={setPerSelectedOption}
+          setSearchButton={setSearchButton}
+          searchButton={searchButton}
+          setManSelectedOptions={setManSelectedOptions}
+          manSelectedOptions={manSelectedOptions}
+          setModSelectedOptions={setModSelectedOptions}
+          modelSelectedOptions={modelSelectedOptions}
+          catSelectedOptions={catSelectedOptions}
+          setCatSelectedOptions={setCatSelectedOptions}
+        />
+      )}
+
       <ProductCard
         pairManModel={pairManModel}
-        filteredProducts={filteredProducts}
-        setFilteredProducts={setFilteredProducts}
         products={prod_options}
         mans={mans_options}
         setSelectedCurrencyIndex={setSelectedCurrencyIndex}
         selectedCurrencyIndex={selectedCurrencyIndex}
         sortSelectedOption={sortSelectedOption}
         perSelectedOption={perSelectedOption}
+        prodsLoading={prodsLoading}
       />
     </div>
   );

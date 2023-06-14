@@ -4,10 +4,9 @@ import { useState } from "react";
 interface CarouselProps {
   imageBaseUrl: string;
   photo_ver: number;
-
 }
 
-const Carousel: React.FC<CarouselProps> = ({ imageBaseUrl,photo_ver}) => {
+const Carousel: React.FC<CarouselProps> = ({ imageBaseUrl, photo_ver }) => {
   const [activeIndex, setActiveIndex] = useState<number>(1);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -30,13 +29,27 @@ const Carousel: React.FC<CarouselProps> = ({ imageBaseUrl,photo_ver}) => {
   };
 
   const getImageUrl = (index: number) => {
-    return `${imageBaseUrl.replace("{PHOTO_INDEX}", index.toString())}?v=${photo_ver}`;
+    return `${imageBaseUrl.replace(
+      "{PHOTO_INDEX}",
+      index.toString()
+    )}?v=${photo_ver}`;
   };
 
+  const handleImageError = (
+    event: React.SyntheticEvent<HTMLImageElement, Event>
+  ) => {
+    const target = event.target as HTMLImageElement;
+    target.src =
+      "https://www.obriencarcare.com/wp-content/plugins/wp-car-manager/assets/images/placeholder-single.png";
+  };
   return (
     <div className="container">
       <div className="image-container">
-        <img className="image" src={getImageUrl(activeIndex)} alt={`No ${activeIndex} Image For This Card`} />
+        <img
+          className="image"
+          src={getImageUrl(activeIndex)}
+          onError={handleImageError}
+        />
       </div>
       <div
         className={`overlay-row ${isHovered ? "hovered" : ""}`}
@@ -77,5 +90,3 @@ const Carousel: React.FC<CarouselProps> = ({ imageBaseUrl,photo_ver}) => {
 };
 
 export default Carousel;
-
-

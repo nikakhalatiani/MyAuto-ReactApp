@@ -60,6 +60,19 @@
   align-items: center;
   justify-content: center;
   margin-top: auto;
+  cursor: pointer;
+}
+
+.search-button-div.clicked > button {
+  background-color: #ca3400;
+  border: 1px solid #ca3400;
+
+}
+
+.search-button-div > button:hover {
+  background-color: #ca3400;
+  border: 1px solid #ca3400;
+
 }
 
 .search-button-div > button {

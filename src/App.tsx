@@ -1,7 +1,5 @@
 import "./App.css";
 import Loading from "./Loading/Loading";
-import PeriodDropdown from "./Components/PeriodDropdown";
-import FilterDropdown from "./Components/FilterDropdown";
 import Header from "./Components/Header";
 import Sidebar from "./Components/SideBar";
 import Main from "./Components/Main";
@@ -10,9 +8,11 @@ import { useState, useEffect } from "react";
 
 const mans_api = "https://static.my.ge/myauto/js/mans.json";
 const cats_api = "https://api2.myauto.ge/en/cats/get";
-const prod_api = "https://api2.myauto.ge/en/products/";
 
 function App() {
+  const [prod_api, setProdApi] = useState(
+    "https://api2.myauto.ge/en/products/?"
+  );
   const [loading, setLoading] = useState(true);
   const [mans_options, setMans] = useState<ManOption[]>([]);
   const [cats_options, setCats] = useState<CategOption[]>([]);
@@ -21,36 +21,69 @@ function App() {
   const [modelSelectedOptions, setModSelectedOptions] = useState<ModelOption[]>(
     []
   );
-    const [filteredProducts, setFilteredProducts] =
-    useState<ProductOption[]>(prod_options);
+  const [catSelectedOptions, setCatSelectedOptions] = useState<CategOption[]>(
+    []
+  );
+
   const [pairManModel, setPairManModel] = useState<GroupedModelOption[]>([]);
   const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState(0);
 
-  const fetchProducts = async (page: number) => {
-    const prod_api = `https://api2.myauto.ge/en/products/?Page=${page}`;
-    const prod_response = await fetch(prod_api);
-    const prodsData = await prod_response.json();
-    const prodsItems = prodsData.data.items;
-    return prodsItems;
-  };
+  const [filters, setFilters] = useState<FilterOption[]>([]);
+  const [prodsLoading, setProdsLoading] = useState(true);
+  const [saleSelectedOption, setSaleSelectedOption] = useState("");
+
+  const [isModCloseButtonSelected, setModIsCloseButtonSelected] =
+    useState(false);
+  const [isManCloseButtonSelected, setManIsCloseButtonSelected] =
+    useState(false);
+
+  const [isCategCloseButtonSelected, setIsCategCloseButtonSelected] =
+    useState(false);
+
+  const [sortSelectedOption, setSortSelectedOption] = useState<OrderingOption>({
+    value: "",
+    label: "Sort",
+  });
+
+  const [perSelectedOption, setPerSelectedOption] = useState<PeriodOption>({
+    value: "",
+    label: "Period",
+  });
+
+  const [searchButton, setSearchButton] = useState<Search>({
+    Mans: "",
+    Cats: "",
+    PriceTo: "",
+    PriceFrom: "",
+    ForRent: "",
+  });
+
+  // const fetchProducts = async (page: number) => {
+  //   const prod_api = `https://api2.myauto.ge/en/products/?Page=${page}`;
+  //   const prod_response = await fetch(prod_api);
+  //   const prodsData = await prod_response.json();
+  //   const prodsItems = prodsData.data.items;
+  //   return prodsItems;
+  // };
 
   async function fetchData() {
     setLoading(true);
+    setProdsLoading(true);
     try {
       // await new Promise((resolve) => setTimeout(resolve, 3000)); // simulate slow network by waiting 3 seconds
       const mans_response = await fetch(mans_api);
       const mans: ManOption[] = await mans_response.json();
       const cat_response = await fetch(cats_api);
       const cats = await cat_response.json();
-      // const prod_response = await fetch(prod_api);
-      // const prods = await prod_response.json();
+      const prod_response = await fetch(prod_api);
+      const prods = await prod_response.json();
 
-      const allProds = [];
-      for (let page = 1; page <= 3; page++) {
-        const prodsItems = await fetchProducts(page);
-        allProds.push(...prodsItems);
-      }
-      setProds(allProds);
+      // const allProds = [];
+      // for (let page = 1; page <= 3; page++) {
+      //   const prodsItems = await fetchProducts(page);
+      //   allProds.push(...prodsItems);
+      // }
+      // setProds(allProds);
 
       ////! This part of code was commented and replaced with the code below it since filtering takes too long
       // // Fetch model options for each man_option and filter out empty data arrays
@@ -82,17 +115,111 @@ function App() {
 
       setMans(filteredMansArray);
       setCats(cats["data"]);
-      // setProds(prods["data"]["items"]);
+      setProds(prods["data"]["items"]);
       setLoading(false);
+      setProdsLoading(false);
     } catch (error) {
       setLoading(true);
       console.log("Failed to fetch Manufacturers");
     }
   }
 
+  function toTitleCase(input: string): string {
+    return input
+      .toLowerCase()
+      .split(" ")
+      .map(function (word) {
+        return word?.replace(word[0], word[0]?.toUpperCase());
+      })
+      .join(" ");
+  }
+
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setProdsLoading(true);
+
+    const fetchData = async () => {
+      setSaleSelectedOption(searchButton.ForRent);
+      // Remove existing SortOrder from the URL
+      let updatedProdApi = prod_api
+        .replace(/SortOrder=&/, "")
+
+        .replace(/SortOrder=[^&]+&?/, "")
+        .replace(/Period=&/, "")
+
+        .replace(/Period=[^&]+&?/, "")
+        .replace(/ForRent=&/, "")
+        .replace(/ForRent=[^&]+&?/, "")
+        .replace(/Mans=&/, "")
+        .replace(/Mans=[^&]+&?/, "")
+        .replace(/Cats=&/, "")
+        .replace(/Cats=[^&]+&?/, "");
+
+      // Add the new SortOrder value to the URL
+      updatedProdApi += `SortOrder=${sortSelectedOption.value}&`;
+      updatedProdApi += `Period=${perSelectedOption.value}&`;
+
+      searchButton.ForRent === "For rent"
+        ? (updatedProdApi += `ForRent=${1}&`)
+        : searchButton.ForRent === "For sale"
+        ? (updatedProdApi += `ForRent=${0}&`)
+        : (updatedProdApi += ``);
+
+      updatedProdApi += `Mans=${searchButton.Mans}&`;
+      updatedProdApi += `Cats=${searchButton.Cats}&`;
+
+      console.log(updatedProdApi);
+
+      setProdApi(updatedProdApi);
+      const prod_response = await fetch(updatedProdApi);
+      const prods = await prod_response.json();
+      setProds(prods["data"]["items"]);
+      setProdsLoading(false);
+    };
+
+    let filteredFilters = filters.filter((filter) => filter.type !== "sr");
+
+    filteredFilters = filteredFilters.filter((filter) => filter.type !== "man");
+    filteredFilters = filteredFilters.filter((filter) => filter.type !== "mod");
+    filteredFilters = filteredFilters.filter((filter) => filter.type !== "cat");
+
+    let mansToAdd: FilterOption[] = manSelectedOptions.map((man) => ({
+      id: man.man_id,
+      label: toTitleCase(man.man_name),
+      type: "man",
+    }));
+
+    const modelsToAdd: FilterOption[] = modelSelectedOptions.map((model) => ({
+      id: model.man_id.toString(),
+      label: model.model_name,
+      type: "mod",
+      mod_id: model.model_id.toString(),
+    }));
+
+    mansToAdd = mansToAdd
+      .concat(modelsToAdd)
+      .sort((a, b) => a.id.localeCompare(b.id));
+
+    const catsToAdd: FilterOption[] = catSelectedOptions.map((cat) => ({
+      id: cat.category_id.toString(),
+      label: cat.title,
+      type: "cat",
+    }));
+
+    searchButton.ForRent === ""
+      ? setFilters(filteredFilters.concat(mansToAdd).concat(catsToAdd))
+      : setFilters([
+          ...filteredFilters,
+          { id: "sr", label: searchButton.ForRent, type: "sr" },
+          ...mansToAdd,
+          ...catsToAdd,
+        ]);
+
+    fetchData();
+  }, [sortSelectedOption, perSelectedOption, searchButton]);
 
   if (loading) {
     return (
@@ -101,6 +228,14 @@ function App() {
       </main>
     );
   }
+
+  type Search = {
+    Mans: string;
+    Cats: string;
+    PriceTo: string;
+    PriceFrom: string;
+    ForRent: string;
+  };
 
   interface ProductOption {
     car_id: number;
@@ -259,8 +394,15 @@ function App() {
   }
 
   interface OrderingOption {
-    value: number;
+    value: string;
     label: string;
+  }
+
+  interface FilterOption {
+    type: string;
+    id: string;
+    label: string;
+    mod_id?: string;
   }
 
   const periods: PeriodOption[] = [
@@ -276,23 +418,13 @@ function App() {
   ];
 
   const ordering_type: OrderingOption[] = [
-    { value: 1, label: "order by date desc" },
-    { value: 2, label: "order by date asc" },
-    { value: 3, label: "Price descending" },
-    { value: 4, label: "Price ascending" },
-    { value: 5, label: "Mileage descending" },
-    { value: 6, label: "Mileage ascending" },
+    { value: "2", label: "order by date desc" },
+    { value: "1", label: "order by date asc" },
+    { value: "3", label: "Price descending" },
+    { value: "4", label: "Price ascending" },
+    { value: "5", label: "Mileage descending" },
+    { value: "6", label: "Mileage ascending" },
   ];
-
-  // const handlePeriodChange = (selectedPeriod: string) => {
-  //   // Handle the selected period change here
-  //   console.log("Selected period:", selectedPeriod);
-  // };
-
-  // const handleFilterChange = (selectedFilter: string) => {
-  //   // Handle the selected period change here
-  //   console.log("Selected period:", selectedFilter);
-  // };
 
   return (
     <>
@@ -304,15 +436,30 @@ function App() {
             pairManModel={pairManModel}
             manOptions={mans_options}
             catOptions={cats_options}
-            currencies={["GEL", "USD"]}
+            prod_options={prod_options}
+            setProds={setProds}
+            setProdsLoading={setProdsLoading}
+            prod_api={prod_api}
+            setProdApi={setProdApi}
             manSelectedOptions={manSelectedOptions}
             setManSelectedOptions={setManSelectedOptions}
             modelSelectedOptions={modelSelectedOptions}
+            catSelectedOptions={catSelectedOptions}
+            setCatSelectedOptions={setCatSelectedOptions}
             setModSelectedOptions={setModSelectedOptions}
             setSelectedCurrencyIndex={setSelectedCurrencyIndex}
             selectedCurrencyIndex={selectedCurrencyIndex}
-            filteredProducts={filteredProducts}
-            setFilteredProducts={setFilteredProducts}
+            filters={filters}
+            setFilters={setFilters}
+            saleSelectedOption={saleSelectedOption}
+            setSaleSelectedOption={setSaleSelectedOption}
+            setSearchButton={setSearchButton}
+            isManCloseButtonSelected={isManCloseButtonSelected}
+            setManIsCloseButtonSelected={setManIsCloseButtonSelected}
+            isModCloseButtonSelected={isModCloseButtonSelected}
+            setModIsCloseButtonSelected={setModIsCloseButtonSelected}
+            isCategCloseButtonSelected={isCategCloseButtonSelected}
+            setIsCategCloseButtonSelected={setIsCategCloseButtonSelected}
           />
         </div>
         <div className="right-container">
@@ -320,13 +467,34 @@ function App() {
           <Main
             pairManModel={pairManModel}
             prod_options={prod_options}
+            setProds={setProds}
             mans_options={mans_options}
             setSelectedCurrencyIndex={setSelectedCurrencyIndex}
             selectedCurrencyIndex={selectedCurrencyIndex}
             periods={periods}
             ordering_type={ordering_type}
-            filteredProducts={filteredProducts}
-            setFilteredProducts={setFilteredProducts}
+            filters={filters}
+            setFilters={setFilters}
+            prod_api={prod_api}
+            setProdApi={setProdApi}
+            prodsLoading={prodsLoading}
+            setProdsLoading={setProdsLoading}
+            setSaleSelectedOption={setSaleSelectedOption}
+            perSelectedOption={perSelectedOption}
+            setPerSelectedOption={setPerSelectedOption}
+            sortSelectedOption={sortSelectedOption}
+            setSortSelectedOption={setSortSelectedOption}
+            setSearchButton={setSearchButton}
+            searchButton={searchButton}
+            setManSelectedOptions={setManSelectedOptions}
+            manSelectedOptions={manSelectedOptions}
+            setModSelectedOptions={setModSelectedOptions}
+            modelSelectedOptions={modelSelectedOptions}
+            catSelectedOptions={catSelectedOptions}
+            setCatSelectedOptions={setCatSelectedOptions}
+            setModIsCloseButtonSelected={setModIsCloseButtonSelected}
+            setManIsCloseButtonSelected={setManIsCloseButtonSelected}
+            setIsCategCloseButtonSelected={setIsCategCloseButtonSelected}
           />
         </div>
       </div>

@@ -4,7 +4,7 @@ import ModelDropdown from "./ModelDropdown";
 import CatDropdown from "./CategDropdown";
 import CurrencyChange from "./CurrencyChange";
 import "./SideBar.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGreaterThan } from "@fortawesome/free-solid-svg-icons";
 
@@ -160,57 +160,132 @@ interface ModelOption {
   shown_in_slider: number;
 }
 
+interface FilterOption {
+  type: string;
+  id: string;
+  label: string;
+  man_id?: string;
+}
+
+type Search = {
+  Mans: string;
+  Cats: string;
+  PriceTo: string;
+  PriceFrom: string;
+  ForRent: string;
+};
+
 interface SidebarProps {
   pairManModel: GroupedModelOption[];
   manOptions: ManOption[];
   catOptions: CategOption[];
-  currencies: string[];
+  prod_options: ProductOption[];
+  setProds: (prods: ProductOption[]) => void;
+  prod_api: string;
+  setProdApi: (prod_api: string) => void;
+  setProdsLoading: (prodsLoading: boolean) => void;
   manSelectedOptions: ManOption[];
   setManSelectedOptions: (selectedOptions: ManOption[]) => void;
   modelSelectedOptions: ModelOption[];
   setModSelectedOptions: (selectedOptions: ModelOption[]) => void;
+  catSelectedOptions: CategOption[];
+  setCatSelectedOptions: (selectedOptions: CategOption[]) => void;
   selectedCurrencyIndex: number;
   setSelectedCurrencyIndex: (selectedCurrencyIndex: number) => void;
-  filteredProducts: ProductOption[];
-  setFilteredProducts: (filteredProducts: ProductOption[]) => void;
+  filters: FilterOption[];
+  setFilters: (filters: FilterOption[]) => void;
+  saleSelectedOption: string;
+  setSaleSelectedOption: (saleSelectedOption: string) => void;
+  setSearchButton: (searchButtonArray: Search) => void;
+  isModCloseButtonSelected: boolean;
+  setModIsCloseButtonSelected: (isModCloseButtonSelected: boolean) => void;
+  isCategCloseButtonSelected: boolean;
+  setIsCategCloseButtonSelected: (isCategCloseButtonSelected: boolean) => void;
+  isManCloseButtonSelected: boolean;
+  setManIsCloseButtonSelected: (isManCloseButtonSelected: boolean) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
   pairManModel,
   manOptions,
   catOptions,
-  currencies,
+  prod_options,
+  setProds,
+  prod_api,
+  setProdApi,
+  setProdsLoading,
   manSelectedOptions,
   setManSelectedOptions,
   modelSelectedOptions,
+  catSelectedOptions,
+  setCatSelectedOptions,
   setModSelectedOptions,
   selectedCurrencyIndex,
   setSelectedCurrencyIndex,
-  filteredProducts,
-  setFilteredProducts,
+  filters,
+  setFilters,
+  saleSelectedOption,
+  setSaleSelectedOption,
+  setSearchButton,
+  isModCloseButtonSelected,
+  setModIsCloseButtonSelected,
+  isCategCloseButtonSelected,
+  setIsCategCloseButtonSelected,
+  isManCloseButtonSelected,
+  setManIsCloseButtonSelected,
 }) => {
-  const [isModCloseButtonSelected, setModIsCloseButtonSelected] =
-    useState(false);
-  const [isManCloseButtonSelected, setManIsCloseButtonSelected] =
-    useState(false);
-
-  const [isCategCloseButtonSelected, setIsCategCloseButtonSelected] =
-    useState(false);
-
   const [carClicked, setCarClicked] = useState(true);
+  const [isSearchButtonClicked, setIsSearchButtonClicked] = useState(false);
   const [specClicked, setSpecClicked] = useState(false);
   const [motoClicked, setMotoClicked] = useState(false);
-  const [catSelectedOptions, setCatSelectedOptions] = useState<CategOption[]>(
-    []
-  );
 
-  const [saleSelectedOption, setSaleSelectedOption] = useState("");
   const [filteredManOptions, setFilteredManOptions] = useState<ManOption[]>(
     manOptions.filter((option) => option.is_car === "1")
   );
   const [filteredCatOptions, setFilteredCatOptions] = useState<CategOption[]>(
     catOptions.filter((option) => option.category_type === 0)
   );
+
+  useEffect(() => {
+    setIsSearchButtonClicked(false);
+    modelSelectedOptions.length === 0 && setModIsCloseButtonSelected(false);
+    manSelectedOptions.length === 0 && setManIsCloseButtonSelected(false);
+    catSelectedOptions.length === 0 && setIsCategCloseButtonSelected(false);
+  }, [
+    saleSelectedOption,
+    manSelectedOptions,
+    catSelectedOptions,
+    modelSelectedOptions,
+  ]);
+
+  const handleSearchButton = () => {
+    setIsSearchButtonClicked(true);
+    setSearchButton({
+      Mans: formatOptions(),
+      Cats: formatCats(),
+      PriceTo: "1",
+      PriceFrom: "1",
+      ForRent: saleSelectedOption,
+    });
+  };
+
+  function formatCats(): string {
+    return catSelectedOptions.map((option) => option.category_id).join(".");
+  }
+
+  function formatOptions() {
+    const formattedOptions = manSelectedOptions.map((manOption) => {
+      const models = modelSelectedOptions
+        .filter(
+          (modelOption) => modelOption.man_id.toString() === manOption.man_id
+        )
+        .map((modelOption) => modelOption.model_id)
+        .join(".");
+      return `${manOption.man_id}${models ? `.${models}` : ""}`;
+    });
+
+    return formattedOptions.join("-");
+  }
 
   const handleCarClick = () => {
     setCarClicked(true);
@@ -248,7 +323,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       catOptions.filter((option) => option.category_type === 1)
     );
   };
-  //   console.log(catOptions);
 
   const handleMotoClick = () => {
     setCarClicked(false);
@@ -271,6 +345,82 @@ const Sidebar: React.FC<SidebarProps> = ({
   const handleSearchParClick = () => {
     setSaleSelectedOption("");
   };
+
+  // const handleSearch = () => {
+  //   const addRent = async () => {
+  //     setProdsLoading(true);
+
+  //     // Remove existing SortOrder from the URL
+
+  //     let updatedProdApi = prod_api
+  //       .replace(/ForRent=&/, "")
+  //       .replace(/ForRent=[^&]+&?/, "");
+
+  //     // Add the new SortOrder value to the URL
+  //     saleSelectedOption === "For rent"
+  //       ? (updatedProdApi += `ForRent=${1}&`)
+  //       : saleSelectedOption === "For sale"
+  //       ? (updatedProdApi += `ForRent=${0}&`)
+  //       : (updatedProdApi += `ForRent=${""}&`);
+
+  //     console.log(updatedProdApi, "rent");
+
+  //     setProdApi(updatedProdApi);
+  //     const prod_response = await fetch(updatedProdApi);
+  //     const prods = await prod_response.json();
+  //     setProds(prods["data"]["items"]);
+  //     setProdsLoading(false);
+
+  //   };
+
+  //   const filteredFilters = filters.filter((filter) => filter.type !== "sr");
+  //   saleSelectedOption === ""
+  //     ? setFilters(filteredFilters)
+  //     : setFilters([
+  //         ...filteredFilters,
+  //         { id: "0", label: saleSelectedOption, type: "sr" },
+  //       ]);
+
+  //   addRent();
+  // };
+
+  // const handleSearch = () => {
+  //   const addRent = async () => {
+  //     setProdsLoading(true);
+  //     // Remove existing SortOrder from the URL
+  //     let updatedProdApi = prod_api
+  //       .replace(/ForRent=[^&]+&?/, "");
+
+  //     // Add the new SortOrder value to the URL
+  //     saleSelectedOption === "For rent"
+  //       ? (updatedProdApi += `ForRent=${1}&`)
+  //       : saleSelectedOption === "For sale"
+  //       ? (updatedProdApi += `ForRent=${0}&`)
+  //       : (updatedProdApi += ``);
+
+  //     setProdApi(updatedProdApi);
+  //     const prod_response = await fetch(updatedProdApi);
+  //     const prods = await prod_response.json();
+  //     setProds(prods["data"]["items"]);
+  //     setProdsLoading(false);
+  //     console.log(updatedProdApi, "saleRent");
+
+  //   };
+
+  //   const filteredFilters = filters.filter((filter) => filter.type !== "sr");
+  //     saleSelectedOption === ""
+  //       ? setFilters(filteredFilters)
+  //       : setFilters([
+  //           ...filteredFilters,
+  //           { id: "sr", label: saleSelectedOption, type: "sr" },
+  //         ]);
+
+  //   addRent();
+  // };
+
+  // useEffect(() => {
+  //   handleSearch();
+  // }, [saleSelectedOption]);
 
   return (
     <>
@@ -409,13 +559,18 @@ const Sidebar: React.FC<SidebarProps> = ({
         <span className="pop-line"></span>
         <div className="currency-side-component">
           <CurrencyChange
-            currencies={currencies}
             selectedCurrencyIndex={selectedCurrencyIndex}
             setSelectedCurrencyIndex={setSelectedCurrencyIndex}
           />
         </div>
-        <div className="search-button-div">
-          <button>Search {filteredProducts.length}</button>
+        <div
+          className={`search-button-div ${
+            isSearchButtonClicked ? "clicked" : ""
+          }`}
+        >
+          <button onClick={handleSearchButton} disabled={isSearchButtonClicked}>
+            Search
+          </button>
         </div>
       </div>
     </>

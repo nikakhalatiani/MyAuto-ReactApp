@@ -24,6 +24,32 @@
   color: #1b1d25;
 }
 
-.right-products-container{
-    width: 52lvw;
+.custom-loader {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: conic-gradient(#0000 10%, #6f7383);
+  -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 4px), #000 0);
+  mask: radial-gradient(farthest-side, #0000 calc(100% - 4px), #000 0);
+  -webkit-animation: s3 1s infinite linear;
+  animation: s3 1s infinite linear;
+}
+
+@keyframes s3 {
+  to {
+    transform: rotate(1turn);
+  }
+}
+.loading-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.loading-container > * {
+  margin-right: 8px;
+}
+
+.right-products-container {
+  width: 52lvw;
+  max-width: 780px;
 }

@@ -8,16 +8,27 @@ interface PeriodOption {
   label: string;
 }
 
+interface FilterOption {
+  type: string;
+  id: string;
+  label: string;
+  man_id?: string;
+}
+
 interface PeriodDropdownProps {
   periods: PeriodOption[];
   perSelectedOption: PeriodOption;
   setPerSelectedOption: (perSelectedOption: PeriodOption) => void;
+  filters: FilterOption[];
+  setFilters: (filters: FilterOption[]) => void;
 }
 
 const PeriodDropdown: React.FC<PeriodDropdownProps> = ({
   periods,
   perSelectedOption,
   setPerSelectedOption,
+  setFilters,
+  filters,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -30,7 +41,11 @@ const PeriodDropdown: React.FC<PeriodDropdownProps> = ({
   const handleOptionSelect = (option: PeriodOption) => {
     setPerSelectedOption(option);
     setIsOpen(false);
-    console.log(option);
+    const filteredFilters = filters.filter((filter) => filter.type !== "t");
+    setFilters([
+      ...filteredFilters,
+      { id: option.value, label: option.label, type: "t" },
+    ]);
   };
 
   const handleClickOutside = (event: MouseEvent) => {

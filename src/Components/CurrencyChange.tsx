@@ -2,12 +2,11 @@ import { useState } from "react";
 import "./CurrencyChange.css";
 
 interface PriceFilterProps {
-  currencies: string[];
   selectedCurrencyIndex: number;
   setSelectedCurrencyIndex: (selectedCurrencyIndex: number) => void;
 }
 
-const CurrencyChange: React.FC<PriceFilterProps> = ({ currencies, selectedCurrencyIndex, setSelectedCurrencyIndex }) => {
+const CurrencyChange: React.FC<PriceFilterProps> = ({ selectedCurrencyIndex, setSelectedCurrencyIndex }) => {
 
   const handleCurrencyToggle = () => {
     // setSelectedCurrencyIndex((prevIndex) => (prevIndex === 0 ? 1 : 0));
