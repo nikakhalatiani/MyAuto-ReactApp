@@ -54,7 +54,7 @@ interface ModelDropdownProps {
 }
 
 const ModelDropdown: React.FC<ModelDropdownProps> = ({
-  allOptions, // this argument is not used only on line 112 since parent component is using another implementation we omit it
+  allOptions, // this argument is used only on line 112 since parent component is using another implementation we omit it
   manSelectedOptions,
   setManSelectedOptions,
   modelSelectedOptions,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./FiltersContainer.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -76,6 +76,8 @@ interface FiltersContainerProps {
   modelSelectedOptions: ModelOption[];
   catSelectedOptions: CategOption[];
   setCatSelectedOptions: (selectedOptions: CategOption[]) => void;
+  setPriceFrom: (priceFrom: string) => void;
+  setPriceTo: (priceTo: string) => void;
 }
 
 const FiltersContainer: React.FC<FiltersContainerProps> = ({
@@ -91,6 +93,8 @@ const FiltersContainer: React.FC<FiltersContainerProps> = ({
   modelSelectedOptions,
   catSelectedOptions,
   setCatSelectedOptions,
+  setPriceFrom,
+  setPriceTo,
 }) => {
   const [showAllFilters, setShowAllFilters] = useState(false);
   const visibleFilters = showAllFilters ? filters : filters.slice(0, 10);
@@ -150,6 +154,8 @@ const FiltersContainer: React.FC<FiltersContainerProps> = ({
     setManSelectedOptions([]);
     setModSelectedOptions([]);
     setCatSelectedOptions([]);
+    setPriceFrom("");
+    setPriceTo("");
     setSortSelectedOption({
       value: "",
       label: "Sort",
@@ -241,6 +247,28 @@ const FiltersContainer: React.FC<FiltersContainerProps> = ({
         ),
         Cats: searchButton.Cats,
         PriceTo: searchButton.PriceTo,
+        PriceFrom: searchButton.PriceFrom,
+        ForRent: searchButton.ForRent,
+      });
+    } else if (type === "prf") {
+      setPriceFrom("");
+      const filteredFilters = filters.filter((filter) => filter.type !== "prf");
+      setFilters(filteredFilters);
+      setSearchButton({
+        Mans: searchButton.Mans,
+        Cats: searchButton.Cats,
+        PriceTo: searchButton.PriceTo,
+        PriceFrom: "",
+        ForRent: searchButton.ForRent,
+      });
+    } else if (type === "prt") {
+      setPriceTo("");
+      const filteredFilters = filters.filter((filter) => filter.type !== "prt");
+      setFilters(filteredFilters);
+      setSearchButton({
+        Mans: searchButton.Mans,
+        Cats: searchButton.Cats,
+        PriceTo: "",
         PriceFrom: searchButton.PriceFrom,
         ForRent: searchButton.ForRent,
       });

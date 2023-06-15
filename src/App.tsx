@@ -24,6 +24,8 @@ function App() {
   const [catSelectedOptions, setCatSelectedOptions] = useState<CategOption[]>(
     []
   );
+  const [priceFrom, setPriceFrom] = useState("");
+  const [priceTo, setPriceTo] = useState("");
 
   const [pairManModel, setPairManModel] = useState<GroupedModelOption[]>([]);
   const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState(0);
@@ -144,23 +146,39 @@ function App() {
     const fetchData = async () => {
       setSaleSelectedOption(searchButton.ForRent);
       // Remove existing SortOrder from the URL
+      // let updatedProdApi = prod_api
+      //   .replace(/SortOrder=&/, "")
+
+      //   .replace(/SortOrder=[^&]+&?/, "")
+      //   .replace(/Period=&/, "")
+
+      //   .replace(/Period=[^&]+&?/, "")
+      //   .replace(/ForRent=&/, "")
+      //   .replace(/ForRent=[^&]+&?/, "")
+      //   .replace(/Mans=&/, "")
+      //   .replace(/Mans=[^&]+&?/, "")
+      //   .replace(/Cats=&/, "")
+      //   .replace(/Cats=[^&]+&?/, "")
+      //   .replace(/PriceFrom=&/, "")
+      //   .replace(/PriceFrom=[^&]+&?/, "")
+      //   .replace(/PriceTo=&/, "")
+      //   .replace(/PriceTo=[^&]+&?/, "");
+
       let updatedProdApi = prod_api
-        .replace(/SortOrder=&/, "")
-
-        .replace(/SortOrder=[^&]+&?/, "")
-        .replace(/Period=&/, "")
-
-        .replace(/Period=[^&]+&?/, "")
-        .replace(/ForRent=&/, "")
-        .replace(/ForRent=[^&]+&?/, "")
-        .replace(/Mans=&/, "")
-        .replace(/Mans=[^&]+&?/, "")
-        .replace(/Cats=&/, "")
-        .replace(/Cats=[^&]+&?/, "");
+        .replace(
+          /(SortOrder|Period|ForRent|Mans|Cats|PriceFrom|PriceTo)=[^&]+&?/g,
+          ""
+        )
+        .replace(
+          /(SortOrder|Period|ForRent|Mans|Cats|PriceFrom|PriceTo)=&/g,
+          ""
+        );
 
       // Add the new SortOrder value to the URL
       updatedProdApi += `SortOrder=${sortSelectedOption.value}&`;
       updatedProdApi += `Period=${perSelectedOption.value}&`;
+      updatedProdApi += `PriceFrom=${priceFrom}&`;
+      updatedProdApi += `PriceTo=${priceTo}&`;
 
       searchButton.ForRent === "For rent"
         ? (updatedProdApi += `ForRent=${1}&`)
@@ -185,6 +203,8 @@ function App() {
     filteredFilters = filteredFilters.filter((filter) => filter.type !== "man");
     filteredFilters = filteredFilters.filter((filter) => filter.type !== "mod");
     filteredFilters = filteredFilters.filter((filter) => filter.type !== "cat");
+    filteredFilters = filteredFilters.filter((filter) => filter.type !== "prf");
+    filteredFilters = filteredFilters.filter((filter) => filter.type !== "prt");
 
     let mansToAdd: FilterOption[] = manSelectedOptions.map((man) => ({
       id: man.man_id,
@@ -209,14 +229,29 @@ function App() {
       type: "cat",
     }));
 
-    searchButton.ForRent === ""
-      ? setFilters(filteredFilters.concat(mansToAdd).concat(catsToAdd))
-      : setFilters([
-          ...filteredFilters,
-          { id: "sr", label: searchButton.ForRent, type: "sr" },
-          ...mansToAdd,
-          ...catsToAdd,
-        ]);
+    const res = [];
+
+    if (searchButton.ForRent !== "") {
+      res.push({ id: "sr", label: searchButton.ForRent, type: "sr" });
+    }
+
+    if (searchButton.PriceFrom !== "") {
+      res.push({
+        id: "prf",
+        label: `Price: ${searchButton.PriceFrom} from`,
+        type: "prf",
+      });
+    }
+
+    if (searchButton.PriceTo !== "") {
+      res.push({
+        id: "prt",
+        label: `Price: ${searchButton.PriceTo} to`,
+        type: "prt",
+      });
+    }
+
+    setFilters([...filteredFilters, ...res, ...mansToAdd, ...catsToAdd]);
 
     fetchData();
   }, [sortSelectedOption, perSelectedOption, searchButton]);
@@ -436,11 +471,6 @@ function App() {
             pairManModel={pairManModel}
             manOptions={mans_options}
             catOptions={cats_options}
-            prod_options={prod_options}
-            setProds={setProds}
-            setProdsLoading={setProdsLoading}
-            prod_api={prod_api}
-            setProdApi={setProdApi}
             manSelectedOptions={manSelectedOptions}
             setManSelectedOptions={setManSelectedOptions}
             modelSelectedOptions={modelSelectedOptions}
@@ -449,10 +479,12 @@ function App() {
             setModSelectedOptions={setModSelectedOptions}
             setSelectedCurrencyIndex={setSelectedCurrencyIndex}
             selectedCurrencyIndex={selectedCurrencyIndex}
-            filters={filters}
-            setFilters={setFilters}
             saleSelectedOption={saleSelectedOption}
             setSaleSelectedOption={setSaleSelectedOption}
+            priceFrom={priceFrom}
+            setPriceFrom={setPriceFrom}
+            priceTo={priceTo}
+            setPriceTo={setPriceTo}
             setSearchButton={setSearchButton}
             isManCloseButtonSelected={isManCloseButtonSelected}
             setManIsCloseButtonSelected={setManIsCloseButtonSelected}
@@ -467,7 +499,6 @@ function App() {
           <Main
             pairManModel={pairManModel}
             prod_options={prod_options}
-            setProds={setProds}
             mans_options={mans_options}
             setSelectedCurrencyIndex={setSelectedCurrencyIndex}
             selectedCurrencyIndex={selectedCurrencyIndex}
@@ -475,11 +506,7 @@ function App() {
             ordering_type={ordering_type}
             filters={filters}
             setFilters={setFilters}
-            prod_api={prod_api}
-            setProdApi={setProdApi}
             prodsLoading={prodsLoading}
-            setProdsLoading={setProdsLoading}
-            setSaleSelectedOption={setSaleSelectedOption}
             perSelectedOption={perSelectedOption}
             setPerSelectedOption={setPerSelectedOption}
             sortSelectedOption={sortSelectedOption}
@@ -492,9 +519,8 @@ function App() {
             modelSelectedOptions={modelSelectedOptions}
             catSelectedOptions={catSelectedOptions}
             setCatSelectedOptions={setCatSelectedOptions}
-            setModIsCloseButtonSelected={setModIsCloseButtonSelected}
-            setManIsCloseButtonSelected={setManIsCloseButtonSelected}
-            setIsCategCloseButtonSelected={setIsCategCloseButtonSelected}
+            setPriceFrom={setPriceFrom}
+            setPriceTo={setPriceTo}
           />
         </div>
       </div>

@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import ProductCard from "./ProductCard";
 import PeriodDropdown from "./PeriodDropdown";
 import FilterDropdown from "./FilterDropdown";
@@ -190,7 +189,6 @@ type Search = {
 interface MainProps {
   pairManModel: GroupedModelOption[];
   prod_options: ProductOption[];
-  setProds: (prods: ProductOption[]) => void;
   mans_options: ManOption[];
   selectedCurrencyIndex: number;
   setSelectedCurrencyIndex: (selectedCurrencyIndex: number) => void;
@@ -198,11 +196,7 @@ interface MainProps {
   ordering_type: OrderingOption[];
   filters: FilterOption[];
   setFilters: (filters: FilterOption[]) => void;
-  prod_api: string;
-  setProdApi: (prod_api: string) => void;
   prodsLoading: boolean;
-  setProdsLoading: (prodsLoading: boolean) => void;
-  setSaleSelectedOption: (saleSelectedOption: string) => void;
   perSelectedOption: PeriodOption;
   setPerSelectedOption: (perSelectedOption: PeriodOption) => void;
   sortSelectedOption: OrderingOption;
@@ -215,15 +209,13 @@ interface MainProps {
   catSelectedOptions: CategOption[];
   setCatSelectedOptions: (selectedOptions: CategOption[]) => void;
   setModSelectedOptions: (selectedOptions: ModelOption[]) => void;
-  setModIsCloseButtonSelected: (isManCloseButtonSelected: boolean) => void;
-  setManIsCloseButtonSelected: (isModCloseButtonSelected: boolean) => void;
-  setIsCategCloseButtonSelected: (isCategCloseButtonSelected: boolean) => void;
+  setPriceFrom: (priceFrom: string) => void;
+  setPriceTo: (priceTo: string) => void;
 }
 
 const Main: React.FC<MainProps> = ({
   pairManModel,
   prod_options,
-  setProds,
   mans_options,
   setSelectedCurrencyIndex,
   selectedCurrencyIndex,
@@ -231,11 +223,7 @@ const Main: React.FC<MainProps> = ({
   ordering_type,
   filters,
   setFilters,
-  prod_api,
-  setProdApi,
   prodsLoading,
-  setProdsLoading,
-  setSaleSelectedOption,
   perSelectedOption,
   setPerSelectedOption,
   sortSelectedOption,
@@ -248,9 +236,8 @@ const Main: React.FC<MainProps> = ({
   setModSelectedOptions,
   catSelectedOptions,
   setCatSelectedOptions,
-  setModIsCloseButtonSelected,
-  setManIsCloseButtonSelected,
-  setIsCategCloseButtonSelected,
+  setPriceFrom,
+  setPriceTo,
 }) => {
   return (
     <div className="right-products-container">
@@ -299,6 +286,8 @@ const Main: React.FC<MainProps> = ({
           modelSelectedOptions={modelSelectedOptions}
           catSelectedOptions={catSelectedOptions}
           setCatSelectedOptions={setCatSelectedOptions}
+          setPriceFrom={setPriceFrom}
+          setPriceTo={setPriceTo}
         />
       )}
 
@@ -308,9 +297,16 @@ const Main: React.FC<MainProps> = ({
         mans={mans_options}
         setSelectedCurrencyIndex={setSelectedCurrencyIndex}
         selectedCurrencyIndex={selectedCurrencyIndex}
-        sortSelectedOption={sortSelectedOption}
-        perSelectedOption={perSelectedOption}
         prodsLoading={prodsLoading}
+        setSearchButton={setSearchButton}
+        setManSelectedOptions={setManSelectedOptions}
+        setModSelectedOptions={setModSelectedOptions}
+        setCatSelectedOptions={setCatSelectedOptions}
+        setFilters={setFilters}
+        setPerSelectedOption={setPerSelectedOption}
+        setSortSelectedOption={setSortSelectedOption}
+        setPriceFrom={setPriceFrom}
+        setPriceTo={setPriceTo}
       />
     </div>
   );
