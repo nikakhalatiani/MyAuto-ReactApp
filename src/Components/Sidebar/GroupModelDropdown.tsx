@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import "./GroupModelDropdown.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -6,7 +6,7 @@ import {
   faMinus,
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
-
+import { AppContext } from "../../Contexts/AppContext";
 
 interface ModelOption {
   model_id: number;
@@ -27,22 +27,21 @@ interface ModelOption {
 interface GroupModelDropdownProps {
   model_group: string;
   options: ModelOption[];
-  modelSelectedOptions: ModelOption[];
   handleCheckboxChange: (option: ModelOption) => void;
-  setModSelectedOptions: (options: ModelOption[]) => void;
   modelInputRef: React.RefObject<HTMLInputElement>;
-  setModIsCloseButtonSelected: (isModCloseButtonSelected: boolean) => void;
 }
 
 const GroupModelDropdown: React.FC<GroupModelDropdownProps> = ({
   model_group,
   options,
-  modelSelectedOptions,
   handleCheckboxChange,
-  setModSelectedOptions,
   modelInputRef,
-  setModIsCloseButtonSelected,
 }) => {
+  const {
+    setModIsCloseButtonSelected,
+    modelSelectedOptions,
+    setModSelectedOptions,
+  } = useContext(AppContext);
   const [isChecked, setIsChecked] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 

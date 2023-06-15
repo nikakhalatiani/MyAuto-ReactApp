@@ -1,23 +1,17 @@
 import "./CurrencyChange.css";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useContext } from "react";
+import { AppContext } from "../../Contexts/AppContext";
 
-interface PriceFilterProps {
-  selectedCurrencyIndex: number;
-  setSelectedCurrencyIndex: (selectedCurrencyIndex: number) => void;
-  setPriceFrom: (priceFrom: string) => void;
-  setPriceTo: (priceTo: string) => void;
-  priceFrom: string;
-  priceTo: string;
-}
 
-const CurrencyChange: React.FC<PriceFilterProps> = ({
-  selectedCurrencyIndex,
-  setSelectedCurrencyIndex,
-  setPriceFrom,
-  setPriceTo,
-  priceFrom,
-  priceTo,
-}) => {
+const CurrencyChange: React.FC = ({}) => {
+  const {
+    priceFrom,
+    setPriceFrom,
+    priceTo,
+    setPriceTo,
+    selectedCurrencyIndex,
+    setSelectedCurrencyIndex,
+  } = useContext(AppContext);
   const handleCurrencyToggle = () => {
     // setSelectedCurrencyIndex((prevIndex) => (prevIndex === 0 ? 1 : 0));
     setSelectedCurrencyIndex(selectedCurrencyIndex === 0 ? 1 : 0);

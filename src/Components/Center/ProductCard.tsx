@@ -1,131 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useContext } from "react";
 import "./ProductCard.css";
-import Carousel from "./Carousel";
-
+import Carousel from "././Carousel";
+import { AppContext } from "../../Contexts/AppContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faCheck } from "@fortawesome/free-solid-svg-icons";
 
-interface ProductOption {
-  car_id: number;
-  status_id: number;
-  user_id: number;
-  dealer_user_id: number;
-  paid_add: number;
-  photo: string;
-  pic_number: number;
-  prod_year: number;
-  prod_month: number;
-  man_id: number;
-  car_model: string;
-  price: number;
-  price_usd: number;
-  first_deposit: number;
-  price_value: number;
-  fuel_type_id: number;
-  gear_type_id: number;
-  drive_type_id: number;
-  door_type_id: number;
-  color_id: number;
-  saloon_color_id: number;
-  cylinders: number;
-  car_run: number;
-  car_run_km: number;
-  car_run_dim: number;
-  engine_volume: number;
-  airbags: number;
-  abs: boolean;
-  esd: boolean;
-  el_windows: boolean;
-  conditioner: boolean;
-  leather: boolean;
-  disks: boolean;
-  nav_system: boolean;
-  central_lock: boolean;
-  hatch: boolean;
-  right_wheel: boolean;
-  alarm: boolean;
-  board_comp: boolean;
-  hydraulics: boolean;
-  chair_warming: boolean;
-  climat_control: boolean;
-  obstacle_indicator: boolean;
-  customs_passed: boolean;
-  client_name: string;
-  client_phone: number;
-  model_id: number;
-  location_id: number;
-  parent_loc_id: number;
-  tech_inspection: boolean;
-  checked_for_duplicates: boolean;
-  order_number: number;
-  stickers: any;
-  changable: boolean;
-  auction: boolean;
-  has_turbo: boolean;
-  for_rent: boolean;
-  rent_daily: boolean;
-  rent_purchase: boolean;
-  rent_insured: boolean;
-  rent_driver: boolean;
-  currency_id: number;
-  vehicle_type: number;
-  category_id: number;
-  vin: string;
-  user_type: any;
-  prom_color: number;
-  special_persons: boolean;
-  back_camera: boolean;
-  car_desc: string;
-  order_date: string;
-  video_url: string;
-  hp: number;
-  hours_used: number;
-  photo_ver: number;
-  checked: boolean;
-  lang_type_id: number;
-  el_starter: number;
-  start_stop: boolean;
-  trunk: boolean;
-  windshield: boolean;
-  inspected_in_greenway: boolean;
-  license_number: string;
-  words_checked: number;
-  is_payd: boolean;
-  condition_type_id: number;
-  primary_damage_type: number;
-  secondary_damage_type: number;
-  auction_has_key: number;
-  is_auction: number;
-  saloon_material_id: number;
-  map_lat: number;
-  map_long: number;
-  zoom: number;
-  predicted_price: string;
-  hdd: number;
-  map_title: string;
-  has_catalyst: number;
-  tmp: string;
-  views: number;
-  dealerId: any;
-  has_logo: any;
-  logo_ver: any;
-  active_ads: any;
-  dealer_title: any;
-  has_predicted_price: boolean;
-  pred_first_breakpoint: number;
-  pred_second_breakpoint: number;
-  pred_min_price: number;
-  pred_max_price: number;
-  comfort_features: number[];
-}
-
-interface ManOption {
-  man_id: string;
-  man_name: string;
-  is_car: string;
-  is_spec: string;
-  is_moto: string;
-}
 interface ModelOption {
   model_id: number;
   man_id: number;
@@ -147,97 +26,46 @@ interface GroupedModelOption {
   options: ModelOption[];
 }
 
-interface OrderingOption {
-  value: string;
-  label: string;
-}
-
-interface PeriodOption {
-  value: string;
-  label: string;
-}
-
-interface FilterOption {
-  type: string;
-  id: string;
-  label: string;
-  man_id?: string;
-}
-
-type Search = {
-  Mans: string;
-  Cats: string;
-  PriceTo: string;
-  PriceFrom: string;
-  ForRent: string;
-};
-
-interface CategOption {
-  category_id: number;
-  category_type: number;
-  has_icon: number;
-  title: string;
-  seo_title: string;
-  vehicle_types: number[];
-}
-
-interface ProductCardProps {
-  pairManModel: GroupedModelOption[];
-  products: ProductOption[];
-  mans: ManOption[];
-  selectedCurrencyIndex: number;
-  setSelectedCurrencyIndex: (selectedCurrencyIndex: number) => void;
-  prodsLoading: boolean;
-  setSearchButton: (searchButton: Search) => void;
-  setManSelectedOptions: (selectedOptions: ManOption[]) => void;
-  setModSelectedOptions: (selectedOptions: ModelOption[]) => void;
-  setCatSelectedOptions: (selectedOptions: CategOption[]) => void;
-  setSortSelectedOption: (selectedOption: OrderingOption) => void;
-  setPerSelectedOption: (selectedOption: PeriodOption) => void;
-  setFilters: (filters: FilterOption[]) => void;
-  setPriceFrom: (priceFrom: string) => void;
-  setPriceTo: (priceTo: string) => void;
-}
-
-const ProductCard: React.FC<ProductCardProps> = ({
-  pairManModel,
-  products,
-  mans,
-  selectedCurrencyIndex,
-  setSelectedCurrencyIndex,
-  prodsLoading,
-  setSearchButton,
-  setManSelectedOptions,
-  setModSelectedOptions,
-  setCatSelectedOptions,
-  setSortSelectedOption,
-  setPerSelectedOption,
-  setFilters,
-  setPriceFrom,
-  setPriceTo,
-}) => {
+const ProductCard: React.FC = ({}) => {
+  const {
+    pairManModel,
+    selectedCurrencyIndex,
+    setSelectedCurrencyIndex,
+    setSearchButton,
+    setManSelectedOptions,
+    setModSelectedOptions,
+    setCatSelectedOptions,
+    setPriceFrom,
+    setPriceTo,
+    prod_options,
+    mans_options,
+    setSortSelectedOption,
+    setPerSelectedOption,
+    setFilters,
+    prodsLoading,
+  } = useContext(AppContext);
   const [modelList, setModelList] = useState<Array<[number, string]>>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 5;
+  const prod_optionsPerPage = 5;
   const [totalPages, setTotalPages] = useState<number>(
-    Math.ceil(products.length / productsPerPage)
+    Math.ceil(prod_options.length / prod_optionsPerPage)
   );
 
-  // const updateFilteredProducts = () => {
+  // const updateFilteredProd_options = () => {
 
-  //   const sortedProducts = filterProducts(products, sortSelectedOption);
-  //   const filteredProducts = filterProductsByPeriod(
-  //     sortedProducts,
+  //   const sortedProd_options = filterProd_options(prod_options, sortSelectedOption);
+  //   const filteredProd_options = filterProd_optionsByPeriod(
+  //     sortedProd_options,
   //     perSelectedOption
   //   );
-  //   setFilteredProducts(filteredProducts);
+  //   setFilteredProd_options(filteredProd_options);
 
-  //   currentPage > Math.ceil(filteredProducts.length / productsPerPage) &&
-  //     setCurrentPage(Math.ceil(filteredProducts.length / productsPerPage));
+  //   currentPage > Math.ceil(filteredProd_options.length / prod_optionsPerPage) &&
+  //     setCurrentPage(Math.ceil(filteredProd_options.length / prod_optionsPerPage));
   // };
 
   // useEffect(() => {
-  //   updateFilteredProducts();
+  //   updateFilteredProd_options();
   // }, [perSelectedOption, sortSelectedOption]);
 
   //   function getModelName(man_name: string, model_id: number): string {
@@ -257,49 +85,50 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   const modelCache: Record<number, ModelOption[]> = {};
 
-  async function getModelName(
-    man_id: number,
-    model_id: number
-  ): Promise<string> {
-    if (modelCache[man_id]) {
-      const foundModel = modelCache[man_id].find(
-        (model) => model.model_id === model_id
-      );
-      if (foundModel) {
-        console.log("Cache hit", foundModel.model_name);
-        return foundModel.model_name;
-      }
-    }
-
-    const url = `https://api2.myauto.ge/en/getManModels?man_id=${man_id}`;
-
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-
-      const foundModel = data.data.find(
-        (model: ModelOption) => model.model_id === model_id
-      );
-      if (foundModel) {
-        if (!modelCache[man_id]) {
-          modelCache[man_id] = [foundModel];
-        } else {
-          modelCache[man_id].push(foundModel);
+  const getModelName = useMemo(
+    () =>
+      async (man_id: number, model_id: number): Promise<string> => {
+        if (modelCache[man_id]) {
+          const foundModel = modelCache[man_id].find(
+            (model) => model.model_id === model_id
+          );
+          if (foundModel) {
+            console.log("Cache hit", foundModel.model_name);
+            return foundModel.model_name;
+          }
         }
-        return foundModel.model_name;
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
 
-    return "";
-  }
+        const url = `https://api2.myauto.ge/en/getManModels?man_id=${man_id}`;
+
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+
+          const foundModel = data.data.find(
+            (model: ModelOption) => model.model_id === model_id
+          );
+          if (foundModel) {
+            if (!modelCache[man_id]) {
+              modelCache[man_id] = [foundModel];
+            } else {
+              modelCache[man_id].push(foundModel);
+            }
+            return foundModel.model_name;
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+
+        return "";
+      },
+    []
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       const updatedModelList: Array<[number, string]> = [];
 
-      for (const product of products) {
+      for (const product of prod_options) {
         const modelName = await getModelName(product.man_id, product.model_id);
         updatedModelList.push([product.model_id, modelName]);
       }
@@ -308,92 +137,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
     };
 
     fetchData();
-  }, [products]);
-
-  // function filterProducts(
-  //   products: ProductOption[],
-  //   sortSelectedOption: OrderingOption
-  // ): ProductOption[] {
-  //   const { value } = sortSelectedOption;
-
-  //   switch (value) {
-  //     case 2: // Decreasing date
-  //       return products.sort(
-  //         (a, b) =>
-  //           new Date(b.order_date).getTime() - new Date(a.order_date).getTime()
-  //       );
-  //     case 1: // Increasing date
-  //       return products.sort(
-  //         (a, b) =>
-  //           new Date(a.order_date).getTime() - new Date(b.order_date).getTime()
-  //       );
-  //     case 3: // Decreasing price
-  //       return products.sort((a, b) => b.price_value - a.price_value);
-  //     case 4: // Increasing price
-  //       return products.sort((a, b) => a.price_value - b.price_value);
-  //     case 5: // Decreasing mileage
-  //       return products.sort((a, b) => b.car_run_km - a.car_run_km);
-  //     case 6: // Increasing mileage
-  //       return products.sort((a, b) => a.car_run_km - b.car_run_km);
-  //     default:
-  //       return products;
-  //   }
-  // }
+  }, [getModelName, prod_options]);
 
   useEffect(() => {
-    setTotalPages(Math.ceil(products.length / productsPerPage));
-    currentPage > totalPages && setCurrentPage(1);
-  }, [products]);
-
-  // function filterProductsByPeriod(
-  //   sortedProducts: ProductOption[],
-  //   perSelectedOption: PeriodOption
-  // ): ProductOption[] {
-  //   const { value } = perSelectedOption;
-
-  //   const now = new Date().getTime();
-
-  //   switch (value) {
-  //     case "1h": // Filter products within 1 hour
-  //       return sortedProducts.filter(
-  //         (product) => now - new Date(product.order_date).getTime() < 3600000
-  //       );
-  //     case "2h": // Filter products within 2 hours
-  //       return sortedProducts.filter(
-  //         (product) => now - new Date(product.order_date).getTime() < 7200000
-  //       );
-  //     case "3h": // Filter products within 3 hours
-  //       return sortedProducts.filter(
-  //         (product) => now - new Date(product.order_date).getTime() < 10800000
-  //       );
-  //     case "1d": // Filter products within 1 day
-  //       return sortedProducts.filter(
-  //         (product) => now - new Date(product.order_date).getTime() < 86400000
-  //       );
-  //     case "2d": // Filter products within 2 days
-  //       return sortedProducts.filter(
-  //         (product) => now - new Date(product.order_date).getTime() < 172800000
-  //       );
-  //     case "3d": // Filter products within 3 days
-  //       return sortedProducts.filter(
-  //         (product) => now - new Date(product.order_date).getTime() < 259200000
-  //       );
-  //     case "1w": // Filter products within 1 week
-  //       return sortedProducts.filter(
-  //         (product) => now - new Date(product.order_date).getTime() < 604800000
-  //       );
-  //     case "2w": // Filter products within 2 weeks
-  //       return sortedProducts.filter(
-  //         (product) => now - new Date(product.order_date).getTime() < 1209600000
-  //       );
-  //     case "3w": // Filter products within 3 weeks
-  //       return sortedProducts.filter(
-  //         (product) => now - new Date(product.order_date).getTime() < 1814400000
-  //       );
-  //     default:
-  //       return sortedProducts;
-  //   }
-  // }
+    setTotalPages(Math.ceil(prod_options.length / prod_optionsPerPage));
+    currentPage > Math.ceil(prod_options.length / prod_optionsPerPage) &&
+      setCurrentPage(1);
+  }, [prod_options]);
 
   const handleCurrencyToggle = () => {
     setSelectedCurrencyIndex(selectedCurrencyIndex === 0 ? 1 : 0);
@@ -434,7 +184,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   }
 
   function getManName(man_id: string): string {
-    const foundMan = mans.find((man) => man.man_id === man_id);
+    const foundMan = mans_options.find((man) => man.man_id === man_id);
     return foundMan ? foundMan.man_name : "";
   }
 
@@ -516,18 +266,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
     setCurrentPage(pageNumber);
   };
 
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(
+  const indexOfLastProduct = currentPage * prod_optionsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - prod_optionsPerPage;
+  const currentProd_options = prod_options.slice(
     indexOfFirstProduct,
     indexOfLastProduct
   );
 
-  //   return modelList.length > 0 ? (
-  return products.length > 0 ? (
+  return prod_options.length > 0 ? (
     !prodsLoading ? (
-      <div className="all-products">
-        {currentProducts.map((product) => (
+      <div className="all-prod_options">
+        {currentProd_options.map((product) => (
           <div key={product.car_id} className="product-card">
             <div className="card-photo">
               {" "}
@@ -854,12 +603,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </div>
     ) : (
-      <div className="all-products">
-        {currentProducts.map((product) => (
+      <div className="all-prod_options">
+        {currentProd_options.map((product) => (
           <div key={product.car_id} className="product-card">
             <div className="card-photo">
               {" "}
-              {/* Display empty field */}
               <Carousel imageBaseUrl={""} photo_ver={1} />
             </div>
 
@@ -901,13 +649,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 </div>
 
                 <div className="short-info">
-                  {/* Display empty field */}
                   <div className="customs-uncheck"></div>
                 </div>
               </header>
               <div className="product-info">
                 <aside className="left">
-                  {/* Display empty field */}
                   <p
                     style={{
                       background: "lightgray",
@@ -918,7 +664,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   >
                     {" "}
                   </p>
-                  {/* Display empty field */}
                   <p
                     style={{
                       background: "lightgray",
@@ -931,7 +676,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   </p>
                 </aside>
                 <center>
-                  {/* Display empty field */}
                   <p
                     style={{
                       background: "lightgray",

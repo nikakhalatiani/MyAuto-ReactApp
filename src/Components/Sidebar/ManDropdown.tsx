@@ -5,7 +5,8 @@ import {
   faXmark,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
+import { AppContext } from "../../Contexts/AppContext";
 
 interface ManOption {
   man_id: string;
@@ -14,43 +15,21 @@ interface ManOption {
   is_spec: string;
   is_moto: string;
 }
-interface ModelOption {
-  model_id: number;
-  man_id: number;
-  model_name: string;
-  model_group: string;
-  sort_order: number;
-  cat_man_id: number;
-  cat_model_id: number;
-  cat_modif_id: number;
-  is_car: boolean;
-  is_moto: boolean;
-  is_spec: boolean;
-  show_in_salons: number;
-  shown_in_slider: number;
-}
 
 interface ManDropdownProps {
   options: ManOption[];
-  setManSelectedOptions: (selectedOptions: ManOption[]) => void;
-  manSelectedOptions: ManOption[];
-  isManCloseButtonSelected: boolean;
-  setManIsCloseButtonSelected: (isManCloseButtonSelected: boolean) => void;
-  modelSelectedOptions: ModelOption[];
-  setModSelectedOptions: (selectedOptions: ModelOption[]) => void;
-  setModIsCloseButtonSelected: (isModCloseButtonSelected: boolean) => void;
 }
 
-const ManDropdown: React.FC<ManDropdownProps> = ({
-  options,
-  setManSelectedOptions,
-  manSelectedOptions,
-  isManCloseButtonSelected,
-  setManIsCloseButtonSelected,
-  modelSelectedOptions,
-  setModSelectedOptions,
-  setModIsCloseButtonSelected,
-}) => {
+const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
+  const {
+    setManSelectedOptions,
+    manSelectedOptions,
+    isManCloseButtonSelected,
+    setManIsCloseButtonSelected,
+    modelSelectedOptions,
+    setModSelectedOptions,
+    setModIsCloseButtonSelected,
+  } = useContext(AppContext);
   const [manTerm, setManTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -169,7 +148,6 @@ const ManDropdown: React.FC<ManDropdownProps> = ({
     setModSelectedOptions([]);
     setModIsCloseButtonSelected(false);
   };
-
 
   const filteredOptions = options
     .filter((option) =>

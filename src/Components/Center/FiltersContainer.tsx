@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import "./FiltersContainer.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -6,96 +6,25 @@ import {
   faCircleMinus,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import { AppContext } from "../../Contexts/AppContext";
 
-interface OrderingOption {
-  value: string;
-  label: string;
-}
-
-interface PeriodOption {
-  value: string;
-  label: string;
-}
-
-interface FilterOption {
-  type: string;
-  id: string;
-  label: string;
-  mod_id?: string;
-}
-type Search = {
-  Mans: string;
-  Cats: string;
-  PriceTo: string;
-  PriceFrom: string;
-  ForRent: string;
-};
-
-interface ManOption {
-  man_id: string;
-  man_name: string;
-  is_car: string;
-  is_spec: string;
-  is_moto: string;
-}
-interface ModelOption {
-  model_id: number;
-  man_id: number;
-  model_name: string;
-  model_group: string;
-  sort_order: number;
-  cat_man_id: number;
-  cat_model_id: number;
-  cat_modif_id: number;
-  is_car: boolean;
-  is_moto: boolean;
-  is_spec: boolean;
-  show_in_salons: number;
-  shown_in_slider: number;
-}
-
-interface CategOption {
-  category_id: number;
-  category_type: number;
-  has_icon: number;
-  title: string;
-  seo_title: string;
-  vehicle_types: number[];
-}
-
-interface FiltersContainerProps {
-  filters: FilterOption[];
-  setFilters: (filters: FilterOption[]) => void;
-  setSortSelectedOption: (sortSelectedOption: OrderingOption) => void;
-  setPerSelectedOption: (perSelectedOption: PeriodOption) => void;
-  setSearchButton: (searchButton: Search) => void;
-  searchButton: Search;
-  setManSelectedOptions: (selectedOptions: ManOption[]) => void;
-  manSelectedOptions: ManOption[];
-  setModSelectedOptions: (selectedOptions: ModelOption[]) => void;
-  modelSelectedOptions: ModelOption[];
-  catSelectedOptions: CategOption[];
-  setCatSelectedOptions: (selectedOptions: CategOption[]) => void;
-  setPriceFrom: (priceFrom: string) => void;
-  setPriceTo: (priceTo: string) => void;
-}
-
-const FiltersContainer: React.FC<FiltersContainerProps> = ({
-  filters,
-  setFilters,
-  setSortSelectedOption,
-  setPerSelectedOption,
-  setSearchButton,
-  searchButton,
-  setManSelectedOptions,
-  manSelectedOptions,
-  setModSelectedOptions,
-  modelSelectedOptions,
-  catSelectedOptions,
-  setCatSelectedOptions,
-  setPriceFrom,
-  setPriceTo,
-}) => {
+const FiltersContainer: React.FC = () => {
+  const {
+    setFilters,
+    setSortSelectedOption,
+    setPerSelectedOption,
+    setSearchButton,
+    setManSelectedOptions,
+    manSelectedOptions,
+    setModSelectedOptions,
+    modelSelectedOptions,
+    catSelectedOptions,
+    setCatSelectedOptions,
+    setPriceFrom,
+    setPriceTo,
+    filters,
+    searchButton,
+  } = useContext(AppContext);
   const [showAllFilters, setShowAllFilters] = useState(false);
   const visibleFilters = showAllFilters ? filters : filters.slice(0, 10);
 

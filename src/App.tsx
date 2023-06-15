@@ -1,13 +1,190 @@
 import "./App.css";
 import Loading from "./Loading/Loading";
 import Header from "./Components/Header";
-import Sidebar from "./Components/SideBar";
-import Main from "./Components/Main";
+import Sidebar from "./Components/Sidebar/SideBar";
+import Main from "./Components/Center/Main";
 
 import { useState, useEffect } from "react";
+import { AppContext } from "./Contexts/AppContext";
 
 const mans_api = "https://static.my.ge/myauto/js/mans.json";
 const cats_api = "https://api2.myauto.ge/en/cats/get";
+
+type Search = {
+  Mans: string;
+  Cats: string;
+  PriceTo: string;
+  PriceFrom: string;
+  ForRent: string;
+};
+
+interface ProductOption {
+  car_id: number;
+  status_id: number;
+  user_id: number;
+  dealer_user_id: number;
+  paid_add: number;
+  photo: string;
+  pic_number: number;
+  prod_year: number;
+  prod_month: number;
+  man_id: number;
+  car_model: string;
+  price: number;
+  price_usd: number;
+  first_deposit: number;
+  price_value: number;
+  fuel_type_id: number;
+  gear_type_id: number;
+  drive_type_id: number;
+  door_type_id: number;
+  color_id: number;
+  saloon_color_id: number;
+  cylinders: number;
+  car_run: number;
+  car_run_km: number;
+  car_run_dim: number;
+  engine_volume: number;
+  airbags: number;
+  abs: boolean;
+  esd: boolean;
+  el_windows: boolean;
+  conditioner: boolean;
+  leather: boolean;
+  disks: boolean;
+  nav_system: boolean;
+  central_lock: boolean;
+  hatch: boolean;
+  right_wheel: boolean;
+  alarm: boolean;
+  board_comp: boolean;
+  hydraulics: boolean;
+  chair_warming: boolean;
+  climat_control: boolean;
+  obstacle_indicator: boolean;
+  customs_passed: boolean;
+  client_name: string;
+  client_phone: number;
+  model_id: number;
+  location_id: number;
+  parent_loc_id: number;
+  tech_inspection: boolean;
+  checked_for_duplicates: boolean;
+  order_number: number;
+  stickers: any;
+  changable: boolean;
+  auction: boolean;
+  has_turbo: boolean;
+  for_rent: boolean;
+  rent_daily: boolean;
+  rent_purchase: boolean;
+  rent_insured: boolean;
+  rent_driver: boolean;
+  currency_id: number;
+  vehicle_type: number;
+  category_id: number;
+  vin: string;
+  user_type: any;
+  prom_color: number;
+  special_persons: boolean;
+  back_camera: boolean;
+  car_desc: string;
+  order_date: string;
+  video_url: string;
+  hp: number;
+  hours_used: number;
+  photo_ver: number;
+  checked: boolean;
+  lang_type_id: number;
+  el_starter: number;
+  start_stop: boolean;
+  trunk: boolean;
+  windshield: boolean;
+  inspected_in_greenway: boolean;
+  license_number: string;
+  words_checked: number;
+  is_payd: boolean;
+  condition_type_id: number;
+  primary_damage_type: number;
+  secondary_damage_type: number;
+  auction_has_key: number;
+  is_auction: number;
+  saloon_material_id: number;
+  map_lat: number;
+  map_long: number;
+  zoom: number;
+  predicted_price: string;
+  hdd: number;
+  map_title: string;
+  has_catalyst: number;
+  tmp: string;
+  views: number;
+  dealerId: any;
+  has_logo: any;
+  logo_ver: any;
+  active_ads: any;
+  dealer_title: any;
+  has_predicted_price: boolean;
+  pred_first_breakpoint: number;
+  pred_second_breakpoint: number;
+  pred_min_price: number;
+  pred_max_price: number;
+  comfort_features: number[];
+}
+interface CategOption {
+  category_id: number;
+  category_type: number;
+  has_icon: number;
+  title: string;
+  seo_title: string;
+  vehicle_types: number[];
+}
+
+interface ManOption {
+  man_id: string;
+  man_name: string;
+  is_car: string;
+  is_spec: string;
+  is_moto: string;
+}
+
+interface ModelOption {
+  model_id: number;
+  man_id: number;
+  model_name: string;
+  model_group: string;
+  sort_order: number;
+  cat_man_id: number;
+  cat_model_id: number;
+  cat_modif_id: number;
+  is_car: boolean;
+  is_moto: boolean;
+  is_spec: boolean;
+  show_in_salons: number;
+  shown_in_slider: number;
+}
+
+interface GroupedModelOption {
+  man_name: string;
+  options: ModelOption[];
+}
+
+interface PeriodOption {
+  value: string;
+  label: string;
+}
+
+interface OrderingOption {
+  value: string;
+  label: string;
+}
+
+interface FilterOption {
+  type: string;
+  id: string;
+  label: string;
+  mod_id?: string;
+}
 
 function App() {
   const [prod_api, setProdApi] = useState(
@@ -26,32 +203,25 @@ function App() {
   );
   const [priceFrom, setPriceFrom] = useState("");
   const [priceTo, setPriceTo] = useState("");
-
   const [pairManModel, setPairManModel] = useState<GroupedModelOption[]>([]);
   const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState(0);
-
   const [filters, setFilters] = useState<FilterOption[]>([]);
   const [prodsLoading, setProdsLoading] = useState(true);
   const [saleSelectedOption, setSaleSelectedOption] = useState("");
-
   const [isModCloseButtonSelected, setModIsCloseButtonSelected] =
     useState(false);
   const [isManCloseButtonSelected, setManIsCloseButtonSelected] =
     useState(false);
-
   const [isCategCloseButtonSelected, setIsCategCloseButtonSelected] =
     useState(false);
-
   const [sortSelectedOption, setSortSelectedOption] = useState<OrderingOption>({
     value: "",
     label: "Sort",
   });
-
   const [perSelectedOption, setPerSelectedOption] = useState<PeriodOption>({
     value: "",
     label: "Period",
   });
-
   const [searchButton, setSearchButton] = useState<Search>({
     Mans: "",
     Cats: "",
@@ -60,32 +230,16 @@ function App() {
     ForRent: "",
   });
 
-  // const fetchProducts = async (page: number) => {
-  //   const prod_api = `https://api2.myauto.ge/en/products/?Page=${page}`;
-  //   const prod_response = await fetch(prod_api);
-  //   const prodsData = await prod_response.json();
-  //   const prodsItems = prodsData.data.items;
-  //   return prodsItems;
-  // };
-
   async function fetchData() {
     setLoading(true);
     setProdsLoading(true);
     try {
-      // await new Promise((resolve) => setTimeout(resolve, 3000)); // simulate slow network by waiting 3 seconds
       const mans_response = await fetch(mans_api);
       const mans: ManOption[] = await mans_response.json();
       const cat_response = await fetch(cats_api);
       const cats = await cat_response.json();
       const prod_response = await fetch(prod_api);
       const prods = await prod_response.json();
-
-      // const allProds = [];
-      // for (let page = 1; page <= 3; page++) {
-      //   const prodsItems = await fetchProducts(page);
-      //   allProds.push(...prodsItems);
-      // }
-      // setProds(allProds);
 
       ////! This part of code was commented and replaced with the code below it since filtering takes too long
       // // Fetch model options for each man_option and filter out empty data arrays
@@ -144,58 +298,43 @@ function App() {
     setProdsLoading(true);
 
     const fetchData = async () => {
-      setSaleSelectedOption(searchButton.ForRent);
-      // Remove existing SortOrder from the URL
-      // let updatedProdApi = prod_api
-      //   .replace(/SortOrder=&/, "")
+      try {
+        setSaleSelectedOption(searchButton.ForRent);
+        let updatedProdApi = prod_api
+          .replace(
+            /(SortOrder|Period|ForRent|Mans|Cats|PriceFrom|PriceTo)=[^&]+&?/g,
+            ""
+          )
+          .replace(
+            /(SortOrder|Period|ForRent|Mans|Cats|PriceFrom|PriceTo)=&/g,
+            ""
+          );
 
-      //   .replace(/SortOrder=[^&]+&?/, "")
-      //   .replace(/Period=&/, "")
+        updatedProdApi += `SortOrder=${sortSelectedOption.value}&`;
+        updatedProdApi += `Period=${perSelectedOption.value}&`;
+        updatedProdApi += `PriceFrom=${priceFrom}&`;
+        updatedProdApi += `PriceTo=${priceTo}&`;
 
-      //   .replace(/Period=[^&]+&?/, "")
-      //   .replace(/ForRent=&/, "")
-      //   .replace(/ForRent=[^&]+&?/, "")
-      //   .replace(/Mans=&/, "")
-      //   .replace(/Mans=[^&]+&?/, "")
-      //   .replace(/Cats=&/, "")
-      //   .replace(/Cats=[^&]+&?/, "")
-      //   .replace(/PriceFrom=&/, "")
-      //   .replace(/PriceFrom=[^&]+&?/, "")
-      //   .replace(/PriceTo=&/, "")
-      //   .replace(/PriceTo=[^&]+&?/, "");
+        searchButton.ForRent === "For rent"
+          ? (updatedProdApi += `ForRent=${1}&`)
+          : searchButton.ForRent === "For sale"
+          ? (updatedProdApi += `ForRent=${0}&`)
+          : (updatedProdApi += ``);
 
-      let updatedProdApi = prod_api
-        .replace(
-          /(SortOrder|Period|ForRent|Mans|Cats|PriceFrom|PriceTo)=[^&]+&?/g,
-          ""
-        )
-        .replace(
-          /(SortOrder|Period|ForRent|Mans|Cats|PriceFrom|PriceTo)=&/g,
-          ""
-        );
+        updatedProdApi += `Mans=${searchButton.Mans}&`;
+        updatedProdApi += `Cats=${searchButton.Cats}&`;
 
-      // Add the new SortOrder value to the URL
-      updatedProdApi += `SortOrder=${sortSelectedOption.value}&`;
-      updatedProdApi += `Period=${perSelectedOption.value}&`;
-      updatedProdApi += `PriceFrom=${priceFrom}&`;
-      updatedProdApi += `PriceTo=${priceTo}&`;
+        console.log(updatedProdApi);
 
-      searchButton.ForRent === "For rent"
-        ? (updatedProdApi += `ForRent=${1}&`)
-        : searchButton.ForRent === "For sale"
-        ? (updatedProdApi += `ForRent=${0}&`)
-        : (updatedProdApi += ``);
-
-      updatedProdApi += `Mans=${searchButton.Mans}&`;
-      updatedProdApi += `Cats=${searchButton.Cats}&`;
-
-      console.log(updatedProdApi);
-
-      setProdApi(updatedProdApi);
-      const prod_response = await fetch(updatedProdApi);
-      const prods = await prod_response.json();
-      setProds(prods["data"]["items"]);
-      setProdsLoading(false);
+        setProdApi(updatedProdApi);
+        const prod_response = await fetch(updatedProdApi);
+        const prods = await prod_response.json();
+        setProds(prods["data"]["items"]);
+        setProdsLoading(false);
+      } catch (error) {
+        setProdsLoading(true);
+        console.error("Error fetching data:", error);
+      }
     };
 
     let filteredFilters = filters.filter((filter) => filter.type !== "sr");
@@ -264,267 +403,56 @@ function App() {
     );
   }
 
-  type Search = {
-    Mans: string;
-    Cats: string;
-    PriceTo: string;
-    PriceFrom: string;
-    ForRent: string;
-  };
-
-  interface ProductOption {
-    car_id: number;
-    status_id: number;
-    user_id: number;
-    dealer_user_id: number;
-    paid_add: number;
-    photo: string;
-    pic_number: number;
-    prod_year: number;
-    prod_month: number;
-    man_id: number;
-    car_model: string;
-    price: number;
-    price_usd: number;
-    first_deposit: number;
-    price_value: number;
-    fuel_type_id: number;
-    gear_type_id: number;
-    drive_type_id: number;
-    door_type_id: number;
-    color_id: number;
-    saloon_color_id: number;
-    cylinders: number;
-    car_run: number;
-    car_run_km: number;
-    car_run_dim: number;
-    engine_volume: number;
-    airbags: number;
-    abs: boolean;
-    esd: boolean;
-    el_windows: boolean;
-    conditioner: boolean;
-    leather: boolean;
-    disks: boolean;
-    nav_system: boolean;
-    central_lock: boolean;
-    hatch: boolean;
-    right_wheel: boolean;
-    alarm: boolean;
-    board_comp: boolean;
-    hydraulics: boolean;
-    chair_warming: boolean;
-    climat_control: boolean;
-    obstacle_indicator: boolean;
-    customs_passed: boolean;
-    client_name: string;
-    client_phone: number;
-    model_id: number;
-    location_id: number;
-    parent_loc_id: number;
-    tech_inspection: boolean;
-    checked_for_duplicates: boolean;
-    order_number: number;
-    stickers: any;
-    changable: boolean;
-    auction: boolean;
-    has_turbo: boolean;
-    for_rent: boolean;
-    rent_daily: boolean;
-    rent_purchase: boolean;
-    rent_insured: boolean;
-    rent_driver: boolean;
-    currency_id: number;
-    vehicle_type: number;
-    category_id: number;
-    vin: string;
-    user_type: any;
-    prom_color: number;
-    special_persons: boolean;
-    back_camera: boolean;
-    car_desc: string;
-    order_date: string;
-    video_url: string;
-    hp: number;
-    hours_used: number;
-    photo_ver: number;
-    checked: boolean;
-    lang_type_id: number;
-    el_starter: number;
-    start_stop: boolean;
-    trunk: boolean;
-    windshield: boolean;
-    inspected_in_greenway: boolean;
-    license_number: string;
-    words_checked: number;
-    is_payd: boolean;
-    condition_type_id: number;
-    primary_damage_type: number;
-    secondary_damage_type: number;
-    auction_has_key: number;
-    is_auction: number;
-    saloon_material_id: number;
-    map_lat: number;
-    map_long: number;
-    zoom: number;
-    predicted_price: string;
-    hdd: number;
-    map_title: string;
-    has_catalyst: number;
-    tmp: string;
-    views: number;
-    dealerId: any;
-    has_logo: any;
-    logo_ver: any;
-    active_ads: any;
-    dealer_title: any;
-    has_predicted_price: boolean;
-    pred_first_breakpoint: number;
-    pred_second_breakpoint: number;
-    pred_min_price: number;
-    pred_max_price: number;
-    comfort_features: number[];
-  }
-  interface CategOption {
-    category_id: number;
-    category_type: number;
-    has_icon: number;
-    title: string;
-    seo_title: string;
-    vehicle_types: number[];
-  }
-
-  interface ManOption {
-    man_id: string;
-    man_name: string;
-    is_car: string;
-    is_spec: string;
-    is_moto: string;
-  }
-
-  interface ModelOption {
-    model_id: number;
-    man_id: number;
-    model_name: string;
-    model_group: string;
-    sort_order: number;
-    cat_man_id: number;
-    cat_model_id: number;
-    cat_modif_id: number;
-    is_car: boolean;
-    is_moto: boolean;
-    is_spec: boolean;
-    show_in_salons: number;
-    shown_in_slider: number;
-  }
-
-  interface GroupedModelOption {
-    man_name: string;
-    options: ModelOption[];
-  }
-
-  interface PeriodOption {
-    value: string;
-    label: string;
-  }
-
-  interface OrderingOption {
-    value: string;
-    label: string;
-  }
-
-  interface FilterOption {
-    type: string;
-    id: string;
-    label: string;
-    mod_id?: string;
-  }
-
-  const periods: PeriodOption[] = [
-    { value: "1h", label: "1 hour" },
-    { value: "2h", label: "2 hours" },
-    { value: "3h", label: "3 hours" },
-    { value: "1d", label: "1 day" },
-    { value: "2d", label: "2 days" },
-    { value: "3d", label: "3 days" },
-    { value: "1w", label: "1 week" },
-    { value: "2w", label: "2 weeks" },
-    { value: "3w", label: "3 weeks" },
-  ];
-
-  const ordering_type: OrderingOption[] = [
-    { value: "2", label: "order by date desc" },
-    { value: "1", label: "order by date asc" },
-    { value: "3", label: "Price descending" },
-    { value: "4", label: "Price ascending" },
-    { value: "5", label: "Mileage descending" },
-    { value: "6", label: "Mileage ascending" },
-  ];
-
   return (
-    <>
+    <AppContext.Provider
+      value={{
+        priceFrom,
+        setPriceFrom,
+        priceTo,
+        setPriceTo,
+        selectedCurrencyIndex,
+        setSelectedCurrencyIndex,
+        setCatSelectedOptions,
+        catSelectedOptions,
+        isCategCloseButtonSelected,
+        setIsCategCloseButtonSelected,
+        setManIsCloseButtonSelected,
+        setModIsCloseButtonSelected,
+        isModCloseButtonSelected,
+        isManCloseButtonSelected,
+        manSelectedOptions,
+        modelSelectedOptions,
+        pairManModel,
+        setManSelectedOptions,
+        setModSelectedOptions,
+        saleSelectedOption,
+        setSaleSelectedOption,
+        mans_options,
+        cats_options,
+        setSearchButton,
+        prod_options,
+        prodsLoading,
+        setFilters,
+        setPerSelectedOption,
+        setSortSelectedOption,
+        searchButton,
+        filters,
+        sortSelectedOption,
+        perSelectedOption,
+      }}
+    >
       <Header />
       <div className="main-container">
         {" "}
         <div className="left-container">
-          <Sidebar
-            pairManModel={pairManModel}
-            manOptions={mans_options}
-            catOptions={cats_options}
-            manSelectedOptions={manSelectedOptions}
-            setManSelectedOptions={setManSelectedOptions}
-            modelSelectedOptions={modelSelectedOptions}
-            catSelectedOptions={catSelectedOptions}
-            setCatSelectedOptions={setCatSelectedOptions}
-            setModSelectedOptions={setModSelectedOptions}
-            setSelectedCurrencyIndex={setSelectedCurrencyIndex}
-            selectedCurrencyIndex={selectedCurrencyIndex}
-            saleSelectedOption={saleSelectedOption}
-            setSaleSelectedOption={setSaleSelectedOption}
-            priceFrom={priceFrom}
-            setPriceFrom={setPriceFrom}
-            priceTo={priceTo}
-            setPriceTo={setPriceTo}
-            setSearchButton={setSearchButton}
-            isManCloseButtonSelected={isManCloseButtonSelected}
-            setManIsCloseButtonSelected={setManIsCloseButtonSelected}
-            isModCloseButtonSelected={isModCloseButtonSelected}
-            setModIsCloseButtonSelected={setModIsCloseButtonSelected}
-            isCategCloseButtonSelected={isCategCloseButtonSelected}
-            setIsCategCloseButtonSelected={setIsCategCloseButtonSelected}
-          />
+          <Sidebar />
         </div>
         <div className="right-container">
           {" "}
-          <Main
-            pairManModel={pairManModel}
-            prod_options={prod_options}
-            mans_options={mans_options}
-            setSelectedCurrencyIndex={setSelectedCurrencyIndex}
-            selectedCurrencyIndex={selectedCurrencyIndex}
-            periods={periods}
-            ordering_type={ordering_type}
-            filters={filters}
-            setFilters={setFilters}
-            prodsLoading={prodsLoading}
-            perSelectedOption={perSelectedOption}
-            setPerSelectedOption={setPerSelectedOption}
-            sortSelectedOption={sortSelectedOption}
-            setSortSelectedOption={setSortSelectedOption}
-            setSearchButton={setSearchButton}
-            searchButton={searchButton}
-            setManSelectedOptions={setManSelectedOptions}
-            manSelectedOptions={manSelectedOptions}
-            setModSelectedOptions={setModSelectedOptions}
-            modelSelectedOptions={modelSelectedOptions}
-            catSelectedOptions={catSelectedOptions}
-            setCatSelectedOptions={setCatSelectedOptions}
-            setPriceFrom={setPriceFrom}
-            setPriceTo={setPriceTo}
-          />
+          <Main />
         </div>
       </div>
-    </>
+    </AppContext.Provider>
   );
 }
 

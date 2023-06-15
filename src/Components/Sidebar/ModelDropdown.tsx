@@ -1,12 +1,13 @@
 import "./ModelDropdown.css";
-import GroupModelDropdown from "./GroupModelDropdown";
-import { useState, useEffect, useRef } from "react";
+import GroupModelDropdown from "././GroupModelDropdown";
+import { useState, useEffect, useRef, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
   faXmark,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
+import { AppContext } from "../../Contexts/AppContext";
 
 interface ManOption {
   man_id: string;
@@ -42,27 +43,18 @@ interface GroupManModel {
   options: ModelOption[];
 }
 
-interface ModelDropdownProps {
-  allOptions: GroupedModelOptions[];
-  setManSelectedOptions: (selectedOptions: ManOption[]) => void;
-  manSelectedOptions: ManOption[];
-  modelSelectedOptions: ModelOption[];
-  setModSelectedOptions: (selectedOptions: ModelOption[]) => void;
-  setManIsCloseButtonSelected: (isManCloseButtonSelected: boolean) => void;
-  isModCloseButtonSelected: boolean;
-  setModIsCloseButtonSelected: (isModCloseButtonSelected: boolean) => void;
-}
+const ModelDropdown: React.FC = () => {
+  const {
+    pairManModel, // this argument is used only on line 112 since parent component is using another implementation we omit it
+    manSelectedOptions,
+    setManSelectedOptions,
+    modelSelectedOptions,
+    setModSelectedOptions,
+    setManIsCloseButtonSelected,
+    isModCloseButtonSelected,
+    setModIsCloseButtonSelected,
+  } = useContext(AppContext);
 
-const ModelDropdown: React.FC<ModelDropdownProps> = ({
-  allOptions, // this argument is used only on line 112 since parent component is using another implementation we omit it
-  manSelectedOptions,
-  setManSelectedOptions,
-  modelSelectedOptions,
-  setModSelectedOptions,
-  setManIsCloseButtonSelected,
-  isModCloseButtonSelected,
-  setModIsCloseButtonSelected,
-}) => {
   const [groupedModelOptions, setGroupedModelOptions] = useState<
     GroupedModelOptions[]
   >([]);
@@ -109,7 +101,7 @@ const ModelDropdown: React.FC<ModelDropdownProps> = ({
 
   ////* This implementation of fetchModelOPtions is not used since parent component is using another implementation
   //!   const fetchModelOptions = () => {
-  //?     const options = allOptions.filter((option) =>
+  //?     const options = pairManModel.filter((option) =>
   //*       manSelectedOptions.some(
   //!         (manOption) => manOption.man_name === option.man_name
   //?       )
@@ -211,7 +203,6 @@ const ModelDropdown: React.FC<ModelDropdownProps> = ({
     if (!isOpen && !isModCloseButtonSelected) {
       setIsOpen(true);
       modelInputRef?.current?.focus();
-      // }
     }
   };
 
@@ -234,8 +225,8 @@ const ModelDropdown: React.FC<ModelDropdownProps> = ({
       options: group.options.filter(
         (option) =>
           group.man_name.toLowerCase().startsWith(modelTerm.toLowerCase()) ||
-          option.model_name.toLowerCase().startsWith(modelTerm.toLowerCase())||
-            option.model_group.toLowerCase().startsWith(modelTerm.toLowerCase())
+          option.model_name.toLowerCase().startsWith(modelTerm.toLowerCase()) ||
+          option.model_group.toLowerCase().startsWith(modelTerm.toLowerCase())
       ),
     }))
     .filter((group) => group.options.length > 0)
@@ -277,52 +268,6 @@ const ModelDropdown: React.FC<ModelDropdownProps> = ({
 
   const isEmpty = (obj: any[]): boolean => {
     return obj.length === 0;
-  };
-
-  const handleAllModelCheck = (
-    model_group: string,
-    groupedOptions: GroupManModel[]
-  ) => {
-    const optionsInGroup = groupedOptions.find(
-      (group) => group.model_group === model_group
-    );
-
-    if (!optionsInGroup) {
-      return;
-    }
-
-    const areAllOptionsSelected = optionsInGroup.options.every((option) =>
-      modelSelectedOptions.some(
-        (selectedOption) => selectedOption.model_id === option.model_id
-      )
-    );
-
-    let updatedModSelectedOptions: ModelOption[];
-
-    if (areAllOptionsSelected) {
-      updatedModSelectedOptions = modelSelectedOptions.filter(
-        (selectedOption) =>
-          !optionsInGroup.options.some(
-            (option) => option.model_id === selectedOption.model_id
-          )
-      );
-    } else {
-      const optionsToAdd = optionsInGroup.options.filter(
-        (option) =>
-          !modelSelectedOptions.some(
-            (selectedOption) => selectedOption.model_id === option.model_id
-          )
-      );
-      updatedModSelectedOptions = [...modelSelectedOptions, ...optionsToAdd];
-    }
-
-    setModSelectedOptions(updatedModSelectedOptions);
-
-    if (modelInputRef.current) {
-      modelInputRef.current.placeholder = updatedModSelectedOptions
-        .map((selectedOption) => selectedOption.model_name)
-        .join(", ");
-    }
   };
 
   return (
@@ -385,9 +330,7 @@ const ModelDropdown: React.FC<ModelDropdownProps> = ({
                       className="man-name-title"
                       onClick={() => handleCheckboxChangeGroup(group)}
                     >
-                      <input
-                        type="checkbox"
-                      />
+                      <input type="checkbox" />
                       <span className="custom-checkbox-checked">
                         <FontAwesomeIcon
                           icon={faCheck}
@@ -441,13 +384,8 @@ const ModelDropdown: React.FC<ModelDropdownProps> = ({
                         <GroupModelDropdown
                           model_group={model_group}
                           options={options}
-                          modelSelectedOptions={modelSelectedOptions}
                           handleCheckboxChange={handleCheckboxChange}
-                          setModSelectedOptions={setModSelectedOptions}
                           modelInputRef={modelInputRef}
-                          setModIsCloseButtonSelected={
-                            setModIsCloseButtonSelected
-                          }
                         />
                       )
                     )}

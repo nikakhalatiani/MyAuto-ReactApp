@@ -1,35 +1,28 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import "./PeriodDropdown.css";
+import { AppContext } from "../../Contexts/AppContext";
 
 interface PeriodOption {
   value: string;
   label: string;
 }
 
-interface FilterOption {
-  type: string;
-  id: string;
-  label: string;
-  man_id?: string;
-}
-
-interface PeriodDropdownProps {
-  periods: PeriodOption[];
-  perSelectedOption: PeriodOption;
-  setPerSelectedOption: (perSelectedOption: PeriodOption) => void;
-  filters: FilterOption[];
-  setFilters: (filters: FilterOption[]) => void;
-}
-
-const PeriodDropdown: React.FC<PeriodDropdownProps> = ({
-  periods,
-  perSelectedOption,
-  setPerSelectedOption,
-  setFilters,
-  filters,
-}) => {
+const PeriodDropdown: React.FC = () => {
+  const periods: PeriodOption[] = [
+    { value: "1h", label: "1 hour" },
+    { value: "2h", label: "2 hours" },
+    { value: "3h", label: "3 hours" },
+    { value: "1d", label: "1 day" },
+    { value: "2d", label: "2 days" },
+    { value: "3d", label: "3 days" },
+    { value: "1w", label: "1 week" },
+    { value: "2w", label: "2 weeks" },
+    { value: "3w", label: "3 weeks" },
+  ];
+  const { setFilters, filters, setPerSelectedOption, perSelectedOption } =
+    useContext(AppContext);
   const [isOpen, setIsOpen] = useState(false);
 
   const periodDropdownRef = useRef<HTMLDivElement>(null);

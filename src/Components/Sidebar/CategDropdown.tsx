@@ -5,7 +5,8 @@ import {
   faXmark,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
+import { AppContext } from "../../Contexts/AppContext";
 
 interface CategOption {
   category_id: number;
@@ -18,19 +19,16 @@ interface CategOption {
 
 interface CategDropdownProps {
   options: CategOption[];
-  catSelectedOptions: CategOption[];
-  setCatSelectedOptions: (selectedOptions: CategOption[]) => void;
-  setIsCategCloseButtonSelected: (isCategCloseButtonSelected: boolean) => void;
-  isCategCloseButtonSelected: boolean;
 }
 
-const CategDropdown: React.FC<CategDropdownProps> = ({
-  options,
-  catSelectedOptions,
-  setCatSelectedOptions,
-  setIsCategCloseButtonSelected,
-  isCategCloseButtonSelected,
-}) => {
+const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
+  const {
+    catSelectedOptions,
+    setCatSelectedOptions,
+    setIsCategCloseButtonSelected,
+    isCategCloseButtonSelected,
+  } = useContext(AppContext);
+
   const [categTerm, setCategTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -135,12 +133,9 @@ const CategDropdown: React.FC<CategDropdownProps> = ({
     setIsCategCloseButtonSelected(false);
   };
 
-
   const filteredOptions = options.filter((option) =>
     option.title.toLowerCase().startsWith(categTerm.toLowerCase())
   );
-
-
 
   return (
     <div className="categ-dropdown-container" ref={categDropdownRef}>

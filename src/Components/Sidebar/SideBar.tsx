@@ -1,17 +1,13 @@
-import SaleRentDropdown from "./SaleRentDropdown";
-import ManDropdown from "./ManDropdown";
-import ModelDropdown from "./ModelDropdown";
-import CatDropdown from "./CategDropdown";
-import CurrencyChange from "./CurrencyChange";
+import SaleRentDropdown from "././SaleRentDropdown";
+import ManDropdown from "././ManDropdown";
+import ModelDropdown from "././ModelDropdown";
+import CatDropdown from "././CategDropdown";
+import CurrencyChange from "././CurrencyChange";
 import "./SideBar.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGreaterThan } from "@fortawesome/free-solid-svg-icons";
-
-interface GroupedModelOption {
-  man_name: string;
-  options: ModelOption[];
-}
+import { AppContext } from "../../Contexts/AppContext";
 
 interface CategOption {
   category_id: number;
@@ -30,7 +26,6 @@ interface ManOption {
   is_moto: string;
 }
 
-
 interface ModelOption {
   model_id: number;
   man_id: number;
@@ -47,79 +42,37 @@ interface ModelOption {
   shown_in_slider: number;
 }
 
+const Sidebar: React.FC = () => {
+  const {
+    priceFrom,
+    priceTo,
+    setModIsCloseButtonSelected,
+    setIsCategCloseButtonSelected,
+    setManIsCloseButtonSelected,
+    manSelectedOptions,
+    setManSelectedOptions,
+    modelSelectedOptions,
+    catSelectedOptions,
+    setCatSelectedOptions,
+    setModSelectedOptions,
+    saleSelectedOption,
+    setSaleSelectedOption,
+    mans_options,
+    cats_options,
+    setSearchButton,
+  } = useContext(AppContext);
 
-type Search = {
-  Mans: string;
-  Cats: string;
-  PriceTo: string;
-  PriceFrom: string;
-  ForRent: string;
-};
-
-interface SidebarProps {
-  pairManModel: GroupedModelOption[];
-  manOptions: ManOption[];
-  catOptions: CategOption[];
-  manSelectedOptions: ManOption[];
-  setManSelectedOptions: (selectedOptions: ManOption[]) => void;
-  modelSelectedOptions: ModelOption[];
-  setModSelectedOptions: (selectedOptions: ModelOption[]) => void;
-  catSelectedOptions: CategOption[];
-  setCatSelectedOptions: (selectedOptions: CategOption[]) => void;
-  selectedCurrencyIndex: number;
-  setSelectedCurrencyIndex: (selectedCurrencyIndex: number) => void;
-  saleSelectedOption: string;
-  setSaleSelectedOption: (saleSelectedOption: string) => void;
-  priceFrom: string;
-  setPriceFrom: (priceFrom: string) => void;
-  priceTo: string;
-  setPriceTo: (priceTo: string) => void;
-  setSearchButton: (searchButtonArray: Search) => void;
-  isModCloseButtonSelected: boolean;
-  setModIsCloseButtonSelected: (isModCloseButtonSelected: boolean) => void;
-  isCategCloseButtonSelected: boolean;
-  setIsCategCloseButtonSelected: (isCategCloseButtonSelected: boolean) => void;
-  isManCloseButtonSelected: boolean;
-  setManIsCloseButtonSelected: (isManCloseButtonSelected: boolean) => void;
-}
-
-const Sidebar: React.FC<SidebarProps> = ({
-  pairManModel,
-  manOptions,
-  catOptions,
-  manSelectedOptions,
-  setManSelectedOptions,
-  modelSelectedOptions,
-  catSelectedOptions,
-  setCatSelectedOptions,
-  setModSelectedOptions,
-  selectedCurrencyIndex,
-  setSelectedCurrencyIndex,
-  saleSelectedOption,
-  setSaleSelectedOption,
-  priceFrom,
-  setPriceFrom,
-  priceTo,
-  setPriceTo,
-  setSearchButton,
-  isModCloseButtonSelected,
-  setModIsCloseButtonSelected,
-  isCategCloseButtonSelected,
-  setIsCategCloseButtonSelected,
-  isManCloseButtonSelected,
-  setManIsCloseButtonSelected,
-}) => {
   const [carClicked, setCarClicked] = useState(true);
   const [isSearchButtonClicked, setIsSearchButtonClicked] = useState(false);
   const [specClicked, setSpecClicked] = useState(false);
   const [motoClicked, setMotoClicked] = useState(false);
 
-  const [filteredManOptions, setFilteredManOptions] = useState<ManOption[]>(
-    manOptions.filter((option) => option.is_car === "1")
+  const [filteredMans_options, setFilteredMans_options] = useState<ManOption[]>(
+    mans_options.filter((option) => option.is_car === "1")
   );
-  const [filteredCatOptions, setFilteredCatOptions] = useState<CategOption[]>(
-    catOptions.filter((option) => option.category_type === 0)
-  );
+  const [filteredCats_options, setFilteredCats_options] = useState<
+    CategOption[]
+  >(cats_options.filter((option) => option.category_type === 0));
 
   useEffect(() => {
     setIsSearchButtonClicked(false);
@@ -144,8 +97,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       PriceFrom: priceFrom,
       ForRent: saleSelectedOption,
     });
-    // setPriceFrom("");
-    // setPriceTo(""); // MaybeNOT
   };
 
   function formatCats(): string {
@@ -176,14 +127,16 @@ const Sidebar: React.FC<SidebarProps> = ({
     setManIsCloseButtonSelected(false);
     setModIsCloseButtonSelected(false);
     setIsCategCloseButtonSelected(false);
-    setFilteredManOptions(manOptions.filter((option) => option.is_car === "1"));
-    setFilteredCatOptions(
-      catOptions.filter((option) => option.category_type === 0)
+    setFilteredMans_options(
+      mans_options.filter((option) => option.is_car === "1")
+    );
+    setFilteredCats_options(
+      cats_options.filter((option) => option.category_type === 0)
     );
   };
 
   const handleSpecClick = () => {
-    console.log(filteredCatOptions);
+    console.log(filteredCats_options);
     setCarClicked(false);
     setSpecClicked(true);
     setMotoClicked(false);
@@ -194,12 +147,12 @@ const Sidebar: React.FC<SidebarProps> = ({
     setModIsCloseButtonSelected(false);
     setIsCategCloseButtonSelected(false);
 
-    setFilteredManOptions(
-      manOptions.filter((option) => option.is_spec === "1")
+    setFilteredMans_options(
+      mans_options.filter((option) => option.is_spec === "1")
     );
 
-    setFilteredCatOptions(
-      catOptions.filter((option) => option.category_type === 1)
+    setFilteredCats_options(
+      cats_options.filter((option) => option.category_type === 1)
     );
   };
 
@@ -213,93 +166,17 @@ const Sidebar: React.FC<SidebarProps> = ({
     setManIsCloseButtonSelected(false);
     setModIsCloseButtonSelected(false);
     setIsCategCloseButtonSelected(false);
-    setFilteredManOptions(
-      manOptions.filter((option) => option.is_moto === "1")
+    setFilteredMans_options(
+      mans_options.filter((option) => option.is_moto === "1")
     );
-    setFilteredCatOptions(
-      catOptions.filter((option) => option.category_type === 2)
+    setFilteredCats_options(
+      cats_options.filter((option) => option.category_type === 2)
     );
   };
 
   const handleSearchParClick = () => {
     setSaleSelectedOption("");
   };
-
-  // const handleSearch = () => {
-  //   const addRent = async () => {
-  //     setProdsLoading(true);
-
-  //     // Remove existing SortOrder from the URL
-
-  //     let updatedProdApi = prod_api
-  //       .replace(/ForRent=&/, "")
-  //       .replace(/ForRent=[^&]+&?/, "");
-
-  //     // Add the new SortOrder value to the URL
-  //     saleSelectedOption === "For rent"
-  //       ? (updatedProdApi += `ForRent=${1}&`)
-  //       : saleSelectedOption === "For sale"
-  //       ? (updatedProdApi += `ForRent=${0}&`)
-  //       : (updatedProdApi += `ForRent=${""}&`);
-
-  //     console.log(updatedProdApi, "rent");
-
-  //     setProdApi(updatedProdApi);
-  //     const prod_response = await fetch(updatedProdApi);
-  //     const prods = await prod_response.json();
-  //     setProds(prods["data"]["items"]);
-  //     setProdsLoading(false);
-
-  //   };
-
-  //   const filteredFilters = filters.filter((filter) => filter.type !== "sr");
-  //   saleSelectedOption === ""
-  //     ? setFilters(filteredFilters)
-  //     : setFilters([
-  //         ...filteredFilters,
-  //         { id: "0", label: saleSelectedOption, type: "sr" },
-  //       ]);
-
-  //   addRent();
-  // };
-
-  // const handleSearch = () => {
-  //   const addRent = async () => {
-  //     setProdsLoading(true);
-  //     // Remove existing SortOrder from the URL
-  //     let updatedProdApi = prod_api
-  //       .replace(/ForRent=[^&]+&?/, "");
-
-  //     // Add the new SortOrder value to the URL
-  //     saleSelectedOption === "For rent"
-  //       ? (updatedProdApi += `ForRent=${1}&`)
-  //       : saleSelectedOption === "For sale"
-  //       ? (updatedProdApi += `ForRent=${0}&`)
-  //       : (updatedProdApi += ``);
-
-  //     setProdApi(updatedProdApi);
-  //     const prod_response = await fetch(updatedProdApi);
-  //     const prods = await prod_response.json();
-  //     setProds(prods["data"]["items"]);
-  //     setProdsLoading(false);
-  //     console.log(updatedProdApi, "saleRent");
-
-  //   };
-
-  //   const filteredFilters = filters.filter((filter) => filter.type !== "sr");
-  //     saleSelectedOption === ""
-  //       ? setFilters(filteredFilters)
-  //       : setFilters([
-  //           ...filteredFilters,
-  //           { id: "sr", label: saleSelectedOption, type: "sr" },
-  //         ]);
-
-  //   addRent();
-  // };
-
-  // useEffect(() => {
-  //   handleSearch();
-  // }, [saleSelectedOption]);
 
   return (
     <>
@@ -382,27 +259,14 @@ const Sidebar: React.FC<SidebarProps> = ({
           <p>Deal type</p>
           <div className="dropdown">
             {" "}
-            <SaleRentDropdown
-              options={["For sale", "For rent"]}
-              saleSelectedOption={saleSelectedOption}
-              setSaleSelectedOption={setSaleSelectedOption}
-            />
+            <SaleRentDropdown options={["For sale", "For rent"]} />
           </div>
         </div>
         <div className="side-component">
           <p>Manufacturer</p>
           <div className="dropdown">
             {" "}
-            <ManDropdown
-              options={filteredManOptions}
-              manSelectedOptions={manSelectedOptions}
-              setManSelectedOptions={setManSelectedOptions}
-              modelSelectedOptions={modelSelectedOptions}
-              setModSelectedOptions={setModSelectedOptions}
-              isManCloseButtonSelected={isManCloseButtonSelected}
-              setManIsCloseButtonSelected={setManIsCloseButtonSelected}
-              setModIsCloseButtonSelected={setModIsCloseButtonSelected}
-            />{" "}
+            <ManDropdown options={filteredMans_options} />{" "}
           </div>
         </div>
 
@@ -410,41 +274,19 @@ const Sidebar: React.FC<SidebarProps> = ({
           <p>Model</p>
           <div className="dropdown">
             {" "}
-            <ModelDropdown
-              allOptions={pairManModel}
-              manSelectedOptions={manSelectedOptions}
-              setManSelectedOptions={setManSelectedOptions}
-              modelSelectedOptions={modelSelectedOptions}
-              setModSelectedOptions={setModSelectedOptions}
-              setManIsCloseButtonSelected={setManIsCloseButtonSelected}
-              setModIsCloseButtonSelected={setModIsCloseButtonSelected}
-              isModCloseButtonSelected={isModCloseButtonSelected}
-            />{" "}
+            <ModelDropdown />{" "}
           </div>
         </div>
         <div className="cat-component side-component">
           <p>Category</p>
           <div className="dropdown">
             {" "}
-            <CatDropdown
-              options={filteredCatOptions}
-              catSelectedOptions={catSelectedOptions}
-              setCatSelectedOptions={setCatSelectedOptions}
-              isCategCloseButtonSelected={isCategCloseButtonSelected}
-              setIsCategCloseButtonSelected={setIsCategCloseButtonSelected}
-            />
+            <CatDropdown options={filteredCats_options} />
           </div>
         </div>
         <span className="pop-line"></span>
         <div className="currency-side-component">
-          <CurrencyChange
-            selectedCurrencyIndex={selectedCurrencyIndex}
-            setSelectedCurrencyIndex={setSelectedCurrencyIndex}
-            setPriceFrom={setPriceFrom}
-            setPriceTo={setPriceTo}
-            priceTo={priceTo}
-            priceFrom={priceFrom}
-          />
+          <CurrencyChange />
         </div>
         <div
           className={`search-button-div ${

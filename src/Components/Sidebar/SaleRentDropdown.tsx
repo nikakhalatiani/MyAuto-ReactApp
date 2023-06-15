@@ -1,24 +1,19 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
   faCheck,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-
 import "./SaleRentDropdown.css";
+import { AppContext } from "../../Contexts/AppContext";
 
 interface SaleRentDropdownProps {
   options: string[];
-  saleSelectedOption: string;
-  setSaleSelectedOption: (saleSelectedOption: string) => void;
 }
 
-const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({
-  options,
-  saleSelectedOption,
-  setSaleSelectedOption,
-}) => {
+const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({ options }) => {
+  const { saleSelectedOption, setSaleSelectedOption } = useContext(AppContext);
   const [isOpen, setIsOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isCloseButtonSelected, setIsCloseButtonSelected] = useState(false);
@@ -72,9 +67,9 @@ const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({
     <div className="sale-rent-dropdown-container" ref={saleRentdropdownRef}>
       <div
         onClick={handleContainerClick}
-        className={`sale-rent-container ${saleSelectedOption ? "dark-font" : ""} ${
-          isOpen ? "open" : ""
-        }`}
+        className={`sale-rent-container ${
+          saleSelectedOption ? "dark-font" : ""
+        } ${isOpen ? "open" : ""}`}
       >
         <input
           id="1"
@@ -83,7 +78,6 @@ const SaleRentDropdown: React.FC<SaleRentDropdownProps> = ({
           onClick={() => {
             setIsOpen(true);
           }}
-          
         />
         <button
           onClick={toggleDropdown}
