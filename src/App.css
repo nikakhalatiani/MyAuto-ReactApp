@@ -37,6 +37,7 @@ body {
   .right-container {
     margin-left: 0px;
     width: 100lvw;
+    background-color: red;
 
   }
 }
