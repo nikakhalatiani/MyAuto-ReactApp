@@ -120,6 +120,10 @@
     position: relative;
   }
 
+  .tnet-logo:hover {
+    border: none;
+  }
+
   .header-content {
     margin: 0px 16px;
     justify-content: space-between;

@@ -8,6 +8,10 @@ html {
   overflow-y: scroll;
 }
 
+.root {
+  overflow-x: hidden;
+}
+
 /* .bellow-header {
   padding-top: 60px;
 } */
