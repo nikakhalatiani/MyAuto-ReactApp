@@ -252,8 +252,6 @@ footer .right-icons > * {
 .lari-btn,
 .dollar-btn {
   border: none;
-  display: flex;
-  align-items: center;
   border-radius: 12px;
   cursor: pointer;
   height: 24px;
@@ -263,6 +261,8 @@ footer .right-icons > * {
   display: flex;
   flex-direction: row;
   justify-content: center;
+    align-items: center;
+
   transition: background-color 0.3s ease;
 }
 
