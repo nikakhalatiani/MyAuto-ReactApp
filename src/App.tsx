@@ -230,6 +230,8 @@ function App() {
     ForRent: "",
   });
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   async function fetchData() {
     setLoading(true);
     setProdsLoading(true);
@@ -439,14 +441,21 @@ function App() {
         filters,
         sortSelectedOption,
         perSelectedOption,
+        isSidebarOpen,
+        setIsSidebarOpen,
       }}
     >
       <Header />
       <div className="main-container">
         {" "}
-        <div className="left-container">
-          <Sidebar />
+        <div
+          className={`mobile-side${
+            isSidebarOpen ? ".active" : ""
+          } left-container`}
+        >
+          {isSidebarOpen && <Sidebar />}
         </div>
+        <div className="left-container second-side ">{<Sidebar />}</div>
         <div className="right-container">
           {" "}
           <Main />

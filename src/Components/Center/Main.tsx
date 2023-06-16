@@ -7,7 +7,8 @@ import { useContext } from "react";
 import { AppContext } from "../../Contexts/AppContext";
 
 const Main: React.FC = () => {
-  const { filters, prod_options, prodsLoading } = useContext(AppContext);
+  const { filters, prod_options, prodsLoading, setIsSidebarOpen } =
+    useContext(AppContext);
   return (
     <div className="right-products-container">
       <div className="above-products">
@@ -29,6 +30,48 @@ const Main: React.FC = () => {
         <div className="right-drops">
           <PeriodDropdown />
           <FilterDropdown />
+          <button
+            className="show-sidebar"
+            onClick={() => {
+              setIsSidebarOpen(true);
+            }}
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2 4h5.5"
+                stroke="#272A37"
+                stroke-width="1.4"
+                stroke-linecap="round"
+              />
+              <circle
+                cx="10"
+                cy="4"
+                r="2.3"
+                stroke="#272A37"
+                stroke-width="1.4"
+              />
+              <path
+                d="M12 10H6.5"
+                stroke="#272A37"
+                stroke-width="1.4"
+                stroke-linecap="round"
+              />
+              <circle
+                cx="4"
+                cy="10"
+                r="2.3"
+                transform="rotate(-180 4 10)"
+                stroke="#272A37"
+                stroke-width="1.4"
+              />
+            </svg>
+          </button>
         </div>
       </div>
       {filters.length !== 0 && <FiltersContainer />}

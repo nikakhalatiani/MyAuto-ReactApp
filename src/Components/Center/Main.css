@@ -12,8 +12,8 @@
   align-items: center;
 }
 
-.right-drops > *:not(:last-child) {
-  margin-inline: 8px;
+.right-drops > * {
+  margin-inline: 6px;
 }
 
 .count-listing {
@@ -22,6 +22,10 @@
   font-weight: 400;
   font-size: 16px;
   color: #1b1d25;
+}
+
+.show-sidebar {
+  display: none;
 }
 
 .custom-loader {
@@ -65,6 +69,18 @@
     margin-top: 12px;
     justify-content: flex-start;
     order: 2;
+  }
+
+  .show-sidebar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border-radius: 8px;
+    border: 1px solid #c2c9d8;
+    width: 43.6px;
+    height: 43.6px;
+    cursor: pointer;
   }
 
   .filters-container {

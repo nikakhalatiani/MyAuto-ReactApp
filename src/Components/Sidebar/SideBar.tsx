@@ -6,7 +6,10 @@ import CurrencyChange from "././CurrencyChange";
 import "./SideBar.css";
 import { useState, useEffect, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGreaterThan } from "@fortawesome/free-solid-svg-icons";
+import {
+  faGreaterThan,
+  faArrowsUpToLine,
+} from "@fortawesome/free-solid-svg-icons";
 import { AppContext } from "../../Contexts/AppContext";
 
 interface CategOption {
@@ -24,22 +27,6 @@ interface ManOption {
   is_car: string;
   is_spec: string;
   is_moto: string;
-}
-
-interface ModelOption {
-  model_id: number;
-  man_id: number;
-  model_name: string;
-  model_group: string;
-  sort_order: number;
-  cat_man_id: number;
-  cat_model_id: number;
-  cat_modif_id: number;
-  is_car: boolean;
-  is_moto: boolean;
-  is_spec: boolean;
-  show_in_salons: number;
-  shown_in_slider: number;
 }
 
 const Sidebar: React.FC = () => {
@@ -65,6 +52,7 @@ const Sidebar: React.FC = () => {
     setSortSelectedOption,
     setFilters,
     setPerSelectedOption,
+    setIsSidebarOpen,
   } = useContext(AppContext);
 
   const [carClicked, setCarClicked] = useState(true);
@@ -324,7 +312,10 @@ const Sidebar: React.FC = () => {
         >
           <button
             className="search-orange"
-            onClick={handleSearchButton}
+            onClick={() => {
+              setIsSidebarOpen(false);
+              handleSearchButton();
+            }}
             disabled={isSearchButtonClicked}
           >
             Search
@@ -338,6 +329,21 @@ const Sidebar: React.FC = () => {
                 fill="#454857"
               />{" "}
             </svg>
+          </button>
+          <button
+            className="up-button"
+            onClick={() => {
+              setIsSidebarOpen(false);
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 14 14"
+              width="14"
+              height="14"
+            >
+              <path d="M3.528 2.861c-.208-.236-.653-.236-.859 0L.177 5.621a.574.574 0 0 0 .028.828.574.574 0 0 0 .828-.028l1.454-1.598v8.568c0 .324.268.593.593.593s.593-.268.593-.565V4.83l1.454 1.622c.45.334.712.121.859 0a.602.602 0 0 0 .028-.828L3.523 2.865zm10.32 2.758-2.492-2.758c-.208-.236-.653-.236-.859 0L8.006 5.619a.574.574 0 0 0 .028.828.574.574 0 0 0 .828-.028l1.454-1.598v8.568c0 .324.268.593.593.593s.565-.268.593-.565V4.83l1.454 1.622c.392.322.712.121.859 0a.607.607 0 0 0 .03-.831zM.593 1.202h12.81c.296 0 .565-.268.565-.593s-.271-.595-.596-.595H.593A.597.597 0 0 0 0 .607c0 .326.268.592.593.592z" />
+            </svg>{" "}
           </button>
         </div>
       </div>

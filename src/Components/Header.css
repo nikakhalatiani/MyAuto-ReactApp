@@ -118,6 +118,7 @@
   .header-wrapper {
     height: 60px;
     position: relative;
+    z-index: 5;
   }
 
   .tnet-logo:hover {

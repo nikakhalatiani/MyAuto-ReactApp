@@ -211,6 +211,8 @@ interface AppContextInterface {
   searchButton: Search;
   sortSelectedOption: OrderingOption;
   perSelectedOption: PeriodOption;
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AppContext = createContext<AppContextInterface>({
@@ -247,4 +249,6 @@ export const AppContext = createContext<AppContextInterface>({
   searchButton: { Mans: "", Cats: "", PriceTo: "", PriceFrom: "", ForRent: "" },
   sortSelectedOption: { value: "", label: "Sort" },
   perSelectedOption: { value: "", label: "Period" },
+  isSidebarOpen: false,
+  setIsSidebarOpen: () => {},
 });
