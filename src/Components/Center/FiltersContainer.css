@@ -69,3 +69,9 @@
   background-color: #d8dbe2;
   border: none;
 }
+
+@media screen and (max-width: 960px) {
+  .filters-container {
+    border-radius: 0px;
+  }
+}

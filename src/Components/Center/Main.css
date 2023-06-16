@@ -57,10 +57,22 @@
 @media screen and (max-width: 960px) {
   .right-products-container {
     width: 100%;
+    display: flex;
+    flex-direction: column;
   }
   .above-products {
     padding-inline: 2%;
-    margin-top: 20px;
+    margin-top: 12px;
     justify-content: flex-start;
+    order: 2;
+  }
+
+  .filters-container {
+    order: 1;
+    margin-top: 0px;
+  }
+
+  .all-prod_options {
+    order: 3;
   }
 }

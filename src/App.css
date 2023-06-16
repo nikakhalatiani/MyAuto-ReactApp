@@ -8,10 +8,6 @@ html {
   overflow-y: scroll;
 }
 
-.root {
-  overflow-x: hidden;
-}
-
 /* .bellow-header {
   padding-top: 60px;
 } */
@@ -20,6 +16,8 @@ body {
   margin: 0;
   padding: 0;
   background: #f2f3f6;
+  overflow-x: hidden;
+
 }
 
 .main-container {
@@ -38,6 +36,7 @@ body {
 
   .right-container {
     margin-left: 0px;
-    width: 100vw;
+    width: 100lvw;
+
   }
 }
