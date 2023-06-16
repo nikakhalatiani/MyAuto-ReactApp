@@ -249,6 +249,21 @@ footer .right-icons > * {
   font-weight: 600;
 }
 
+.lari-btn > svg {
+  padding-top: 5px;
+  padding-left: 1px;
+
+  height: 1rem;
+  width: 1rem;
+}
+
+.dollar-btn > svg {
+  padding-top: 5px;
+  padding-left: 1.5px;
+  height: 1.2rem;
+  width: 1.2rem;
+}
+
 .lari-btn,
 .dollar-btn {
   border: none;
@@ -261,7 +276,7 @@ footer .right-icons > * {
   display: flex;
   flex-direction: row;
   justify-content: center;
-    align-items: center;
+  align-items: center;
 
   transition: background-color 0.3s ease;
 }
@@ -332,8 +347,6 @@ button {
 }
 
 @media (max-width: 960px) {
-  
-
   .product-card {
     height: 451px;
     border-radius: 16px;
