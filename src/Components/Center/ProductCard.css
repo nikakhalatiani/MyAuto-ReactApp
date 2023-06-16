@@ -249,8 +249,6 @@ footer .right-icons > * {
   font-weight: 600;
 }
 
-
-
 .lari-btn,
 .dollar-btn {
   border: none;
@@ -393,5 +391,12 @@ button {
     flex-direction: row;
     justify-content: center;
     border-radius: 0px;
+  }
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+  .lari-btn svg,
+  .dollar-btn svg {
+    transform: scale(2);
   }
 }
