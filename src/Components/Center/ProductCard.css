@@ -80,10 +80,6 @@
   padding-left: 4px;
 }
 
-.long-info p {
-  display: inline;
-}
-
 .product-info {
   height: 50%;
   display: flex;
@@ -329,9 +325,73 @@ footer .right-icons > * {
 .not-found > button:hover {
   background-color: #ca3400;
   border: 1px solid #ca3400;
-
 }
 
 button {
-  transition: .3s all;
+  transition: 0.3s all;
+}
+
+@media (max-width: 960px) {
+  
+
+  .product-card {
+    height: 451px;
+    border-radius: 16px;
+    width: 100lvw;
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+  }
+  .card-photo {
+    height: 256px;
+    width: 90lvw;
+    border-radius: 16px;
+    margin-top: 20px;
+  }
+
+  .card-info {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .card-info header {
+    padding-inline: 5%;
+  }
+
+  .car-model-del {
+    display: none;
+  }
+
+  .long-info > p:not(:last-child) {
+    font-weight: 400;
+    font-size: 16px;
+  }
+
+  .years-number {
+    font-weight: 400;
+    font-size: 16px;
+  }
+
+  .product-info {
+    padding-inline: 5%;
+  }
+
+  .card-info footer {
+    padding-inline: 5%;
+  }
+
+  footer .right-icons {
+    width: 30%;
+  }
+
+  .pagination-bar {
+    width: auto;
+    width: 100lvw;
+    background-color: #ffffff;
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    border-radius: 0px;
+  }
 }

@@ -53,3 +53,14 @@
   width: 52lvw;
   max-width: 780px;
 }
+
+@media screen and (max-width: 960px) {
+  .right-products-container {
+    width: 100%;
+  }
+  .above-products {
+    padding-inline: 2%;
+    margin-top: 20px;
+    justify-content: flex-start;
+  }
+}

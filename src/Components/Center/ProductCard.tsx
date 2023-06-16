@@ -290,7 +290,7 @@ const ProductCard: React.FC = ({}) => {
               <header>
                 <div className="long-info">
                   {product.for_rent && (
-                    <div>
+                    <div className="parent-for-rent">
                       {" "}
                       <div className="for-rent-icon">For rent</div>
                     </div>
@@ -311,7 +311,7 @@ const ProductCard: React.FC = ({}) => {
                     return <p key={modelId}>{modelName}</p>;
                   })()}
 
-                  <p>{product.car_model}</p>
+                  <p className="car-model-del">{product.car_model}</p>
                   <p className="years-number">{product.prod_year} y</p>
                 </div>
 
