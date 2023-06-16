@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/MyAuto-ReactApp/static/css/main.e1942946.css",
-    "main.js": "/MyAuto-ReactApp/static/js/main.d0cadd47.js",
+    "main.css": "/MyAuto-ReactApp/static/css/main.7322c58c.css",
+    "main.js": "/MyAuto-ReactApp/static/js/main.4b20f093.js",
     "index.html": "/MyAuto-ReactApp/index.html",
-    "main.e1942946.css.map": "/MyAuto-ReactApp/static/css/main.e1942946.css.map",
-    "main.d0cadd47.js.map": "/MyAuto-ReactApp/static/js/main.d0cadd47.js.map"
+    "main.7322c58c.css.map": "/MyAuto-ReactApp/static/css/main.7322c58c.css.map",
+    "main.4b20f093.js.map": "/MyAuto-ReactApp/static/js/main.4b20f093.js.map"
   },
   "entrypoints": [
-    "static/css/main.e1942946.css",
-    "static/js/main.d0cadd47.js"
+    "static/css/main.7322c58c.css",
+    "static/js/main.4b20f093.js"
   ]
 }
