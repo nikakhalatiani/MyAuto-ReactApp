@@ -273,11 +273,23 @@
     height: 34px;
     cursor: pointer;
     margin-left: 8px;
+    order: 3;
   }
 
   .up-button svg {
     fill: #272a37;
   }
 
+  .mull-square {
+    order: 1;
+    margin-left: 0px;
+  }
 
+  .search-orange {
+    order: 2;
+  }
+
+  .search-button-div {
+    justify-content: space-evenly;
+  }
 }
