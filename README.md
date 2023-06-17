@@ -5,7 +5,7 @@
 - Kote Gomiashivili
 
 ## Description
-This is a React app that represents a final project in the course of Scripting Langueages 2023 at Kutaisi Internatioanl University. The project was brought to its "finalized" form in 12 days. The design bluepring used can be seen on [Figma](https://www.figma.com/file/3nSihbBwlOFtuuRCcHtIDp/test-myauto?type=design&node-id=0-1). You can use this [link](https://nikakhalatiani.github.io/MyAuto-ReactApp/?fbclid=IwAR1v9JGAarXI13E--nIBiFiiL44IzUOckUrLM4jSTbsstgSXIMtYqptOvGw_aem_th_AcXo-eVP98LgW4zpsvvgOxf_nE3ABQRlIFn8UJ0i7v0M7UEcINQlczpkaEyYc64rWAA) to conveniently check the project out.
+This React app represents a final project in Scripting Languages 2023 at Kutaisi International University. The project was brought to its "finalized" form in 12 days. The design blueprint used can be seen on [Figma](https://www.figma.com/file/3nSihbBwlOFtuuRCcHtIDp/test-myauto?type=design&node-id=0-1). You can use this [link](https://nikakhalatiani.github.io/MyAuto-ReactApp/?fbclid=IwAR1v9JGAarXI13E--nIBiFiiL44IzUOckUrLM4jSTbsstgSXIMtYqptOvGw_aem_th_AcXo-eVP98LgW4zpsvvgOxf_nE3ABQRlIFn8UJ0i7v0M7UEcINQlczpkaEyYc64rWAA) to check the project out conveniently.
 
 ## Features
 - App mimics the [MyAuto](https://www.myauto.ge) search page
