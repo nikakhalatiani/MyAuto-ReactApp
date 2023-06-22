@@ -5,7 +5,8 @@ import {
   faXmark,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
+import { AppContext } from "../../Contexts/AppContext";
 
 interface CategOption {
   category_id: number;
@@ -21,11 +22,16 @@ interface CategDropdownProps {
 }
 
 const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
+  const {
+    catSelectedOptions,
+    setCatSelectedOptions,
+    setIsCategCloseButtonSelected,
+    isCategCloseButtonSelected,
+  } = useContext(AppContext);
+
   const [categTerm, setCategTerm] = useState("");
-  const [selectedOptions, setSelectedOptions] = useState<CategOption[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const [isCloseButtonSelected, setIsCloseButtonSelected] = useState(false);
   const categInputRef = useRef<HTMLInputElement>(null);
   const categDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -38,7 +44,6 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
         setIsOpen(false);
         if (categInputRef?.current?.placeholder === "Category") {
           setCategTerm("");
-          // console.log("test");
         }
       }
     };
@@ -50,28 +55,33 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
   }, []);
 
   const handleCheckboxChange = (option: CategOption) => {
-    const isSelected = selectedOptions.some(
+    const isSelected = catSelectedOptions.some(
       (selectedOption) => selectedOption.category_id === option.category_id
     );
 
+    let updatedSelectedOptions: CategOption[];
+
     if (isSelected) {
-      setSelectedOptions(
-        selectedOptions.filter(
-          (selectedOption) => selectedOption.category_id !== option.category_id
-        )
+      updatedSelectedOptions = catSelectedOptions.filter(
+        (selectedOption) => selectedOption.category_id !== option.category_id
       );
-      if (selectedOptions.length === 1 && isCloseButtonSelected) {
-        setIsCloseButtonSelected(false);
+      if (updatedSelectedOptions.length === 0 && isCategCloseButtonSelected) {
+        setIsCategCloseButtonSelected(false);
       }
     } else {
-      setSelectedOptions([...selectedOptions, option]);
-      if (!isCloseButtonSelected) {
-        setIsCloseButtonSelected(true);
+      updatedSelectedOptions = [...catSelectedOptions, option];
+      if (!isCategCloseButtonSelected) {
+        setIsCategCloseButtonSelected(true);
       }
     }
 
+    // Sort the updated selected options by category_id
+    updatedSelectedOptions.sort((a, b) => a.category_id - b.category_id);
+
+    setCatSelectedOptions(updatedSelectedOptions);
+
     if (categInputRef.current) {
-      categInputRef.current.placeholder = selectedOptions
+      categInputRef.current.placeholder = updatedSelectedOptions
         .map((selectedOption) => selectedOption.title)
         .join(", ");
     }
@@ -90,30 +100,23 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
   };
 
   const toggleCategDropdown = () => {
-    if (isCloseButtonSelected) {
-      setSelectedOptions([]);
-      setIsCloseButtonSelected(!isCloseButtonSelected);
+    if (isCategCloseButtonSelected) {
+      setCatSelectedOptions([]);
+      setIsCategCloseButtonSelected(!isCategCloseButtonSelected);
       console.log("X-mark");
     } else {
       if (categInputRef?.current?.placeholder === "Category") {
         setCategTerm("");
-        // console.log("test");
       }
       setIsOpen(!isOpen);
     }
   };
 
   const handleContainerClick = () => {
-    // console.log("handleContainerClick");
-    // console.log(isCloseButtonSelected);
-    // setIsCloseButtonSelected(false);
-    // if (!isCloseButtonSelected) {
-    // console.log("!isCloseButtonSelected");
-    if (!isOpen && !isCloseButtonSelected) {
+    if (!isOpen && !isCategCloseButtonSelected) {
       console.log("isOpen");
       setIsOpen(true);
       categInputRef?.current?.focus(); // Set focus on the categ input field
-      // }
     }
   };
 
@@ -126,17 +129,9 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
-    setSelectedOptions([]);
-    setIsCloseButtonSelected(false);
+    setCatSelectedOptions([]);
+    setIsCategCloseButtonSelected(false);
   };
-
-  // const handleClearAll = () => {
-  //   setSelectedOptions([]);
-  //   setIsCloseButtonSelected(false);
-  //   if (categInputRef.current) {
-  //     categInputRef.current.placeholder = "Categ";
-  //   }
-  // };
 
   const filteredOptions = options.filter((option) =>
     option.title.toLowerCase().startsWith(categTerm.toLowerCase())
@@ -147,14 +142,14 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
       <div
         onClick={handleContainerClick}
         className={`categ-container ${
-          selectedOptions.length > 0 ? "dark-font" : ""
+          catSelectedOptions.length > 0 ? "dark-font" : ""
         } ${isOpen ? "open" : ""}`}
       >
         <input
           id="3"
           placeholder={
-            selectedOptions.length > 0
-              ? selectedOptions
+            catSelectedOptions.length > 0
+              ? catSelectedOptions
                   .map((selectedOption) => selectedOption.title)
                   .join(", ")
               : "Category"
@@ -165,14 +160,15 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
           onClick={() => {
             setIsOpen(true);
           }}
+          autoComplete="off"
         />
         <button
           onClick={toggleCategDropdown}
           className={
-            isCloseButtonSelected ? "rotate-x" : isOpen ? "rotate" : ""
+            isCategCloseButtonSelected ? "rotate-x" : isOpen ? "rotate" : ""
           }
         >
-          {isCloseButtonSelected ? (
+          {isCategCloseButtonSelected ? (
             <FontAwesomeIcon icon={faXmark} style={{ color: "#272a37" }} />
           ) : (
             <FontAwesomeIcon
@@ -194,7 +190,7 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
                   <label key={option.category_id}>
                     <input
                       type="checkbox"
-                      checked={selectedOptions.some(
+                      checked={catSelectedOptions.some(
                         (selectedOption) =>
                           selectedOption.category_id === option.category_id
                       )}
@@ -203,8 +199,9 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
                         setIsChecked(!isChecked);
                       }}
                     />
-                    {selectedOptions.some(
-                      (selectedOption) => selectedOption.category_id === option.category_id
+                    {catSelectedOptions.some(
+                      (selectedOption) =>
+                        selectedOption.category_id === option.category_id
                     ) ? (
                       <span className="custom-checkbox-checked">
                         <FontAwesomeIcon
@@ -221,7 +218,7 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
               )}
             </div>
 
-            {selectedOptions.length > 0 && (
+            {catSelectedOptions.length > 0 && (
               <div className="categ-dropdown-buttons">
                 <button
                   className="categ-clear-button"

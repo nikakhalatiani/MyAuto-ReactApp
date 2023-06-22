@@ -1,28 +1,36 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import "./FilterDropdown.css";
+import { AppContext } from "../../Contexts/AppContext";
 
-interface Option {
+interface OrderingOption {
   value: string;
   label: string;
 }
 
-interface SearchDropdownProps {
-  options: Option[];
-}
 
-const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
+const FilterDropdown: React.FC = () => {
+
+  const ordering_type: OrderingOption[] = [
+    { value: "2", label: "order by date desc" },
+    { value: "1", label: "order by date asc" },
+    { value: "3", label: "Price descending" },
+    { value: "4", label: "Price ascending" },
+    { value: "5", label: "Mileage descending" },
+    { value: "6", label: "Mileage ascending" },
+  ];
+  const { sortSelectedOption, setSortSelectedOption } = useContext(AppContext);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
+
   const filterDropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleFilterDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleOptionSelect = (option: Option) => {
-    setSelectedOption(option);
+  const handleOptionSelect = (option: OrderingOption) => {
+    setSortSelectedOption(option);
     setIsOpen(false);
   };
 
@@ -42,14 +50,9 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
     };
   }, []);
 
-  const filteredOptions = options.filter(
-    (option) => option.value !== selectedOption?.value
+  const filteredOptions = ordering_type.filter(
+    (option) => option.label !== sortSelectedOption?.label
   );
-  const defaultOption = options.length > 0 ? options[0] : null;
-
-  useEffect(() => {
-    setSelectedOption(defaultOption);
-  }, [defaultOption]);
 
   return (
     <div className="filter-dropdown-container" ref={filterDropdownRef}>
@@ -58,9 +61,7 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
         className={`filter-container ${isOpen ? "open" : ""}`}
         onClick={toggleFilterDropdown}
       >
-        <span className="filter-choice">
-          {selectedOption ? selectedOption.label : defaultOption?.label}
-        </span>
+        <span className="period-choice">{sortSelectedOption.label}</span>
         <button className={isOpen ? "rotate" : ""}>
           <FontAwesomeIcon
             icon={faChevronDown}
@@ -87,4 +88,4 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
   );
 };
 
-export default SearchDropdown;
+export default FilterDropdown;

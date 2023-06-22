@@ -3,55 +3,55 @@
   font-family: "Roboto", sans-serif;
 }
 
-
-.filter-container {
+.period-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding: 12px 8px 12px 12px;
-  background: #ffffff;
+  background: transparent;
   border: 1px solid #c2c9d8;
   border-radius: 8px;
   cursor: pointer;
+  width: auto;
 }
 
-.filter-container:hover {
+.period-container:hover {
   border-color: #272a37;
 }
 
-.filter-container.open {
+.period-container.open {
   border-color: #272a37; /* Set the border color to black when open */
 }
 
-.filter-container button {
+.period-container button {
   border: none;
   background-color: transparent;
   transition: transform 0.2s ease-in; /* Add transition property */
 }
 
-.filter-container button.rotate {
+.period-container button.rotate {
   transform: rotate(180deg); /* Apply rotation to the chevron */
 }
 
-.filter-container button:focus {
+.period-container button:focus {
   outline: none;
 }
 
-.filter-choice {
+.period-choice {
   color: #454857;
   font-style: normal;
   font-weight: 500;
   font-size: 13px;
 }
 
-.filter-dropdown-options label {
+.period-dropdown-options label {
   cursor: pointer;
   color: #6f7383;
   font-style: normal;
 }
 
-.filter-dropdown-options {
+.period-dropdown-options {
   display: flex;
   flex-direction: column;
   border: 1px solid #c2c9d8;
@@ -61,19 +61,21 @@
   cursor: pointer;
   padding: 8px 0;
   box-shadow: 0px 4px 20px rgba(164, 174, 193, 0.4);
+  width: 120px;
 }
 
-.filter-dropdown-container {
+.period-dropdown-container {
   position: relative;
-  z-index: 10;
+  z-index: 11;
 }
 
-.filter-dropdown-content {
+.period-dropdown-content {
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
   background-color: transparent;
+  /* Other styling properties */
 }
 
 .dropdown-options label {
@@ -82,7 +84,7 @@
   margin-bottom: 5px;
 }
 
-.filter-option {
+.period-option {
   padding: 8px;
   font-style: normal;
   font-weight: 400;
@@ -91,7 +93,7 @@
   font-size: 14px;
 }
 
-.filter-option:hover {
+.period-option:hover {
   color: #272a37;
   background: #f2f3f6;
 }

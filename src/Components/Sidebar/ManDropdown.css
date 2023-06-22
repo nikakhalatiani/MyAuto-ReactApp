@@ -44,7 +44,7 @@
   border-radius: 4px;
   cursor: auto;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
   cursor: pointer;
 }
 
@@ -66,6 +66,7 @@
   transform: rotate(180deg); /* Apply rotation to the chevron */
 }
 
+
 .man-container button.rotate-x {
   transform: rotate(-180deg); /* Apply rotation to the X mark */
 }
@@ -78,6 +79,7 @@
 }
 
 .man-dropdown-options input[type="checkbox"] {
+  width: 16px;
   display: none;
 }
 /* 
@@ -89,6 +91,8 @@
   margin-right: 1lvw;
   width: 16px;
   height: 16px;
+  min-width: 16px;
+
   border-radius: 4px;
   border: 1px solid #D8DBE2;
   cursor: pointer;
@@ -98,6 +102,8 @@
   margin-right: 1lvw;
   width: 16px;
   height: 16px;
+  min-width: 16px;
+
   border-radius: 4px;
   border: 1px solid #fd4100;
   background-color: #fd4100;
@@ -115,6 +121,14 @@
   cursor: pointer;
   color: #6f7383;
   font-style: normal;
+  transition: color 0.3s ease; /* Add transition property */
+
+}
+
+
+
+.man-dropdown-options label:hover {
+  color: #272a37;
 }
 
 /* Chrome, Edge and Safari */

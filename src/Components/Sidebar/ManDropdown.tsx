@@ -5,7 +5,8 @@ import {
   faXmark,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
+import { AppContext } from "../../Contexts/AppContext";
 
 interface ManOption {
   man_id: string;
@@ -20,11 +21,18 @@ interface ManDropdownProps {
 }
 
 const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
+  const {
+    setManSelectedOptions,
+    manSelectedOptions,
+    isManCloseButtonSelected,
+    setManIsCloseButtonSelected,
+    modelSelectedOptions,
+    setModSelectedOptions,
+    setModIsCloseButtonSelected,
+  } = useContext(AppContext);
   const [manTerm, setManTerm] = useState("");
-  const [selectedOptions, setSelectedOptions] = useState<ManOption[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const [isCloseButtonSelected, setIsCloseButtonSelected] = useState(false);
   const manInputRef = useRef<HTMLInputElement>(null);
   const manDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -35,52 +43,59 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
         !manDropdownRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
-        if (manInputRef?.current?.placeholder === "Manufacturer") {
-          setManTerm("");
-          // console.log("test");
-        }
+        setManTerm("");
       }
     };
 
     window.addEventListener("click", handleClickOutside);
+
     return () => {
       window.removeEventListener("click", handleClickOutside);
     };
-  }, []);
+  }, [manSelectedOptions]);
 
   const handleCheckboxChange = (option: ManOption) => {
-    const isSelected = selectedOptions.some(
-      (selectedOption) => selectedOption.man_id === option.man_id
+    const isSelected = manSelectedOptions.some(
+      (manSelectedOption) => manSelectedOption.man_id === option.man_id
     );
 
+    let updatedManSelectedOptions: ManOption[];
+
     if (isSelected) {
-      setSelectedOptions(
-        selectedOptions.filter(
-          (selectedOption) => selectedOption.man_id !== option.man_id
-        )
+      updatedManSelectedOptions = manSelectedOptions.filter(
+        (manSelectedOption) => manSelectedOption.man_id !== option.man_id
       );
-      if (selectedOptions.length === 1 && isCloseButtonSelected) {
-        setIsCloseButtonSelected(false);
+      if (updatedManSelectedOptions.length === 0 && isManCloseButtonSelected) {
+        setManIsCloseButtonSelected(false);
       }
     } else {
-      setSelectedOptions([...selectedOptions, option]);
-      if (!isCloseButtonSelected) {
-        setIsCloseButtonSelected(true);
+      updatedManSelectedOptions = [...manSelectedOptions, option];
+      if (!isManCloseButtonSelected) {
+        setManIsCloseButtonSelected(true);
       }
     }
 
+    updatedManSelectedOptions.sort((a, b) => a.man_id.localeCompare(b.man_id));
+    setManSelectedOptions(updatedManSelectedOptions);
+
+    const updatedModSelectedOptions = modelSelectedOptions.filter((model) => {
+      updatedManSelectedOptions.some(
+        (manOption) => manOption.man_id === model.man_id.toString()
+      );
+    });
+
+    if (updatedModSelectedOptions.length === 0) {
+      setModIsCloseButtonSelected(false);
+    }
+
+    setModSelectedOptions(updatedModSelectedOptions);
+
     if (manInputRef.current) {
-      manInputRef.current.placeholder = selectedOptions
+      manInputRef.current.placeholder = updatedManSelectedOptions
         .map((selectedOption) => selectedOption.man_name)
         .join(", ");
     }
   };
-
-  // const handleInputClick = (event: React.MouseEvent<HTMLInputElement>) => {
-  //   event.stopPropagation();
-  //   handleContainerClick();
-  //   console.log(event.target);
-  // };
 
   const handleManTermChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setManTerm(event.target.value);
@@ -97,29 +112,24 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
   }
 
   const toggleManDropdown = () => {
-    if (isCloseButtonSelected) {
-      setSelectedOptions([]);
-      setIsCloseButtonSelected(!isCloseButtonSelected);
-      console.log("X-mark");
+    if (isManCloseButtonSelected) {
+      setManSelectedOptions([]);
+      setManIsCloseButtonSelected(!isManCloseButtonSelected);
+      setModSelectedOptions([]);
+      setModIsCloseButtonSelected(false);
     } else {
       if (manInputRef?.current?.placeholder === "Manufacturer") {
         setManTerm("");
-        // console.log("test");
       }
       setIsOpen(!isOpen);
     }
   };
 
   const handleContainerClick = () => {
-    // console.log("handleContainerClick");
-    // console.log(isCloseButtonSelected);
-    // setIsCloseButtonSelected(false);
-    // if (!isCloseButtonSelected) {
-    // console.log("!isCloseButtonSelected");
-    if (!isOpen && !isCloseButtonSelected) {
+    if (!isOpen && !isManCloseButtonSelected) {
       console.log("isOpen");
       setIsOpen(true);
-      manInputRef?.current?.focus(); // Set focus on the man input field
+      manInputRef?.current?.focus();
       // }
     }
   };
@@ -133,21 +143,11 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
-    setSelectedOptions([]);
-    setIsCloseButtonSelected(false);
+    setManSelectedOptions([]);
+    setManIsCloseButtonSelected(false);
+    setModSelectedOptions([]);
+    setModIsCloseButtonSelected(false);
   };
-
-  // const handleClearAll = () => {
-  //   setSelectedOptions([]);
-  //   setIsCloseButtonSelected(false);
-  //   if (manInputRef.current) {
-  //     manInputRef.current.placeholder = "Man";
-  //   }
-  // };
-
-  // const filteredOptions = options.filter((option) =>
-  //   option.man_name.toLowerCase().startsWith(manTerm.toLowerCase()).sort((a, b) => a.man_name.localeCompare(b.man_name));
-  // );
 
   const filteredOptions = options
     .filter((option) =>
@@ -161,14 +161,14 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
       <div
         onClick={handleContainerClick}
         className={`man-container ${
-          selectedOptions.length > 0 ? "dark-font" : ""
+          manSelectedOptions.length > 0 ? "dark-font" : ""
         } ${isOpen ? "open" : ""}`}
       >
         <input
           id="2"
           placeholder={
-            selectedOptions.length > 0
-              ? selectedOptions
+            manSelectedOptions.length > 0
+              ? manSelectedOptions
                   .map((selectedOption) => toTitleCase(selectedOption.man_name))
                   .join(", ")
               : "Manufacturer"
@@ -179,14 +179,15 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
           onClick={() => {
             setIsOpen(true);
           }}
+          autoComplete="off"
         />
         <button
           onClick={toggleManDropdown}
           className={
-            isCloseButtonSelected ? "rotate-x" : isOpen ? "rotate" : ""
+            isManCloseButtonSelected ? "rotate-x" : isOpen ? "rotate" : ""
           }
         >
-          {isCloseButtonSelected ? (
+          {isManCloseButtonSelected ? (
             <FontAwesomeIcon icon={faXmark} style={{ color: "#272a37" }} />
           ) : (
             <FontAwesomeIcon
@@ -208,7 +209,7 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
                     <input
                       type="checkbox"
                       id={option.man_id}
-                      checked={selectedOptions.some(
+                      checked={manSelectedOptions.some(
                         (selectedOption) =>
                           selectedOption.man_id === option.man_id
                       )}
@@ -217,7 +218,7 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
                         setIsChecked(!isChecked);
                       }}
                     />
-                    {selectedOptions.some(
+                    {manSelectedOptions.some(
                       (selectedOption) =>
                         selectedOption.man_id === option.man_id
                     ) ? (
@@ -236,7 +237,7 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
               )}
             </div>
 
-            {selectedOptions.length > 0 && (
+            {manSelectedOptions.length > 0 && (
               <div className="man-dropdown-buttons">
                 <button
                   className="man-clear-button"

@@ -1,18 +1,17 @@
-
-.sale-rent-dropdown {
+.categ-dropdown {
   display: flex;
   flex-direction: column;
   max-height: 306px;
   overflow-y: auto;
 }
 
-.sale-rent-dropdown label {
+.categ-dropdown label {
   display: flex;
   align-items: center;
   margin-bottom: 5px;
 }
 
-.sale-rent-container {
+.categ-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -25,26 +24,31 @@
   height: 18px; /* Add a fixed height */
 }
 
-.sale-rent-container:hover {
+.categ-container:hover {
   border-color: #272a37;
 }
 
-.sale-rent-container.open {
+.categ-container.open {
+  cursor: text;
   border-color: #272a37; /* Set the border color to black when open */
 }
 
-.sale-rent-container input {
+.categ-container input {
   flex: 1;
   outline: none;
   border: none;
   border-radius: 4px;
   cursor: auto;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
   cursor: pointer;
 }
 
-.sale-rent-container button {
+.categ-container.open input {
+  cursor: text;
+}
+
+.categ-container button {
   border: none;
   background-color: transparent;
   transition: transform 0.2s ease-in; /* Add transition property */
@@ -54,22 +58,22 @@
   cursor: pointer;
 }
 
-.sale-rent-container button.rotate {
+.categ-container button.rotate {
   transform: rotate(180deg); /* Apply rotation to the chevron */
 }
 
-.sale-rent-container button.rotate-x {
+.categ-container button.rotate-x {
   transform: rotate(-180deg); /* Apply rotation to the X mark */
 }
 
-.sale-rent-container button.rotate-x:hover {
+.categ-container button.rotate-x:hover {
   background-color: #c2c9d848;
   border-radius: 50%;
   aspect-ratio: 1/1;
   position: relative;
 }
 
-.sale-rent-dropdown-options input[type="checkbox"] {
+.categ-dropdown-options input[type="checkbox"] {
   display: none;
 }
 /* 
@@ -77,31 +81,10 @@
   display: none;
 } */
 
-/* .custom-checkbox-unchecked {
-  margin-right: 1lvw;
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-  border: 1px solid #c2c9d8;
-  cursor: pointer;
-}
-.custom-checkbox-checked {
-  margin-right: 1lvw;
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-  border: 1px solid #fd4100;
-  background-color: #fd4100;
-  cursor: pointer;
-  color: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-} */
-
 .custom-checkbox-unchecked,
 .custom-checkbox-checked {
+  min-width: 16px;
+
   margin-right: 1lvw;
   width: 16px;
   height: 16px;
@@ -132,10 +115,37 @@
   opacity: 0; /* Start with the icon hidden */
 }
 
-.sale-rent-dropdown-options label {
+/* .custom-checkbox-unchecked {
+  margin-right: 1lvw;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid #c2c9d8;
+  cursor: pointer;
+}
+.custom-checkbox-checked {
+  margin-right: 1lvw;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid #fd4100;
+  background-color: #fd4100;
+  cursor: pointer;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
+
+.categ-dropdown-options label {
   cursor: pointer;
   color: #6f7383;
   font-style: normal;
+  transition: color 0.3s ease; /* Add transition property */
+}
+
+.categ-dropdown-options label:hover {
+  color: #272a37;
 }
 
 @supports (scrollbar-width: thin) {
@@ -146,16 +156,16 @@
   }
 }
 /* Chrome, Edge and Safari */
-.sale-rent-dropdown-options::-webkit-scrollbar {
+.categ-dropdown-options::-webkit-scrollbar {
   width: 4px;
 }
 
-.sale-rent-dropdown-options::-webkit-scrollbar-thumb {
+.categ-dropdown-options::-webkit-scrollbar-thumb {
   border-radius: 5px;
   background-color: #272a37;
 }
 
-.sale-rent-dropdown {
+.categ-dropdown {
   border: 1px solid #d8dbe2;
   background-color: #ffffff;
   border-radius: 8px;
@@ -165,36 +175,38 @@
   box-shadow: 0px 4px 20px rgba(164, 174, 193, 0.4);
 }
 
-.sale-rent-dropdown-container {
+.categ-dropdown-container {
   position: relative;
-  z-index: 14;
+  z-index: 11;
 }
 
-.sale-rent-dropdown-content {
+.categ-dropdown-content {
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
   background-color: transparent;
+  /* Other styling properties */
 }
 
-.sale-rent-dropdown-options {
+.categ-dropdown-options {
   display: flex;
   flex-direction: column;
   max-height: 306px;
   overflow-y: auto;
   padding-left: 16px;
   padding-top: 8px;
-  /* padding-bottom: 8px; */
+
+  padding-bottom: 16px;
   cursor: pointer;
   background-color: #ffffff;
 }
 
-.sale-rent-dropdown-options label {
+.categ-dropdown-options label {
   padding-bottom: 8px;
 }
 
-.sale-rent-dropdown-buttons {
+.categ-dropdown-buttons {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -205,7 +217,7 @@
   height: fit-content;
 }
 
-.sale-rent-close-button {
+.categ-close-button {
   background: #fd4100;
   border-radius: 6px;
   color: #ffffff;
@@ -217,11 +229,11 @@
   padding: 0px 8px;
 }
 
-.sale-rent-container.dark-font input::placeholder {
+.categ-container.dark-font input::placeholder {
   color: #272a37;
 }
 
-.sale-rent-clear-button {
+.categ-clear-button {
   background-color: transparent;
   border: none;
   color: #6f7383;

@@ -1,29 +1,44 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import "./PeriodDropdown.css";
+import { AppContext } from "../../Contexts/AppContext";
 
-interface Option {
+interface PeriodOption {
   value: string;
   label: string;
 }
 
-interface SearchDropdownProps {
-  options: Option[];
-}
-
-const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
+const PeriodDropdown: React.FC = () => {
+  const periods: PeriodOption[] = [
+    { value: "1h", label: "1 hour" },
+    { value: "2h", label: "2 hours" },
+    { value: "3h", label: "3 hours" },
+    { value: "1d", label: "1 day" },
+    { value: "2d", label: "2 days" },
+    { value: "3d", label: "3 days" },
+    { value: "1w", label: "1 week" },
+    { value: "2w", label: "2 weeks" },
+    { value: "3w", label: "3 weeks" },
+  ];
+  const { setFilters, filters, setPerSelectedOption, perSelectedOption } =
+    useContext(AppContext);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
+
   const periodDropdownRef = useRef<HTMLDivElement>(null);
 
   const togglePeriodDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleOptionSelect = (option: Option) => {
-    setSelectedOption(option);
+  const handleOptionSelect = (option: PeriodOption) => {
+    setPerSelectedOption(option);
     setIsOpen(false);
+    const filteredFilters = filters.filter((filter) => filter.type !== "t");
+    setFilters([
+      ...filteredFilters,
+      { id: option.value, label: option.label, type: "t" },
+    ]);
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -42,8 +57,8 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
     };
   }, []);
 
-  const filteredOptions = options.filter(
-    (option) => option.value !== selectedOption?.value
+  const filteredOptions = periods.filter(
+    (option) => option.value !== perSelectedOption?.value
   );
 
   return (
@@ -54,7 +69,7 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
         onClick={togglePeriodDropdown}
       >
         <span className="period-choice">
-          {selectedOption ? selectedOption.label : "Period"}
+          {perSelectedOption ? perSelectedOption.label : "Period"}
         </span>
         <button className={isOpen ? "rotate" : ""}>
           <FontAwesomeIcon
@@ -83,4 +98,4 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({ options }) => {
   );
 };
 
-export default SearchDropdown;
+export default PeriodDropdown;

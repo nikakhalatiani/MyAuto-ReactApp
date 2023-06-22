@@ -3,54 +3,55 @@
   font-family: "Roboto", sans-serif;
 }
 
-.period-container {
+.filter-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding: 12px 8px 12px 12px;
-  background: #ffffff;
+  background: transparent;
   border: 1px solid #c2c9d8;
   border-radius: 8px;
   cursor: pointer;
+  width: auto;
 }
 
-.period-container:hover {
+.filter-container:hover {
   border-color: #272a37;
 }
 
-.period-container.open {
+.filter-container.open {
   border-color: #272a37; /* Set the border color to black when open */
 }
 
-.period-container button {
+.filter-container button {
   border: none;
   background-color: transparent;
   transition: transform 0.2s ease-in; /* Add transition property */
 }
 
-.period-container button.rotate {
+.filter-container button.rotate {
   transform: rotate(180deg); /* Apply rotation to the chevron */
 }
 
-.period-container button:focus {
+.filter-container button:focus {
   outline: none;
 }
 
-.period-choice {
+.filter-choice {
   color: #454857;
   font-style: normal;
   font-weight: 500;
   font-size: 13px;
 }
 
-.period-dropdown-options label {
+.filter-dropdown-options label {
   cursor: pointer;
   color: #6f7383;
   font-style: normal;
 }
 
-.period-dropdown-options {
+.filter-dropdown-options {
   display: flex;
   flex-direction: column;
   border: 1px solid #c2c9d8;
@@ -62,18 +63,17 @@
   box-shadow: 0px 4px 20px rgba(164, 174, 193, 0.4);
 }
 
-.period-dropdown-container {
+.filter-dropdown-container {
   position: relative;
-  z-index: 11;
+  z-index: 10;
 }
 
-.period-dropdown-content {
+.filter-dropdown-content {
   position: absolute;
   top: 100%;
-  left: 0;
-  right: 0;
+
   background-color: transparent;
-  /* Other styling properties */
+  width: 182px;
 }
 
 .dropdown-options label {
@@ -82,7 +82,7 @@
   margin-bottom: 5px;
 }
 
-.period-option {
+.filter-option {
   padding: 8px;
   font-style: normal;
   font-weight: 400;
@@ -91,7 +91,7 @@
   font-size: 14px;
 }
 
-.period-option:hover {
+.filter-option:hover {
   color: #272a37;
   background: #f2f3f6;
 }

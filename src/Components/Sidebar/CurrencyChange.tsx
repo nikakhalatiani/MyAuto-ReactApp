@@ -1,15 +1,34 @@
-import { useState } from "react";
 import "./CurrencyChange.css";
+import { ChangeEvent, useContext } from "react";
+import { AppContext } from "../../Contexts/AppContext";
 
-interface PriceFilterProps {
-  currencies: string[];
-}
 
-const CurrencyChange: React.FC<PriceFilterProps> = ({ currencies }) => {
-  const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState(0);
-
+const CurrencyChange: React.FC = ({}) => {
+  const {
+    priceFrom,
+    setPriceFrom,
+    priceTo,
+    setPriceTo,
+    selectedCurrencyIndex,
+    setSelectedCurrencyIndex,
+  } = useContext(AppContext);
   const handleCurrencyToggle = () => {
-    setSelectedCurrencyIndex((prevIndex) => (prevIndex === 0 ? 1 : 0));
+    // setSelectedCurrencyIndex((prevIndex) => (prevIndex === 0 ? 1 : 0));
+    setSelectedCurrencyIndex(selectedCurrencyIndex === 0 ? 1 : 0);
+  };
+
+  const handlePriceToChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value.trim();
+    const newPriceTo = value !== "" ? parseFloat(value) : 0;
+    console.log(Number.isNaN(newPriceTo) ? "emptyTo" : value);
+    setPriceTo(Number.isNaN(newPriceTo) ? "" : value);
+  };
+
+  const handlePriceFromChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value.trim();
+    const newPriceTo = value !== "" ? parseFloat(value) : 0;
+    console.log(Number.isNaN(newPriceTo) ? "emptyFrom" : value);
+    setPriceFrom(Number.isNaN(newPriceTo) ? "" : value);
   };
 
   return (
@@ -60,9 +79,20 @@ const CurrencyChange: React.FC<PriceFilterProps> = ({ currencies }) => {
           type="text"
           placeholder="From"
           className="currency-input"
+          onChange={handlePriceFromChange}
+          autoComplete="off"
+          value={priceFrom}
         />
         {" - "}
-        <input id="5" type="text" placeholder="To" className="currency-input" />
+        <input
+          id="5"
+          type="text"
+          placeholder="To"
+          className="currency-input"
+          onChange={handlePriceToChange}
+          autoComplete="off"
+          value={priceTo}
+        />
       </div>
     </main>
   );

@@ -1,0 +1,46 @@
+
+                // const handleAllModelCheck = (
+  //   model_group: string,
+  //   groupedOptions: GroupManModel[]
+  // ) => {
+  //   const optionsInGroup = groupedOptions.find(
+  //     (group) => group.model_group === model_group
+  //   );
+
+  //   if (!optionsInGroup) {
+  //     return;
+  //   }
+
+  //   const areAllOptionsSelected = optionsInGroup.options.every((option) =>
+  //     modelSelectedOptions.some(
+  //       (selectedOption) => selectedOption.model_id === option.model_id
+  //     )
+  //   );
+
+  //   let updatedModSelectedOptions: ModelOption[];
+
+  //   if (areAllOptionsSelected) {
+  //     updatedModSelectedOptions = modelSelectedOptions.filter(
+  //       (selectedOption) =>
+  //         !optionsInGroup.options.some(
+  //           (option) => option.model_id === selectedOption.model_id
+  //         )
+  //     );
+  //   } else {
+  //     const optionsToAdd = optionsInGroup.options.filter(
+  //       (option) =>
+  //         !modelSelectedOptions.some(
+  //           (selectedOption) => selectedOption.model_id === option.model_id
+  //         )
+  //     );
+  //     updatedModSelectedOptions = [...modelSelectedOptions, ...optionsToAdd];
+  //   }
+
+  //   setModSelectedOptions(updatedModSelectedOptions);
+
+  //   if (modelInputRef.current) {
+  //     modelInputRef.current.placeholder = updatedModSelectedOptions
+  //       .map((selectedOption) => selectedOption.model_name)
+  //       .join(", ");
+  //   }
+  // };
