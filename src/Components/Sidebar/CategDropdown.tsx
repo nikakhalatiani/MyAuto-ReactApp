@@ -90,7 +90,6 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
   // const handleInputClick = (event: React.MouseEvent<HTMLInputElement>) => {
   //   event.stopPropagation();
   //   handleContainerClick();
-  //   console.log(event.target);
   // };
 
   const handleCategTermChange = (
@@ -103,7 +102,6 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
     if (isCategCloseButtonSelected) {
       setCatSelectedOptions([]);
       setIsCategCloseButtonSelected(!isCategCloseButtonSelected);
-      console.log("X-mark");
     } else {
       if (categInputRef?.current?.placeholder === "Category") {
         setCategTerm("");
@@ -114,7 +112,6 @@ const CategDropdown: React.FC<CategDropdownProps> = ({ options }) => {
 
   const handleContainerClick = () => {
     if (!isOpen && !isCategCloseButtonSelected) {
-      console.log("isOpen");
       setIsOpen(true);
       categInputRef?.current?.focus(); // Set focus on the categ input field
     }

@@ -24,6 +24,7 @@ const FiltersContainer: React.FC = () => {
     setPriceTo,
     filters,
     searchButton,
+    setCurrentPage,
   } = useContext(AppContext);
   const [showAllFilters, setShowAllFilters] = useState(false);
   const visibleFilters = showAllFilters ? filters : filters.slice(0, 10);
@@ -94,6 +95,7 @@ const FiltersContainer: React.FC = () => {
       label: "Period",
     });
     setFilters([]);
+    setCurrentPage(1);
   };
 
   const filterOutElements = (type: string, id: string, mod_id?: string) => {

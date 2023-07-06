@@ -45,7 +45,7 @@ export default function Loading() {
           r="29.011"
           fill="none"
           stroke="#ff5d00"
-          stroke-width="3"
+          strokeWidth="3"
         >
           <animate
             attributeName="r"

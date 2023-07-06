@@ -21,14 +21,8 @@ interface ModelOption {
   shown_in_slider: number;
 }
 
-interface GroupedModelOption {
-  man_name: string;
-  options: ModelOption[];
-}
-
-const ProductCard: React.FC = ({}) => {
+const ProductCard: React.FC = () => {
   const {
-    pairManModel,
     selectedCurrencyIndex,
     setSelectedCurrencyIndex,
     setSearchButton,
@@ -43,45 +37,11 @@ const ProductCard: React.FC = ({}) => {
     setPerSelectedOption,
     setFilters,
     prodsLoading,
+    meta,
+    currentPage,
+    setCurrentPage,
   } = useContext(AppContext);
   const [modelList, setModelList] = useState<Array<[number, string]>>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const prod_optionsPerPage = 5;
-  const [totalPages, setTotalPages] = useState<number>(
-    Math.ceil(prod_options.length / prod_optionsPerPage)
-  );
-
-  // const updateFilteredProd_options = () => {
-
-  //   const sortedProd_options = filterProd_options(prod_options, sortSelectedOption);
-  //   const filteredProd_options = filterProd_optionsByPeriod(
-  //     sortedProd_options,
-  //     perSelectedOption
-  //   );
-  //   setFilteredProd_options(filteredProd_options);
-
-  //   currentPage > Math.ceil(filteredProd_options.length / prod_optionsPerPage) &&
-  //     setCurrentPage(Math.ceil(filteredProd_options.length / prod_optionsPerPage));
-  // };
-
-  // useEffect(() => {
-  //   updateFilteredProd_options();
-  // }, [perSelectedOption, sortSelectedOption]);
-
-  //   function getModelName(man_name: string, model_id: number): string {
-  //     const foundMan = pairManModel.find(
-  //       (manOption) => manOption.man_name.toLowerCase() === man_name.toLowerCase()
-  //     );
-
-  //     if (foundMan) {
-  //       const foundModel = foundMan.options.find(
-  //         (modelOption) => modelOption.model_id === model_id
-  //       );
-  //       return foundModel ? foundModel.model_name : "";
-  //     }
-
-  //     return "";
-  //   }
 
   const modelCache: Record<number, ModelOption[]> = {};
 
@@ -93,7 +53,6 @@ const ProductCard: React.FC = ({}) => {
             (model) => model.model_id === model_id
           );
           if (foundModel) {
-            console.log("Cache hit", foundModel.model_name);
             return foundModel.model_name;
           }
         }
@@ -139,11 +98,11 @@ const ProductCard: React.FC = ({}) => {
     fetchData();
   }, [getModelName, prod_options]);
 
-  useEffect(() => {
-    setTotalPages(Math.ceil(prod_options.length / prod_optionsPerPage));
-    currentPage > Math.ceil(prod_options.length / prod_optionsPerPage) &&
-      setCurrentPage(1);
-  }, [prod_options]);
+  // useEffect(() => {
+  //   setTotalPages(Math.ceil(prod_options.length / prod_optionsPerPage));
+  //   currentPage > Math.ceil(prod_options.length / prod_optionsPerPage) &&
+  //     setCurrentPage(1);
+  // }, [prod_options]);
 
   const handleCurrencyToggle = () => {
     setSelectedCurrencyIndex(selectedCurrencyIndex === 0 ? 1 : 0);
@@ -266,17 +225,17 @@ const ProductCard: React.FC = ({}) => {
     setCurrentPage(pageNumber);
   };
 
-  const indexOfLastProduct = currentPage * prod_optionsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - prod_optionsPerPage;
-  const currentProd_options = prod_options.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
+  // const indexOfLastProduct = currentPage * prod_optionsPerPage;
+  // const indexOfFirstProduct = indexOfLastProduct - prod_optionsPerPage;
+  // const currentProd_options = prod_options.slice(
+  //   indexOfFirstProduct,
+  //   indexOfLastProduct
+  // );
 
   return prod_options.length > 0 ? (
     !prodsLoading ? (
       <div className="all-prod_options">
-        {currentProd_options.map((product) => (
+        {prod_options.map((product) => (
           <div key={product.car_id} className="product-card">
             <div className="card-photo">
               {" "}
@@ -296,12 +255,6 @@ const ProductCard: React.FC = ({}) => {
                     </div>
                   )}
                   <p>{toTitleCase(getManName(product.man_id.toString()))}</p>
-                  {/* <p>
-                  {getModelName(
-                    getManName(product.man_id.toString()),
-                    product.model_id
-                  )}F
-                </p> */}
 
                   {(() => {
                     const [modelId, modelName] =
@@ -348,8 +301,8 @@ const ProductCard: React.FC = ({}) => {
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
                         d="M5.525 0c-.388 0-.703.35-.703.783 0 .433.315.783.703.783h1.808v1.707H5.686a.662.662 0 0 0-.465.19L4.004 4.665h-.667a.654.654 0 0 0-.658.65v1.23H1.5V5.134a.76.76 0 0 0-.75-.77.76.76 0 0 0-.75.77v4.95c0 .425.336.77.75.77a.76.76 0 0 0 .75-.77V8.086h1.18v1.871c0 .36.294.65.658.65h.667l1.217 1.203c.124.121.29.19.465.19h5.17a.67.67 0 0 0 .395-.13l1.88-1.393a.648.648 0 0 0 .263-.52V8.086H14.5v1.998c0 .425.336.77.75.77a.76.76 0 0 0 .75-.77v-4.95a.76.76 0 0 0-.75-.77.76.76 0 0 0-.75.77v1.411h-1.106v-1.23a.646.646 0 0 0-.193-.46l-1.41-1.392a.662.662 0 0 0-.465-.19H8.74V1.566h1.807c.389 0 .704-.35.704-.783 0-.432-.315-.783-.704-.783H5.525Zm-.783 5.775 1.217-1.202h5.094l1.025 1.011v4.049L10.637 10.7H5.959L4.742 9.498a.662.662 0 0 0-.465-.19h-.282V5.965h.282a.662.662 0 0 0 .465-.19Z"
                         fill="#9CA2AA"
                       />
@@ -372,33 +325,33 @@ const ProductCard: React.FC = ({}) => {
                         height="7.8"
                         rx="1.2"
                         stroke="#8C929B"
-                        stroke-width="1.2"
+                        strokeWidth="1.2"
                       />
                       <path
                         d="M6 5v5"
                         stroke="#8C929B"
-                        stroke-width="1.2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="1.2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                       <path
                         d="M6 12v1.5"
                         stroke="#8C929B"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                       <circle
                         cx="6"
                         cy="2.5"
                         r="1.8"
                         stroke="#8C929B"
-                        stroke-width="1.4"
+                        strokeWidth="1.4"
                       />
                       <path
                         d="M3 10v3m6-3v3"
                         stroke="#8C929B"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
                     {mapGearType(product.gear_type_id)}
@@ -418,27 +371,27 @@ const ProductCard: React.FC = ({}) => {
                         cy="7"
                         r="6.3"
                         stroke="#9CA2AA"
-                        stroke-width="1.4"
+                        strokeWidth="1.4"
                       />
                       <circle
                         cx="7"
                         cy="7"
                         r="1.3"
                         stroke="#9CA2AA"
-                        stroke-width="1.4"
+                        strokeWidth="1.4"
                       />
                       <path
                         d="M11 7a4 4 0 1 0-8 0"
                         stroke="#9CA2AA"
-                        stroke-width="1.4"
-                        stroke-linecap="round"
+                        strokeWidth="1.4"
+                        strokeLinecap="round"
                       />
                       <path
                         d="m8 6 1.5-1.5"
                         stroke="#9CA2AA"
-                        stroke-width="1.4"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="1.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
                     {product.car_run_km} km
@@ -457,21 +410,21 @@ const ProductCard: React.FC = ({}) => {
                         cy="7"
                         r="6.3"
                         stroke="#9CA2AA"
-                        stroke-width="1.4"
+                        strokeWidth="1.4"
                       />
                       <circle
                         cx="7"
                         cy="7"
                         r="1.3"
                         stroke="#9CA2AA"
-                        stroke-width="1.4"
+                        strokeWidth="1.4"
                       />
                       <path
                         d="m8.5 7 4-1.5M5.214 7 1 6.299M7 8.5V13"
                         stroke="#9CA2AA"
-                        stroke-width="1.4"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="1.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
                     {mapDoorType(product.door_type_id)}
@@ -537,47 +490,29 @@ const ProductCard: React.FC = ({}) => {
                   <p>{getTimeDifference(product.order_date)}</p>
                 </div>
                 <div className="right-icons">
-                  <svg
-                    className="comment"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg className="comment" xmlns="http://www.w3.org/2000/svg">
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
                       d="M4.917 7a.75.75 0 0 1 .75-.75h4.666a.75.75 0 0 1 0 1.5H5.667a.75.75 0 0 1-.75-.75Z"
                     />
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
                       d="M1.72 2.006C2.463 1.264 3.496.87 4.667.87h6.666c1.17 0 2.204.394 2.947 1.136.743.743 1.137 1.777 1.137 2.947v4c0 1.17-.394 2.205-1.137 2.947-.58.58-1.336.947-2.197 1.08v.727c0 1.136-1.263 1.8-2.198 1.178m-.001 0-2.777-1.848h-2.44c-1.17 0-2.204-.394-2.947-1.137C.977 11.158.583 10.124.583 8.953v-4c0-1.17.394-2.204 1.137-2.947m1.06 1.061c-.423.424-.697 1.057-.697 1.886v4c0 .83.273 1.463.697 1.887.424.424 1.057.697 1.887.697h2.666a.75.75 0 0 1 .416.125l2.834 1.886v-1.261a.75.75 0 0 1 .75-.75c.83 0 1.463-.274 1.887-.697.423-.424.697-1.057.697-1.887v-4c0-.83-.274-1.462-.697-1.886-.424-.424-1.057-.697-1.887-.697H4.667c-.83 0-1.463.273-1.887.697Z"
                     />
                   </svg>
-                  <svg
-                    className="eye"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg className="eye" xmlns="http://www.w3.org/2000/svg">
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
                       d="M15.197 1.864a.75.75 0 1 0-1.06-1.061l-2.18 2.179C10.764 2.182 9.41 1.737 8 1.737c-2.671 0-5.078 1.575-6.706 4.133C.9 6.49.727 7.27.727 8.003c0 .734.172 1.514.567 2.133V5.87v4.267c.464.728.994 1.379 1.573 1.935L.803 14.136a.75.75 0 0 0 1.06 1.061l4.98-4.98.009-.008 3.357-3.357.008-.008 4.98-4.98ZM9.623 5.316l1.249-1.248C9.969 3.52 8.992 3.237 8 3.237c-2.035 0-4.015 1.197-5.44 3.439h-.001c-.205.321-.332.801-.332 1.327 0 .526.127 1.006.332 1.327.41.644.874 1.209 1.37 1.681l1.387-1.388a3.134 3.134 0 0 1 4.307-4.307ZM6.363 8A1.634 1.634 0 0 1 8.5 6.44L6.44 8.5a1.632 1.632 0 0 1-.078-.5Zm6.534-3.298a.75.75 0 0 1 1.054.115c.26.323.517.672.755 1.047.395.62.568 1.399.568 2.133s-.173 1.513-.568 2.133c-1.628 2.558-4.034 4.133-6.706 4.133a6.892 6.892 0 0 1-2.678-.552.75.75 0 1 1 .583-1.382A5.394 5.394 0 0 0 8 12.763c2.035 0 4.015-1.198 5.44-3.439h.001c.205-.321.332-.802.332-1.327 0-.526-.127-1.006-.332-1.327a10.065 10.065 0 0 0-.659-.912.75.75 0 0 1 .115-1.055Zm-1.82 3.9a.75.75 0 1 0-1.475-.271 1.627 1.627 0 0 1-1.278 1.278.75.75 0 1 0 .272 1.475 3.126 3.126 0 0 0 2.481-2.481Z"
                     />
                   </svg>
-                  <svg
-                    className="heart"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg className="heart" xmlns="http://www.w3.org/2000/svg">
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
                       d="M8.686 2.168a4.292 4.292 0 0 0-.495.421l-.128.132L8 2.79l-.063-.07-.128-.13a4.292 4.292 0 0 0-.495-.422A3.373 3.373 0 0 0 5.3 1.5C2.585 1.5 1 3.877 1 6.304c0 2.375 1.191 4.437 3.137 6.096C5.505 13.567 7.295 14.5 8 14.5c.705 0 2.495-.933 3.863-2.1C13.81 10.74 15 8.68 15 6.304 15 3.877 13.415 1.5 10.7 1.5a3.37 3.37 0 0 0-2.014.668Zm-2.01 1.55C6.238 3.292 5.79 3.1 5.3 3.1c-1.549 0-2.7 1.348-2.7 3.204 0 1.784.881 3.434 2.575 4.879a11.28 11.28 0 0 0 1.899 1.295c.306.164.568.283.768.356.07.026.122.042.158.052.036-.01.088-.026.158-.052.2-.073.463-.192.769-.356a11.21 11.21 0 0 0 1.898-1.295C12.519 9.738 13.4 8.088 13.4 6.304c0-1.856-1.151-3.204-2.7-3.204-.49 0-.939.191-1.375.619l-.097.099L8 5.17 6.772 3.818l-.097-.1Z"
                     />
                   </svg>
@@ -588,23 +523,181 @@ const ProductCard: React.FC = ({}) => {
         ))}
 
         <div className="pagination-bar">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                handlePageChange(index + 1);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-              className={currentPage === index + 1 ? "active" : ""}
-            >
-              {index + 1}
-            </button>
-          ))}
+          {currentPage !== 1 && (
+            <>
+              {" "}
+              <button onClick={() => handlePageChange(1)}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="13.414"
+                  height="8.829"
+                  viewBox="0 0 13.414 8.829"
+                >
+                  <g transform="translate(1 1.414)">
+                    <path
+                      d="M12,12,9,9l3-3"
+                      transform="translate(-1 -6)"
+                      style={{
+                        fill: "none",
+                        stroke: "rgb(253, 65, 0)",
+                        strokeLinecap: "round",
+                        strokeWidth: "2px",
+                        strokeLinejoin: "round",
+                      }}
+                    />
+                    <path
+                      d="M12,12,9,9l3-3"
+                      transform="translate(-6 -6)"
+                      style={{
+                        fill: "none",
+                        stroke: "rgb(253, 65, 0)",
+                        strokeLinecap: "round",
+                        strokeWidth: "2px",
+                        strokeLinejoin: "round",
+                      }}
+                    />
+                    <line
+                      y2="6"
+                      transform="translate(0)"
+                      style={{
+                        fill: "none",
+                        stroke: "rgb(253, 65, 0)",
+                        strokeLinecap: "round",
+                        strokeWidth: "2px",
+                      }}
+                    />
+                  </g>
+                </svg>
+              </button>
+              <button onClick={() => handlePageChange(currentPage - 1)}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="5.414"
+                  height="8.829"
+                  viewBox="0 0 5.414 8.829"
+                >
+                  <path
+                    d="M12,12,9,9l3-3"
+                    transform="translate(-8 -4.586)"
+                    style={{
+                      fill: "none",
+                      stroke: "rgb(253, 65, 0)",
+                      strokeLinecap: "round",
+                      strokeLinejoin: "round",
+                      strokeWidth: "2px",
+                    }}
+                  />
+                </svg>
+              </button>
+            </>
+          )}
+          {Array.from({ length: meta.last_page }, (_, index) => {
+            const pageNumber = index + 1;
+            const isCurrentPage = currentPage === pageNumber;
+            const isWithinRange =
+              pageNumber >=
+                Math.max(
+                  currentPage -
+                    (currentPage > meta.last_page - 3
+                      ? 7 - (meta.last_page - currentPage+1)
+                      : 3),
+                  1
+                ) &&
+              pageNumber <=
+                Math.min(
+                  currentPage + (currentPage < 4 ? 7 - currentPage : 3),
+                  meta.last_page
+                );
+
+            if (isWithinRange) {
+              return (
+                <button
+                  key={index}
+                  onClick={() => {
+                    handlePageChange(pageNumber);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  className={isCurrentPage ? "active" : ""}
+                >
+                  {pageNumber}
+                </button>
+              );
+            }
+            return null;
+          })}
+
+          {currentPage !== meta.last_page && (
+            <>
+              <button onClick={() => handlePageChange(currentPage + 1)}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="5.414"
+                  height="8.829"
+                  viewBox="0 0 5.414 8.829"
+                >
+                  <path
+                    d="M9,12l3-3L9,6"
+                    transform="translate(-7.586 -4.586)"
+                    style={{
+                      fill: "none",
+                      stroke: "rgb(253, 65, 0)",
+                      strokeLinecap: "round",
+                      strokeLinejoin: "round",
+                      strokeWidth: "2px",
+                    }}
+                  />
+                </svg>
+              </button>
+              <button onClick={() => handlePageChange(meta.last_page)}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="13.414"
+                  height="8.829"
+                  viewBox="0 0 13.414 8.829"
+                >
+                  <g transform="translate(-1134.586 -2682.586)">
+                    <path
+                      d="M9,12l3-3L9,6"
+                      transform="translate(1127 2678)"
+                      style={{
+                        fill: "none",
+                        stroke: "rgb(253, 65, 0)",
+                        strokeLinecap: "round",
+                        strokeWidth: "2px",
+                        strokeLinejoin: "round",
+                      }}
+                    />
+                    <path
+                      d="M9,12l3-3L9,6"
+                      transform="translate(1132 2678)"
+                      style={{
+                        fill: "none",
+                        stroke: "rgb(253, 65, 0)",
+                        strokeLinecap: "round",
+                        strokeWidth: "2px",
+                        strokeLinejoin: "round",
+                      }}
+                    />
+                    <line
+                      y2="6"
+                      transform="translate(1147 2684)"
+                      style={{
+                        fill: "none",
+                        stroke: "rgb(253, 65, 0)",
+                        strokeLinecap: "round",
+                        strokeWidth: "2px",
+                      }}
+                    />
+                  </g>
+                </svg>
+              </button>
+            </>
+          )}
         </div>
       </div>
     ) : (
       <div className="all-prod_options">
-        {currentProd_options.map((product) => (
+        {prod_options.map((product) => (
           <div key={product.car_id} className="product-card">
             <div className="card-photo">
               {" "}
@@ -723,47 +816,29 @@ const ProductCard: React.FC = ({}) => {
                   ></p>
                 </div>
                 <div className="right-icons">
-                  <svg
-                    className="comment"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg className="comment" xmlns="http://www.w3.org/2000/svg">
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
                       d="M4.917 7a.75.75 0 0 1 .75-.75h4.666a.75.75 0 0 1 0 1.5H5.667a.75.75 0 0 1-.75-.75Z"
                     />
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
                       d="M1.72 2.006C2.463 1.264 3.496.87 4.667.87h6.666c1.17 0 2.204.394 2.947 1.136.743.743 1.137 1.777 1.137 2.947v4c0 1.17-.394 2.205-1.137 2.947-.58.58-1.336.947-2.197 1.08v.727c0 1.136-1.263 1.8-2.198 1.178m-.001 0-2.777-1.848h-2.44c-1.17 0-2.204-.394-2.947-1.137C.977 11.158.583 10.124.583 8.953v-4c0-1.17.394-2.204 1.137-2.947m1.06 1.061c-.423.424-.697 1.057-.697 1.886v4c0 .83.273 1.463.697 1.887.424.424 1.057.697 1.887.697h2.666a.75.75 0 0 1 .416.125l2.834 1.886v-1.261a.75.75 0 0 1 .75-.75c.83 0 1.463-.274 1.887-.697.423-.424.697-1.057.697-1.887v-4c0-.83-.274-1.462-.697-1.886-.424-.424-1.057-.697-1.887-.697H4.667c-.83 0-1.463.273-1.887.697Z"
                     />
                   </svg>
-                  <svg
-                    className="eye"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg className="eye" xmlns="http://www.w3.org/2000/svg">
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
                       d="M15.197 1.864a.75.75 0 1 0-1.06-1.061l-2.18 2.179C10.764 2.182 9.41 1.737 8 1.737c-2.671 0-5.078 1.575-6.706 4.133C.9 6.49.727 7.27.727 8.003c0 .734.172 1.514.567 2.133V5.87v4.267c.464.728.994 1.379 1.573 1.935L.803 14.136a.75.75 0 0 0 1.06 1.061l4.98-4.98.009-.008 3.357-3.357.008-.008 4.98-4.98ZM9.623 5.316l1.249-1.248C9.969 3.52 8.992 3.237 8 3.237c-2.035 0-4.015 1.197-5.44 3.439h-.001c-.205.321-.332.801-.332 1.327 0 .526.127 1.006.332 1.327.41.644.874 1.209 1.37 1.681l1.387-1.388a3.134 3.134 0 0 1 4.307-4.307ZM6.363 8A1.634 1.634 0 0 1 8.5 6.44L6.44 8.5a1.632 1.632 0 0 1-.078-.5Zm6.534-3.298a.75.75 0 0 1 1.054.115c.26.323.517.672.755 1.047.395.62.568 1.399.568 2.133s-.173 1.513-.568 2.133c-1.628 2.558-4.034 4.133-6.706 4.133a6.892 6.892 0 0 1-2.678-.552.75.75 0 1 1 .583-1.382A5.394 5.394 0 0 0 8 12.763c2.035 0 4.015-1.198 5.44-3.439h.001c.205-.321.332-.802.332-1.327 0-.526-.127-1.006-.332-1.327a10.065 10.065 0 0 0-.659-.912.75.75 0 0 1 .115-1.055Zm-1.82 3.9a.75.75 0 1 0-1.475-.271 1.627 1.627 0 0 1-1.278 1.278.75.75 0 1 0 .272 1.475 3.126 3.126 0 0 0 2.481-2.481Z"
                     />
                   </svg>
-                  <svg
-                    className="heart"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg className="heart" xmlns="http://www.w3.org/2000/svg">
                     <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
+                      fillRule="evenodd"
+                      clipRule="evenodd"
                       d="M8.686 2.168a4.292 4.292 0 0 0-.495.421l-.128.132L8 2.79l-.063-.07-.128-.13a4.292 4.292 0 0 0-.495-.422A3.373 3.373 0 0 0 5.3 1.5C2.585 1.5 1 3.877 1 6.304c0 2.375 1.191 4.437 3.137 6.096C5.505 13.567 7.295 14.5 8 14.5c.705 0 2.495-.933 3.863-2.1C13.81 10.74 15 8.68 15 6.304 15 3.877 13.415 1.5 10.7 1.5a3.37 3.37 0 0 0-2.014.668Zm-2.01 1.55C6.238 3.292 5.79 3.1 5.3 3.1c-1.549 0-2.7 1.348-2.7 3.204 0 1.784.881 3.434 2.575 4.879a11.28 11.28 0 0 0 1.899 1.295c.306.164.568.283.768.356.07.026.122.042.158.052.036-.01.088-.026.158-.052.2-.073.463-.192.769-.356a11.21 11.21 0 0 0 1.898-1.295C12.519 9.738 13.4 8.088 13.4 6.304c0-1.856-1.151-3.204-2.7-3.204-.49 0-.939.191-1.375.619l-.097.099L8 5.17 6.772 3.818l-.097-.1Z"
                     />
                   </svg>

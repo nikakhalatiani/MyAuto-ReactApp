@@ -127,7 +127,6 @@ const ManDropdown: React.FC<ManDropdownProps> = ({ options }) => {
 
   const handleContainerClick = () => {
     if (!isOpen && !isManCloseButtonSelected) {
-      console.log("isOpen");
       setIsOpen(true);
       manInputRef?.current?.focus();
       // }

@@ -77,10 +77,7 @@
   width: 16px;
   display: none;
 }
-/* 
-  .dropdown-options input[type="checkbox"]:checked {
-    display: none;
-  } */
+
 
 .custom-checkbox-unchecked {
   margin-right: 1lvw;

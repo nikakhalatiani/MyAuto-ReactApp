@@ -72,4 +72,7 @@
     height: 256px;
     width: 90svw;
   }
+  .line {
+    margin-left: 8px;
+  }
 }

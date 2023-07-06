@@ -1,13 +1,13 @@
 import PeriodDropdown from "././PeriodDropdown";
-import ProductCard from "./ProductCard";
-import FilterDropdown from "./FilterDropdown";
-import FiltersContainer from "./FiltersContainer";
+import ProductCard from "././ProductCard";
+import FilterDropdown from "././FilterDropdown";
+import FiltersContainer from "././FiltersContainer";
 import "./Main.css";
 import { useContext } from "react";
 import { AppContext } from "../../Contexts/AppContext";
 
 const Main: React.FC = () => {
-  const { filters, prod_options, prodsLoading, setIsSidebarOpen } =
+  const { filters, prod_options, prodsLoading, setIsSidebarOpen, meta } =
     useContext(AppContext);
   return (
     <div className="right-products-container">
@@ -23,7 +23,7 @@ const Main: React.FC = () => {
                 ? "No Listings"
                 : prod_options.length === 1
                 ? "1 Listing"
-                : `${prod_options.length} Listings`}
+                : `${meta.total} Listings`}
             </p>
           )}
         </div>
@@ -46,21 +46,21 @@ const Main: React.FC = () => {
               <path
                 d="M2 4h5.5"
                 stroke="#272A37"
-                stroke-width="1.4"
-                stroke-linecap="round"
+                strokeWidth="1.4"
+                strokeLinecap="round"
               />
               <circle
                 cx="10"
                 cy="4"
                 r="2.3"
                 stroke="#272A37"
-                stroke-width="1.4"
+                strokeWidth="1.4"
               />
               <path
                 d="M12 10H6.5"
                 stroke="#272A37"
-                stroke-width="1.4"
-                stroke-linecap="round"
+                strokeWidth="1.4"
+                strokeLinecap="round"
               />
               <circle
                 cx="4"
@@ -68,7 +68,7 @@ const Main: React.FC = () => {
                 r="2.3"
                 transform="rotate(-180 4 10)"
                 stroke="#272A37"
-                stroke-width="1.4"
+                strokeWidth="1.4"
               />
             </svg>
           </button>
