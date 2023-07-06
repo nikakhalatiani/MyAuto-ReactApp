@@ -9,13 +9,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { AppContext } from "../../Contexts/AppContext";
 
-interface ManOption {
-  man_id: string;
-  man_name: string;
-  is_car: string;
-  is_spec: string;
-  is_moto: string;
-}
 
 interface ModelOption {
   model_id: number;
@@ -45,7 +38,6 @@ interface GroupManModel {
 
 const ModelDropdown: React.FC = () => {
   const {
-    pairManModel, // this argument is used only on line 112 since parent component is using another implementation we omit it
     manSelectedOptions,
     setManSelectedOptions,
     modelSelectedOptions,
@@ -99,21 +91,10 @@ const ModelDropdown: React.FC = () => {
     }
   };
 
-  ////* This implementation of fetchModelOPtions is not used since parent component is using another implementation
-  //!   const fetchModelOptions = () => {
-  //?     const options = pairManModel.filter((option) =>
-  //*       manSelectedOptions.some(
-  //!         (manOption) => manOption.man_name === option.man_name
-  //?       )
-  //*     );
-  //!     setGroupedModelOptions(options);
-  //?   };
-
   const handleCheckboxChangeGroup = (group: GroupedModelOptions) => {
     const updatedManOptions = manSelectedOptions.filter(
       (option) => option.man_name !== group.man_name
     );
-    console.log(updatedManOptions);
     if (updatedManOptions.length === 0) {
       setManIsCloseButtonSelected(false);
     }
@@ -132,18 +113,6 @@ const ModelDropdown: React.FC = () => {
     }
 
     setModSelectedOptions(updatedModelSelectedOptions);
-
-    // if (modelInputRef.current) {
-    //   console.log("updatedSelectedOptions", updatedSelectedOptions);
-    //   console.log(modelInputRef.current.placeholder);
-    //   modelInputRef.current.placeholder = isEmpty(updatedManOptions)
-    //     ? "Model"
-    //     : updatedSelectedOptions
-    //         .map((selectedOption) => selectedOption.model_name)
-    //         .join(", ");
-
-    //   console.log(modelInputRef.current.placeholder);
-    // }
   };
 
   const handleCheckboxChange = (option: ModelOption) => {
@@ -171,8 +140,6 @@ const ModelDropdown: React.FC = () => {
     );
 
     setModSelectedOptions(updatedSelectedOptions);
-
-    console.log("updatedSelectedOptions", updatedSelectedOptions);
 
     if (modelInputRef.current) {
       modelInputRef.current.placeholder = updatedSelectedOptions

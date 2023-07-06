@@ -2,8 +2,7 @@ import "./CurrencyChange.css";
 import { ChangeEvent, useContext } from "react";
 import { AppContext } from "../../Contexts/AppContext";
 
-
-const CurrencyChange: React.FC = ({}) => {
+const CurrencyChange: React.FC = () => {
   const {
     priceFrom,
     setPriceFrom,
@@ -13,21 +12,18 @@ const CurrencyChange: React.FC = ({}) => {
     setSelectedCurrencyIndex,
   } = useContext(AppContext);
   const handleCurrencyToggle = () => {
-    // setSelectedCurrencyIndex((prevIndex) => (prevIndex === 0 ? 1 : 0));
     setSelectedCurrencyIndex(selectedCurrencyIndex === 0 ? 1 : 0);
   };
 
   const handlePriceToChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.trim();
     const newPriceTo = value !== "" ? parseFloat(value) : 0;
-    console.log(Number.isNaN(newPriceTo) ? "emptyTo" : value);
     setPriceTo(Number.isNaN(newPriceTo) ? "" : value);
   };
 
   const handlePriceFromChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.trim();
     const newPriceTo = value !== "" ? parseFloat(value) : 0;
-    console.log(Number.isNaN(newPriceTo) ? "emptyFrom" : value);
     setPriceFrom(Number.isNaN(newPriceTo) ? "" : value);
   };
 

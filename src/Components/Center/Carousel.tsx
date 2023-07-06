@@ -49,6 +49,7 @@ const Carousel: React.FC<CarouselProps> = ({ imageBaseUrl, photo_ver }) => {
           className="image"
           src={getImageUrl(activeIndex)}
           onError={handleImageError}
+          loading="lazy"
         />
       </div>
       <div

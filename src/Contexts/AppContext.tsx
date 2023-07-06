@@ -9,6 +9,13 @@ interface CategOption {
   vehicle_types: number[];
 }
 
+interface Meta {
+  total: number;
+  per_page: number;
+  current_page: number;
+  last_page: number;
+}
+
 interface ProductOption {
   car_id: number;
   status_id: number;
@@ -213,6 +220,11 @@ interface AppContextInterface {
   perSelectedOption: PeriodOption;
   isSidebarOpen: boolean;
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  meta: Meta;
+  setMeta: React.Dispatch<React.SetStateAction<Meta>>;
+  currentPage: number;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+
 }
 
 export const AppContext = createContext<AppContextInterface>({
@@ -251,4 +263,8 @@ export const AppContext = createContext<AppContextInterface>({
   perSelectedOption: { value: "", label: "Period" },
   isSidebarOpen: false,
   setIsSidebarOpen: () => {},
+  meta: { total: 0, per_page: 0, current_page: 0, last_page: 0 },
+  setMeta: () => {},
+  currentPage: 1,
+  setCurrentPage: () => {},
 });

@@ -18,6 +18,13 @@ type Search = {
   ForRent: string;
 };
 
+interface Meta {
+  total: number;
+  per_page: number;
+  current_page: number;
+  last_page: number;
+}
+
 interface ProductOption {
   car_id: number;
   status_id: number;
@@ -231,6 +238,13 @@ function App() {
   });
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [meta, setMeta] = useState<Meta>({
+    total: 0,
+    per_page: 0,
+    current_page: 0,
+    last_page: 0,
+  });
+  const [currentPage, setCurrentPage] = useState(1);
 
   async function fetchData() {
     setLoading(true);
@@ -273,6 +287,7 @@ function App() {
 
       setMans(filteredMansArray);
       setCats(cats["data"]);
+      setMeta(prods["data"]["meta"]);
       setProds(prods["data"]["items"]);
       setLoading(false);
       setProdsLoading(false);
@@ -304,11 +319,11 @@ function App() {
         setSaleSelectedOption(searchButton.ForRent);
         let updatedProdApi = prod_api
           .replace(
-            /(SortOrder|Period|ForRent|Mans|Cats|PriceFrom|PriceTo)=[^&]+&?/g,
+            /(SortOrder|Period|ForRent|Mans|Cats|PriceFrom|PriceTo|Page)=[^&]+&?/g,
             ""
           )
           .replace(
-            /(SortOrder|Period|ForRent|Mans|Cats|PriceFrom|PriceTo)=&/g,
+            /(SortOrder|Period|ForRent|Mans|Cats|PriceFrom|PriceTo|Page)=&/g,
             ""
           );
 
@@ -325,13 +340,13 @@ function App() {
 
         updatedProdApi += `Mans=${searchButton.Mans}&`;
         updatedProdApi += `Cats=${searchButton.Cats}&`;
-
-        console.log(updatedProdApi);
+        updatedProdApi += `Page=${currentPage}&`;
 
         setProdApi(updatedProdApi);
         const prod_response = await fetch(updatedProdApi);
         const prods = await prod_response.json();
         setProds(prods["data"]["items"]);
+        setMeta(prods["data"]["meta"]);
         setProdsLoading(false);
       } catch (error) {
         setProdsLoading(true);
@@ -395,7 +410,7 @@ function App() {
     setFilters([...filteredFilters, ...res, ...mansToAdd, ...catsToAdd]);
 
     fetchData();
-  }, [sortSelectedOption, perSelectedOption, searchButton]);
+  }, [sortSelectedOption, perSelectedOption, searchButton, currentPage]);
 
   if (loading) {
     return (
@@ -443,6 +458,10 @@ function App() {
         perSelectedOption,
         isSidebarOpen,
         setIsSidebarOpen,
+        meta,
+        setMeta,
+        currentPage,
+        setCurrentPage,
       }}
     >
       <Header />
@@ -453,9 +472,11 @@ function App() {
             isSidebarOpen ? ".active" : ""
           } left-container`}
         >
-          {isSidebarOpen && <Sidebar />}
+          {isSidebarOpen && <div className="first-side">{<Sidebar />}</div>}
         </div>
-        <div className="left-container second-side ">{<Sidebar />}</div>
+        {!isSidebarOpen && (
+          <div className="left-container second-side ">{<Sidebar />}</div>
+        )}
         <div className="right-container">
           {" "}
           <Main />

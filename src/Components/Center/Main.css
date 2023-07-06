@@ -60,7 +60,7 @@
 
 @media screen and (max-width: 960px) {
   .right-products-container {
-    width: 100%;
+    width: 100vw;
     display: flex;
     flex-direction: column;
   }
@@ -86,9 +86,13 @@
   .filters-container {
     order: 1;
     margin-top: 0px;
+    width: 100vw;
   }
 
   .all-prod_options {
+    order: 3;
+  }
+  .not-found {
     order: 3;
   }
 }
