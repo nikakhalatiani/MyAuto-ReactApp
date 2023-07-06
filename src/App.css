@@ -16,7 +16,6 @@ body {
   margin: 0;
   padding: 0;
   background: #f2f3f6;
-  overflow-x: hidden;
 }
 
 .main-container {
@@ -37,6 +36,10 @@ body {
 @media screen and (max-width: 960px) {
   .second-side {
     display: none;
+  }
+
+  .body {
+    overflow-x: hidden;
   }
 
   .right-container {
