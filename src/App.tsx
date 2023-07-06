@@ -1,6 +1,7 @@
 import "./App.css";
 import Loading from "./Loading/Loading";
 import Header from "./Components/Header";
+import Footer from "./Components/Footer";
 import Sidebar from "./Components/Sidebar/SideBar";
 import Main from "./Components/Center/Main";
 
@@ -482,6 +483,7 @@ function App() {
           <Main />
         </div>
       </div>
+      <Footer />
     </AppContext.Provider>
   );
 }
